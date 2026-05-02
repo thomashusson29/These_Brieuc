@@ -1,0 +1,46 @@
+.download-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin: 1.25rem 0 1.75rem;
+}
+
+.download-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid #d6dbe1;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #f8fafc, #eef3f8);
+  color: #12324a;
+  font-weight: 600;
+  text-decoration: none;
+  box-shadow: 0 8px 20px rgba(18, 50, 74, 0.08);
+  transition: transform 0.15s ease, box-shadow 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.download-link:hover,
+.download-link:focus {
+  color: #12324a;
+  border-color: #8fa8bd;
+  box-shadow: 0 10px 24px rgba(18, 50, 74, 0.14);
+  transform: translateY(-1px);
+  text-decoration: none;
+}
+
+.download-link svg {
+  width: 1rem;
+  height: 1rem;
+  flex: 0 0 auto;
+}
+
+.download-link-pdf svg {
+  color: #b42318;
+}
+
+.download-link-source svg {
+  color: #175cd3;
+}
+

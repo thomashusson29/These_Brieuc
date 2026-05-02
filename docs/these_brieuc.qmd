@@ -1,0 +1,623 @@
+---
+title: "Stats Thèse Brieuc"
+author: "Thomas Husson"
+bibliography: biblio.bib
+prefer-pdf: true
+format:
+    html:
+        output-file: index.html
+        toc: true
+        toc-depth: 5
+        toc-title: "Table des matières"
+        toc-location: left
+        toc-sticky: true
+        number-sections: true
+        theme: default
+        css: styles.css
+
+    docx:
+        toc: true
+        toc-depth: 5
+
+    pdf:
+        toc: true
+        toc-depth: 2
+        toc-title: "Table des matières"
+        pdf-engine: xelatex
+        cite-method: natbib
+        biblio-style: unsrturl
+        natbiboptions: "super,sort,compress"
+        pdf-engine-opts:
+        - -interaction=nonstopmode
+        - -halt-on-error
+        number-sections: true
+        code-block-bg: false
+        header-includes: |
+            % Force la police Computer Modern pour le titre principal
+            \usepackage{fontspec}
+            \makeatletter
+            \renewcommand{\maketitle}{
+            \begin{center}
+                {\Large\bfseries\rmfamily \@title \par}
+                \vskip 1.5em
+                {\large\rmfamily \@author \par}
+                \vskip 1em
+            \end{center}
+            }
+            \makeatother
+            % Titres KOMA-Script en police roman par défaut
+            \setkomafont{disposition}{\rmfamily}
+            \definecolor{sectionblue}{HTML}{1D4E89}
+            \definecolor{subsectionblue}{HTML}{8B1E3F}
+            \definecolor{subsubsectiongreen}{HTML}{1F6B4F}
+            \definecolor{paragraphslate}{HTML}{5A2E8A}
+            \definecolor{subparagraphgray}{HTML}{2F2F2F}
+            \definecolor{linkblue}{HTML}{163A63}
+            \setkomafont{section}{\rmfamily\color{sectionblue}\bfseries}
+            \setkomafont{subsection}{\rmfamily\color{subsectionblue}\bfseries}
+            \setkomafont{subsubsection}{\rmfamily\color{subsubsectiongreen}\bfseries}
+            \setkomafont{paragraph}{\rmfamily\color{paragraphslate}\bfseries}
+            \setkomafont{subparagraph}{\rmfamily\color{subparagraphgray}\bfseries\itshape}
+            \RedeclareSectionCommand[runin=false,afterskip=0.4\baselineskip]{paragraph}
+            \RedeclareSectionCommand[runin=false,afterskip=0.3\baselineskip]{subparagraph}
+            % Hyphenation française
+            \usepackage[french]{babel}
+            % Style des commentaires dans les blocs de code
+            \usepackage{xcolor}
+            \definecolor{commentgray}{HTML}{7A7A7A}
+            \providecommand{\CommentTok}[1]{#1}
+            \AtBeginDocument{
+            \renewcommand{\CommentTok}[1]{\textcolor{commentgray}{\textit{#1}}}
+            }
+            % Police "universelle" pour le code (XeLaTeX)
+            \usepackage{fontspec}
+            \IfFontExistsTF{Ubuntu Mono}{
+            \setmonofont{Ubuntu Mono}[Scale=MatchLowercase]
+            }{
+            \IfFontExistsTF{DejaVu Sans Mono}{
+                \setmonofont{DejaVu Sans Mono}[Scale=MatchLowercase]
+            }{
+                % fallback macOS (souvent dispo)
+                \IfFontExistsTF{Menlo}{
+                \setmonofont{Menlo}[Scale=MatchLowercase]
+                }{
+                \IfFontExistsTF{Monaco}{
+                    \setmonofont{Monaco}[Scale=MatchLowercase]
+                }{
+                    % sinon on garde la police mono par défaut
+                }
+                }
+            }
+            }
+            % Bloc de code R pour l'annexe (évite Shaded trop grand)
+            \usepackage{listings}
+            \lstset{
+            language=R,
+            basicstyle=\ttfamily\footnotesize\linespread{0.6}\selectfont\color{black},
+            commentstyle=\itshape\color{commentgray},
+            keywordstyle=\color{blue!60!black},
+            stringstyle=\color{brown!60!black},
+            showstringspaces=false,
+            showspaces=false,
+            showtabs=false,
+            breaklines=true,
+            breakatwhitespace=false,
+            columns=fullflexible,
+            xleftmargin=0.5em,
+            xrightmargin=0.5em
+            }
+
+            \usepackage{etoolbox}
+            \renewcommand{\contentsname}{}
+            \AtBeginDocument{
+                \addtocontents{toc}{\protect\smallskip}
+                \let\oldtableofcontents\tableofcontents
+                \renewcommand{\tableofcontents}{
+                \begingroup
+                    \footnotesize
+                    \setlength{\parskip}{2pt}
+                    \oldtableofcontents
+                \endgroup
+                }
+            }
+            \setcounter{tocdepth}{5}
+            \makeatletter
+            \renewcommand{\@tocrmarg}{0pt}
+            \makeatother
+
+            \usepackage{fvextra}
+            \usepackage[section]{placeins}
+            \AtBeginDocument{
+                \urlstyle{same}
+                \renewcommand{\UrlFont}{\rmfamily}
+                \DeclareRobustCommand{\path}[1]{{\rmfamily\detokenize{#1}}}
+                \let\oldhref\href
+                \renewcommand{\href}[2]{\oldhref{#1}{{\rmfamily #2}}}
+                \hypersetup{
+                    colorlinks=true,
+                    linkcolor=linkblue,
+                    citecolor=linkblue,
+                    urlcolor=linkblue
+                }
+            }
+
+            % Gestion des chunks de code
+            \DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,commandchars=\\\{\}}
+
+            \usepackage{needspace}
+            \usepackage{float}
+            \floatplacement{figure}{H}
+            \floatplacement{table}{H}
+            % \usepackage{rotating} % (désactivé)
+
+            \newcommand{\sectionbreak}{\needspace{5\baselineskip}}
+            \setlength{\parindent}{0pt}
+            \setlength{\parskip}{3pt}
+            \hfuzz=100pt
+            \vfuzz=100pt
+            \hbadness=10000
+            \usepackage{enumitem}
+            \setlist[itemize]{itemsep=3pt, parsep=3pt, topsep=3pt}
+            \setlist[enumerate]{itemsep=3pt, parsep=3pt, topsep=3pt}
+            \setlist[description]{itemsep=3pt, parsep=3pt, topsep=3pt}
+
+            \usepackage[most]{tcolorbox}
+            \usepackage{color}
+            \definecolor{lightgray}{gray}{0.95}
+            \newtcolorbox{graybox}{colback=gray!10!white,colframe=black,boxrule=0.6pt,arc=1mm,left=6pt,right=6pt,top=4pt,bottom=4pt}
+            \newtcolorbox{codebox}{breakable,colback=blue!5!white,colframe=blue!50!black,boxrule=0.5pt,arc=1mm,left=4pt,right=4pt,top=3pt,bottom=3pt}
+            \DefineVerbatimEnvironment{CodeBoxContent}{Verbatim}{fontsize=\small,breaklines,breakanywhere}
+
+            \renewcommand{\thesection}{\arabic{section}}
+            \renewcommand{\thesubsection}{\thesection.\Alph{subsection}}
+            \renewcommand{\thesubsubsection}{\thesubsection.\arabic{subsubsection}}
+
+geometry: margin=2.5cm
+---
+
+```{r}
+#| label: setup
+#| include: false
+#| echo: false
+library(forecast)
+library(cobalt)
+library(plotrix)
+library(randomForest)
+library(dplyr)
+library(tidyr)
+library(epiR)
+library(viridisLite)
+library(ggplot2)
+library(binom)
+library(survminer)
+library(MatchThem)
+library(pROC)
+library(treemap)
+library(psy)
+library(MASS)
+library(rpart)
+library(rpart.plot)
+library(plotly)
+library(lmerTest)
+library(psych)
+library(lme4)
+library(prettyR)
+library(zoo)
+library(kableExtra)
+library(gtsummary)
+library(lattice)
+library(survey)
+library(corrplot)
+library(mice)
+library(paletteer)
+library(skimr)
+library(nord)
+library(wesanderson)
+library(lubridate)
+library(qgraph)
+library(readxl)
+library(nlme)
+library(pwr)
+library(ape)
+library(survival)
+library(gmodels)
+library(httpgd)
+library(e1071)
+library(psy)
+library(reshape2)
+knitr::opts_chunk$set(echo = TRUE)
+if (knitr::is_latex_output()) {
+    knitr::opts_chunk$set(dev = "pdf", fig.path = "these_brieuc_files/figure-pdf/")
+}
+```
+
+\newpage
+::: {.callout-note title="Origine de ce document"}
+-   Ce document est au format Quarto Markdown (.qmd) : il contient du code R et est généré directement pour obtenir un rapport en PDF ou HTML. 
+
+-   Il est donc à la fois un document de travail pour moi, et à la fois un document de présentation des analyses. Je laisse donc volontairement les sections de code pour transparence et reproductibilité des analyses.
+
+-   La préparation des données a été faite sur R plutôt que sur Excel pour éviter les erreurs et tracer les étapes. La première partie du document est donc consacrée à la préparation des données, avec des sections de code pour chaque variable (vous pouvez donc sauter les sections de code si vous ne souhaitez pas les détails de la préparation des données).
+
+-   Je suis interne en chirurgie digestive à Paris et actuellement un master 2 en biostatistiques ("Méthodologie et Statistiques en Recherche biomédicale", Université Paris Saclay). Et accessoirement, ami de Brieuc !
+
+-   Le rapport est disponible en format HTML hébergé sur Github Pages, il est aussi téléchargeable en pdf en format PDF et Quarto (.qmd), contenant le code R utilisé pour les analyses
+:::
+
+::: {.content-visible when-format="html"}
+<div class="download-links" aria-label="Téléchargements du rapport">
+  <a class="download-link download-link-pdf" href="these_brieuc.pdf" download="these_brieuc.pdf" type="application/pdf">
+    <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" focusable="false">
+      <path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5Zm-3 0A1.5 1.5 0 0 1 9.5 3V1.5H4A.5.5 0 0 0 3.5 2v12A.5.5 0 0 0 4 14.5h8a.5.5 0 0 0 .5-.5V4.5H11ZM4.75 8.5h1.5a1.75 1.75 0 1 1 0 3.5h-.5V13h-1V8.5Zm1 2.5h.5a.75.75 0 0 0 0-1.5h-.5V11Zm3-2.5h1.4a1.8 1.8 0 0 1 0 3.6h-.4V13h-1V8.5Zm1 2.6h.35a.8.8 0 0 0 0-1.6h-.35v1.6Zm2.55-2.6h2.45v1H13.3v.85h1.3v1h-1.3V13h-1V8.5Z"/>
+    </svg>
+    <span>Télécharger le PDF</span>
+  </a>
+  <a class="download-link download-link-source" href="these_brieuc.qmd" download="these_brieuc.qmd" type="text/plain">
+    <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" focusable="false">
+      <path d="M5.719 11.59 2.91 8.782a1.1 1.1 0 0 1 0-1.556L5.72 4.42l.707.707L3.617 7.938a.1.1 0 0 0 0 .141l2.809 2.803-.707.707Zm4.562 0-.707-.707 2.809-2.804a.1.1 0 0 0 0-.14L9.574 5.126l.707-.707 2.808 2.808a1.1 1.1 0 0 1 0 1.555l-2.808 2.809ZM8.213 3.104l.966.26-1.392 5.532-.966-.26 1.392-5.532Z"/>
+    </svg>
+    <span>Code R source</span>
+  </a>
+</div>
+:::
+
+\newpage
+# Import de la base et préparation des données
+
+```{r}
+#| label: import
+#| echo: false
+#| include: false
+#import formal xlsx de "recueil_bon.xlsx"
+df <- read_excel("recueil_bon.xlsx")
+```
+
+## Dates
+
+```{r}
+#| label: dates au format date
+#| echo: true
+#| include: false
+#| results: "hide"
+# Convertir les colonnes de dates au format Date
+df$DDN <- as.Date(df$DDN, format = "%Y-%m-%d")
+df$Date_de_recueil <- as.Date(df$Date_de_recueil, format = "%Y-%m-%d")
+```
+
+## Variables numériques
+
+```{r}
+#| label: variables numériques
+#| echo: true
+#| include: true
+#| results: "hide"
+# Convertir les variables numériques
+df$Age <- as.numeric(df$Age)
+class(df$Age)
+```
+
+## Variables catégorielles
+
+### Côté
+
+```{r}
+#| label: côté
+#| echo: true
+#| include: true
+#| results: "hide"
+# Convertir la variable "Côté" en facteur
+df$Cote <- factor(
+    c(G = "Gauche", D = "Droite")[df$Cote],
+    levels = c("Gauche", "Droite")
+)
+table(df$Cote, useNA = "ifany")
+```
+
+### Niveau
+
+```{r}
+#| label: niveau
+#| echo: true
+#| include: true
+#| results: "hide"
+# Convertir la variable "Niveau" en facteur ordonné
+df$Niveau
+df$Niveau <- factor(
+    df$Niveau,
+    levels = c("C4", "C5", "C6", "C7", "C8"),
+    ordered = TRUE
+)
+table(df$Niveau, useNA = "ifany")
+```
+
+### Examen clinique
+
+```{r}
+#| label: examen clinique
+#| echo: true
+#| include: true
+#| results: "hide"
+str(df$Examen_Clinique)
+class(df$Examen_Clinique)
+unique(df$Examen_Clinique)
+#création d'une variable binaire "Examen_Clinique_Binaire" (1 = Positif, 0 = Negatif ou Douteux)
+df$Examen_Clinique_Positif_YN <- ifelse(df$Examen_Clinique == "Positif", 1, 0)
+table(df$Examen_Clinique_Positif_YN, useNA = "ifany")
+#création d'une variable binaire "Examen_Clinique_Douteux_YN" (1 = Douteux, 0 = Positif ou Negatif)
+df$Examen_Clinique_Douteux_YN <- ifelse(df$Examen_Clinique == "Douteux", 1, 0)
+table(df$Examen_Clinique_Douteux_YN, useNA = "ifany")
+```
+
+### IRM
+
+```{r}
+#| label: irm
+#| echo: true
+#| include: true
+#| results: "hide"
+str(df$IRM)
+class(df$IRM)
+unique(df$IRM)
+#création d'une variable binaire "IRM_Positif_YN" (1 = Positif, 0 = Negatif ou Douteux)
+df$IRM_Positif_YN <- ifelse(df$IRM == "Positif", 1, 0)
+table(df$IRM_Positif_YN, useNA = "ifany")
+#création d'une variable binaire "IRM_Douteux_YN" (1 = Douteux, 0 = Positif ou Negatif)
+df$IRM_Douteux_YN <- ifelse(df$IRM == "Douteux", 1, 0)
+table(df$IRM_Douteux_YN, useNA = "ifany")
+```
+
+### Infiltrations
+
+```{r}
+#| label: infiltrations
+#| echo: true
+#| include: true
+#| results: "hide"
+str(df$Infiltrations)
+class(df$Infiltrations)
+unique(df$Infiltrations)
+#modification infiltrations pour mettre 1 et 0
+df$Infiltrations <- ifelse(df$Infiltrations == "oui", 1, ifelse(df$Infiltrations == "non", 0, NA))
+table(df$Infiltrations, useNA = "ifany")
+```
+
+```{r}
+#| label: resultat infiltrations
+#| echo: false
+#| include: false
+str(df$Resultat_Inf)
+class(df$Resultat_Inf)
+unique(df$Resultat_Inf)
+#création d'une variable binaire "Resultat_Inf_Positif_YN" (1 = Positif, 0 = Negatif ou NA)
+df$Resultat_Inf <- ifelse(df$Resultat_Inf == "Positif", 1, ifelse(df$Resultat_Inf == "Negatif", 0, NA))
+table(df$Resultat_Inf, useNA = "ifany")
+```
+
+### Gold Standard
+
+```{r}
+#| label: gold standard
+#| echo: true
+#| include: true
+#| results: "hide"
+#création d'une variable binaire "Gold_Standard_Positif_YN" (1 = Positif, 0 = Negatif ou Douteux ou NA)
+df$Gold_Standard_Positif_YN <- ifelse(df$Gold_Standard == "Positif", 1,
+    ifelse(df$Gold_Standard %in% c("Negatif", "Douteux"), 0, NA)
+)
+table(df$Gold_Standard_Positif_YN, useNA = "ifany")
+
+#création d'une variable binaire "Gold_Standard_Douteux_YN" (1 = Douteux, 0 = Positif ou Negatif ou NA)
+df$Gold_Standard_Douteux_YN <- ifelse(df$Gold_Standard == "Douteux", 1,
+    ifelse(df$Gold_Standard %in% c("Positif", "Negatif"), 0, NA)
+)
+table(df$Gold_Standard_Douteux_YN, useNA = "ifany")
+```
+
+### Tests cliniques évaluateur 1
+
+Les variables sont transformées en numériques binaires (1 = Positif / 0 = Negatif) pour faciliter les tests. 
+
+#### U1_E1
+
+```{r}
+#| label: ulnt1
+#| echo: true
+#| include: true
+#| results: "hide"
+str(df$U1_E1)
+class(df$U1_E1)
+table(df$U1_E1, useNA = "ifany")
+#création d'une variable binaire "U1_E1_Positif_YN" (1 = Positif, 0 = Negatif ou NA) 
+df$U1_E1_positif <- as.numeric(df$U1_E1 == "Positif")
+table(df$U1_E1_positif, useNA = "ifany")
+```
+
+#### U2a_E1
+
+```{r}
+#| label: ulnt2a
+#| echo: true
+#| include: true
+#| results: "hide"
+str(df$U2a_E1)
+class(df$U2a_E1)
+table(df$U2a_E1, useNA = "ifany")
+#création d'une variable binaire "U2a_E1_Positif_YN" (1 = Positif, 0 = Negatif ou NA) 
+df$U2a_E1_positif <- as.numeric(df$U2a_E1 == "Positif")
+table(df$U2a_E1_positif, useNA = "ifany")
+```
+
+#### U2b_E1
+
+```{r}
+#| label: ulnt2b
+#| echo: true
+#| include: true
+#| results: "hide"
+str(df$U2b_E1)
+class(df$U2b_E1)
+table(df$U2b_E1, useNA = "ifany")
+#création d'une variable binaire "U2b_E1_Positif_YN" (1 = Positif, 0 = Negatif ou NA) 
+df$U2b_E1_positif <- as.numeric(df$U2b_E1 == "Positif")
+table(df$U2b_E1_positif, useNA = "ifany")
+```
+
+#### U3_E1
+
+```{r}
+#| label: ulnt3
+#| echo: true
+#| include: true
+#| results: "hide"
+str(df$U3_E1)
+class(df$U3_E1)
+table(df$U3_E1, useNA = "ifany")
+#création d'une variable binaire "U3_E1_Positif_YN" (1 = Positif, 0 = Negatif ou NA) 
+df$U3_E1_positif <- as.numeric(df$U3_E1 == "Positif")
+table(df$U3_E1_positif, useNA = "ifany")
+```
+
+#### Sc_E1
+
+Il existe un "NT" dans Sc_E1, traité comme NA
+
+```{r}
+#| label: sc1
+#| echo: true
+#| include: true
+#| results: "hide"
+str(df$Sc_E1)
+class(df$Sc_E1)
+table(df$Sc_E1, useNA = "ifany")
+# conversion de "NT" en NA
+df$Sc_E1 <- ifelse(df$Sc_E1 == "NT", NA, df$Sc_E1)
+table(df$Sc_E1, useNA = "ifany")
+#création d'une variable binaire "Sc_E1_Positif_YN" (1 = Positif, 0 = Negatif ou NA) 
+df$Sc_E1_positif <- as.numeric(df$Sc_E1 == "Positif")
+table(df$Sc_E1_positif, useNA = "ifany")
+```
+
+#### Gachette évaluateur 1
+
+Renommage de la variable "Gachette" en "Gachette_E1" pour plus de clarté
+
+```{r}
+#| label: gachette1
+#| echo: true
+#| include: true
+#| results: "hide"
+# Renommage de la variable "Gachette" en "Gachette1"
+names(df)[names(df) == "Gachette"] <- "Gachette1"
+table(df$Gachette1, useNA = "ifany")
+# transformation de la variable en factoriel non ordonné 
+df$Gachette1 <- factor(df$Gachette1, levels = c("paraspinal", "susclavier"))
+table(df$Gachette1, useNA = "ifany")
+class(df$Gachette1)
+```
+
+#### Tests cliniques évaluateur 2
+
+#### U1_E2
+
+```{r}
+#| label: ulnt1e2
+#| echo: true
+#| include: true
+#| results: "hide"
+str(df$U1_E2)
+class(df$U1_E2)
+table(df$U1_E2, useNA = "ifany")
+#transformation NT en NA 
+df$U1_E2 <- ifelse(df$U1_E2 == "NT", NA, df$U1_E2)
+table(df$U1_E2, useNA = "ifany")
+#création d'une variable binaire "U1_E2_Positif_YN" (1 = Positif, 0 = Negatif ou NA) 
+df$U1_E2_positif <- as.numeric(df$U1_E2 == "Positif")
+table(df$U1_E2_positif, useNA = "ifany")
+```
+
+#### U2a_E2
+
+```{r}
+#| label: ulnt2ae2
+#| echo: true
+#| include: true
+#| results: "hide"
+str(df$U2a_E2)
+class(df$U2a_E2)
+table(df$U2a_E2, useNA = "ifany")
+#transformation NT en NA 
+df$U2a_E2 <- ifelse(df$U2a_E2 == "NT", NA, df$U2a_E2)
+table(df$U2a_E2, useNA = "ifany")
+#création d'une variable binaire "U2a_E2_Positif_YN" (1 = Positif, 0 = Negatif ou NA) 
+df$U2a_E2_positif <- as.numeric(df$U2a_E2 == "Positif")
+table(df$U2a_E2_positif, useNA = "ifany")
+```
+
+#### U2b_E2
+
+```{r}
+#| label: ulnt2be2
+#| echo: true
+#| include: true
+#| results: "hide"
+str(df$U2b_E2)
+class(df$U2b_E2)
+table(df$U2b_E2, useNA = "ifany")
+#transformation NT en NA
+df$U2b_E2 <- ifelse(df$U2b_E2 == "NT", NA, df$U2b_E2)
+table(df$U2b_E2, useNA = "ifany")
+#création d'une variable binaire "U2b_E2_Positif_YN" (1 = Positif, 0 = Negatif ou NA) 
+df$U2b_E2_positif <- as.numeric(df$U2b_E2 == "Positif")
+table(df$U2b_E2_positif, useNA = "ifany")
+```
+
+#### U3_E2
+
+```{r}
+#| label: ulnt3e2
+#| echo: true
+#| include: true
+#| results: "hide"
+str(df$U3_E2)
+class(df$U3_E2)
+table(df$U3_E2, useNA = "ifany")
+#transformation NT en NA
+df$U3_E2 <- ifelse(df$U3_E2 == "NT", NA, df$U3_E2)
+table(df$U3_E2, useNA = "ifany")
+#création d'une variable binaire "U3_E2_Positif_YN" (1 = Positif, 0 = Negatif ou NA) 
+df$U3_E2_positif <- as.numeric(df$U3_E2 == "Positif")
+table(df$U3_E2_positif, useNA = "ifany")
+```
+
+#### Sc_E2
+
+```{r}
+#| label: sc2
+#| echo: true
+#| include: true
+#| results: "hide"
+str(df$Sc_E2)
+class(df$Sc_E2)
+table(df$Sc_E2, useNA = "ifany")
+#transformation NT en NA
+df$Sc_E2 <- ifelse(df$Sc_E2 == "NT", NA, df$Sc_E2)
+table(df$Sc_E2, useNA = "ifany")
+#création d'une variable binaire "Sc_E2_Positif_YN" (1 = Positif, 0 = Negatif ou NA) 
+df$Sc_E2_positif <- as.numeric(df$Sc_E2 == "Positif")
+table(df$Sc_E2_positif, useNA = "ifany")
+```
+
+# Introduction
+
+-   4 tests ULNT (Upper Limb Neurodynamic Tests) : ULNT1, ULNT2a, ULNT2b, ULNT3
+
+-   Qu'il faut comparer à deux gold standards : 
+
+    -   Gold standard 1 : diagnostic d'une névralgie cervico-brachiale par examen clinique + IRM et consensus entre 2 orthopédistes seniors
+
+    -   Gold standard 2 : diagnostic d'une névralgie cervico-brachiale par examen clinique + IRM par un orthopédiste senior + résultat positif à une infiltration et/ou geste chirurgical
+
+-   Objectif : Évaluation de la performance diagnostique, par rapport au gold standard, des ULNT et du Scratch Collapse Test  pour le le diagnostic des névralgies cervicobrachiales en consultation de chir ortho.
+
+
+
