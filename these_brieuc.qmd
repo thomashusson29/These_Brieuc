@@ -5,7 +5,6 @@ bibliography: biblio.bib
 prefer-pdf: true
 format:
     html:
-        output-file: index.html
         toc: true
         toc-depth: 5
         toc-title: "Table des matières"
@@ -13,7 +12,6 @@ format:
         toc-sticky: true
         number-sections: true
         theme: default
-        css: styles.css
 
     docx:
         toc: true
@@ -241,24 +239,7 @@ if (knitr::is_latex_output()) {
 
 -   Je suis interne en chirurgie digestive à Paris et actuellement un master 2 en biostatistiques ("Méthodologie et Statistiques en Recherche biomédicale", Université Paris Saclay). Et accessoirement, ami de Brieuc !
 
--   Le rapport est disponible en format HTML hébergé sur Github Pages, il est aussi téléchargeable en pdf en format PDF et Quarto (.qmd), contenant le code R utilisé pour les analyses
-:::
-
-::: {.content-visible when-format="html"}
-<div class="download-links" aria-label="Téléchargements du rapport">
-  <a class="download-link download-link-pdf" href="these_brieuc.pdf" download="these_brieuc.pdf" type="application/pdf">
-    <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" focusable="false">
-      <path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5Zm-3 0A1.5 1.5 0 0 1 9.5 3V1.5H4A.5.5 0 0 0 3.5 2v12A.5.5 0 0 0 4 14.5h8a.5.5 0 0 0 .5-.5V4.5H11ZM4.75 8.5h1.5a1.75 1.75 0 1 1 0 3.5h-.5V13h-1V8.5Zm1 2.5h.5a.75.75 0 0 0 0-1.5h-.5V11Zm3-2.5h1.4a1.8 1.8 0 0 1 0 3.6h-.4V13h-1V8.5Zm1 2.6h.35a.8.8 0 0 0 0-1.6h-.35v1.6Zm2.55-2.6h2.45v1H13.3v.85h1.3v1h-1.3V13h-1V8.5Z"/>
-    </svg>
-    <span>Télécharger le PDF</span>
-  </a>
-  <a class="download-link download-link-source" href="these_brieuc.qmd" download="these_brieuc.qmd" type="text/plain">
-    <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" focusable="false">
-      <path d="M5.719 11.59 2.91 8.782a1.1 1.1 0 0 1 0-1.556L5.72 4.42l.707.707L3.617 7.938a.1.1 0 0 0 0 .141l2.809 2.803-.707.707Zm4.562 0-.707-.707 2.809-2.804a.1.1 0 0 0 0-.14L9.574 5.126l.707-.707 2.808 2.808a1.1 1.1 0 0 1 0 1.555l-2.808 2.809ZM8.213 3.104l.966.26-1.392 5.532-.966-.26 1.392-5.532Z"/>
-    </svg>
-    <span>Code R source</span>
-  </a>
-</div>
+-   Le rapport est disponible en format HTML hébergé sur Github Pages, et aussi téléchargeable en PDF, DOCX et Quarto (.qmd), contenant le code R utilisé pour les analyses.
 :::
 
 \newpage
@@ -619,5 +600,6 @@ table(df$Sc_E2_positif, useNA = "ifany")
 
 -   Objectif : Évaluation de la performance diagnostique, par rapport au gold standard, des ULNT et du Scratch Collapse Test  pour le le diagnostic des névralgies cervicobrachiales en consultation de chir ortho.
 
+# Résultats
 
-
+## Caractéristiques de la population
