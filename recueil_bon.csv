@@ -1,0 +1,55 @@
+Nom,prenom,Sexe,DDN,Date_de_recueil,Age,Cote,Niveau,Examen_Clinique,IRM,Infiltrations,Resultat_Inf,Gold_Standard,U1_E1,U2a_E1,U2b_E1,U3_E1,Sc_E1,Gachette,U1_E2,U2a_E2,U2b_E2,U3_E2,Sc_E2,Gachette2
+Le goff,gwenola,F,28100,45572,47,G,,Positif,Positif,,,Positif,Positif,Positif,Positif,Positif,NT,,Positif,Positif,Positif,Positif,NT,
+SALAUN,virginie,F,28397,45453,46,G,,Positif,Negatif,non,,Negatif,Positif,Positif,Negatif,Positif,Negatif,,Positif,Positif,Positif,Positif,Negatif,
+OGIER,Fabienne,F,26778,45572,51,D,,Positif,Positif,oui,Negatif,Positif,Positif,Positif,Positif,Positif,Negatif,,Positif,Positif,Positif,Positif,Negatif,
+BOUIN,Pascale,F,21806,45453,64,D,,Positif,Positif,oui,Positif,Positif,Positif,Positif,Positif,Positif,Positif,susclavier,Positif,Positif,Positif,Positif,Positif,susclavier
+OLLIVIER,Sandrine,F,27971,45600,48,G,,Negatif,Positif,oui,Positif,Positif,Positif,Positif,Positif,Negatif,Positif,susclavier,Positif,Positif,Positif,Positif,Positif,susclavier
+HOUSSIN,Melinda,F,31411,45579,38,G,,Positif,Positif,,,Positif,Positif,Negatif,Negatif,Negatif,Positif,paraspinal,Positif,Positif,Positif,Positif,Positif,paraspinal
+GUERN RIOU,Laurence,F,25837,45572,54,D,,Positif,Positif,,,Positif,Positif,Positif,Positif,Positif,Negatif,,Negatif,Positif,Positif,Negatif,Negatif,
+GUERN RIOU,Laurence,F,25837,45572,54,G,,Negatif,Negatif,,,Negatif,Negatif,Negatif,Positif,Negatif,Negatif,,Positif,Negatif,Positif,Negatif,Negatif,
+MASSET,Cedric,M,28160,45513,47,D,,Positif,Positif,,,Positif,Negatif,Positif,Positif,Negatif,Negatif,,Positif,Positif,Positif,Positif,Negatif,
+MASSET,Cedric,M,28160,45513,47,G,,Positif,Positif,,,Positif,Negatif,Positif,Positif,Negatif,Negatif,,Positif,Positif,Positif,Positif,Positif,préSCM
+LAUNEY,Floriane,F,32405,45508,35,D,,Positif,Positif,non,,Positif,Positif,Positif,Positif,Negatif,Negatif,,Positif,Negatif,Positif,Negatif,Negatif,
+LEFORT,Erick,M,24766,45460,56,D,,Positif,Positif,,,Positif,Positif,Positif,Positif,Positif,Negatif,,Positif,Positif,Negatif,Positif,Negatif,
+NEVEU,Marie Therese,F,21945,45460,64,G,,Positif,Positif,,,Positif,Negatif,Positif,Positif,Positif,Positif,susclavier,Positif,Positif,Negatif,Positif,Positif,paraspinal
+COLLIOT,Marie Françoise,F,21903,45628,65,G,,Positif,Negatif,,,Negatif,Positif,Positif,Negatif,Negatif,Negatif,,Positif,Negatif,Negatif,Negatif,Negatif,
+FAUCHEUX ,MICKAEL,M,30027,45583,42,G,,Positif,Positif,,,Positif,Positif,Negatif,Positif,Negatif,,,Positif,Negatif,Positif,Negatif,Negatif,
+PETAUT,Marc,M,24889,45460,56,G,,Positif,Positif,oui,Positif,Positif,Positif,Positif,Positif,Negatif,Positif,paraspinal,Positif,Positif,Positif,Positif,Negatif,
+FOUCHER,Coralie,F,32076,45439,36,D,,Positif,Negatif,,,Negatif,Positif,Positif,Positif,Positif,Negatif,,Positif,Positif,Positif,Positif,Negatif,
+LE GRAS ,Valerie,F,24117,45439,58,G,,Positif,Positif,oui,Positif,Positif,Positif,Positif,Positif,Positif,Negatif,,Positif,Positif,Positif,Positif,Positif,susclavier
+BURBAN ,Marie Armelle,F,24616,45436,57,G,,Positif,Positif,,,Positif,Positif,Positif,Positif,Negatif,Positif,susclavier,Positif,Positif,Positif,Negatif,Negatif,
+EUZENOT,Katia,F,26928,45677,51,D,,Positif,Positif,oui,Positif,Positif,Positif,Positif,Positif,Negatif,Positif,paraspinal,Positif,Positif,Negatif,Negatif,Negatif,
+DUVAL,Jeannine,F,18705,45670,73,D,C6,Positif,Positif,,,Positif,Positif,Positif,Negatif,Positif,Negatif,,Positif,Negatif,Positif,Positif,Positif,susclavier
+Common,Bruno,M,21611,45667,65,G,C4,Positif,Positif,,,Positif,Negatif,Negatif,Negatif,Negatif,Negatif,,Negatif,Negatif,Negatif,Negatif,Negatif,
+KALYN,Anthony,M,32315,45650,36,D,C5,Negatif,Negatif,,,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,,Positif,Negatif,Negatif,Negatif,Negatif,
+DEAN ,Jean Malo,M,35057,45650,29,D,C8,Negatif,Negatif,,,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,,Negatif,Negatif,Negatif,Negatif,Negatif,
+TAJ,KHADIJA,F,29029,45712,45,G,C6,Positif,Positif,,,Positif,Positif,Positif,Negatif,Positif,Negatif,,Positif,Positif,Positif,Positif,Negatif,
+VALET,Danielle,F,20742,45693,68,D,C7,Positif,Douteux,,,Douteux,Positif,Positif,Positif,Positif,NT,,Positif,Positif,Positif,Positif,NT,
+ISIDORE,Martine,F,19470,45719,71,D,C6,Positif,Positif,,,Positif,Positif,Positif,Negatif,Negatif,Negatif,,Positif,Positif,Negatif,Negatif,Negatif,
+ISIDORE,Martine,F,19470,45719,71,G,C6,Positif,Positif,,,Positif,Positif,Positif,Positif,Negatif,Negatif,,Positif,Positif,Positif,Negatif,Negatif,
+MARTIN,Nicolas,M,33137,45719,34,D,C8,Positif,Positif,non,,Positif,Positif,Positif,Positif,Negatif,Negatif,,Positif,Positif,Positif,Negatif,Negatif,
+MARTIN ,Nicolas,M,33137,45719,34,G,C8,Positif,Positif,non,,Positif,Positif,Positif,Positif,Negatif,Negatif,,Positif,Positif,Positif,Negatif,Negatif,
+MARTINS,Frederic,M,28262,45712,47,G,C8,Positif,Positif,non,,Positif,Positif,Negatif,Negatif,Negatif,Negatif,,Positif,Positif,Negatif,Negatif,Negatif,
+MTIMET,Laura ,F,34794,45691,29,D,C8,Positif,Douteux,non,,Douteux,Positif,Positif,Positif,Positif,Negatif,,Positif,Positif,Positif,Negatif,Negatif,
+GURY,Mathieu,M,30397,45691,41,D,C6,Positif,Negatif,,,Negatif,Positif,Positif,Positif,Positif,Negatif,,Positif,Positif,Positif,Positif,Positif,susclavier
+GURY,Mathieu,M,30397,45691,41,G,C6,Positif,Negatif,,,Negatif,Positif,Positif,Positif,Positif,Negatif,,Positif,Positif,Positif,Positif,Positif,susclavier
+BRIAND ,anne,F,27302,45749,50,D,C8,Positif,Positif,non,,Positif,Positif,Negatif,Positif,Negatif,Negatif,,Positif,Negatif,Positif,Negatif,Negatif,
+GERMON,Sandrine,F,26462,45729,52,D,C6,Positif,Positif,,,Positif,Negatif,Positif,Positif,Negatif,Negatif,,Negatif,Positif,Positif,Negatif,Negatif,
+RETIF,Elodie,F,33438,45740,33,G,C6,Positif,Negatif,,,Negatif,Positif,Positif,Positif,Negatif,Negatif,,Positif,Positif,Positif,Positif,Negatif,
+ARRAS,Drissia,F,25203,45740,56,G,C6,Positif,Positif,,,Positif,Positif,Positif,Positif,Negatif,Negatif,,Positif,Positif,Positif,Negatif,Negatif,
+VASILE,Ionel,M,27375,45740,50,D,C6,Positif,Positif,oui,Positif,Positif,Positif,Positif,Positif,Negatif,Negatif,,Positif,Negatif,Positif,Negatif,Negatif,
+VASILE,Ionel,M,27375,45740,50,G,C6,Positif,Positif,oui,Positif,Positif,Positif,Negatif,Positif,Negatif,Positif,susclavier,Positif,Positif,Positif,Negatif,Negatif,
+BUZARE,Christelle,F,26759,45735,51,D,C6,Positif,Positif,oui,Positif,Positif,Positif,Positif,Positif,Negatif,Positif,susclavier,Positif,Positif,Positif,Negatif,Positif,susclavier
+POIRIER,Pascale,F,27134,45744,50,G,C8,Positif,Negatif,non,,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,,Negatif,Negatif,Negatif,Negatif,Negatif,
+CLOLUS,Laurent,M,24986,45754,56,G,C8,Positif,Positif,,,Positif,Negatif,Negatif,Negatif,Negatif,Negatif,,NT,NT,NT,NT,NT,
+AUSSANT,Daniele,F,17869,45762,76,G,C6,Positif,Positif,,,Positif,Positif,Negatif,Negatif,Negatif,Negatif,,NT,NT,NT,NT,NT,
+LE LAUSQUE,Angelique,F,30264,45775,42,,,Positif,Positif,,,Positif,Positif,Positif,Positif,Positif,Negatif,,Positif,Positif,Negatif,Negatif,Negatif,
+BUSNEL,Herve,M,25221,45796,56,,,Positif,Positif,,,Positif,Positif,Positif,Negatif,Positif,Negatif,,Positif,Negatif,Positif,Positif,Negatif,
+MACE ,Canelle,F,35938,45796,27,,,Negatif,Negatif,,,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,,Negatif,Negatif,Negatif,Negatif,Negatif,
+MAGOMADOVA,Baneta,F,,45796,125,,,Douteux,Douteux,,,Positif,Positif,Positif,Positif,Positif,Negatif,,Positif,Positif,Positif,Positif,Negatif,
+BIENASSIS,Martine,F,19374,45784,72,D,,Negatif,Negatif,,,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,,Negatif,Negatif,Positif,Negatif,Negatif,
+BIENASSIS,Martine,F,19374,45784,72,G,,Negatif,Negatif,,,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,,Negatif,Negatif,Negatif,Negatif,Negatif,
+CHESNAIS,François,M,23968,45838,59,,,Douteux,Douteux,,,Douteux,Positif,Positif,Negatif,Positif,Negatif,,Positif,Negatif,Negatif,Positif,Negatif,
+FEREY,Emmanuel,M,24826,45838,57,,,Positif,Positif,,,Positif,Positif,Positif,Positif,Positif,Negatif,,Positif,Positif,Positif,Positif,Negatif,
+DESCHAMPS,Emeline,F,27395,45810,50,,,Negatif,Negatif,,,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,,Negatif,Positif,Negatif,Negatif,Negatif,
+BOREY,Christine,F,23919,45775,59,,,,,,,,Positif,Positif,Positif,Positif,Positif,susclavier,Negatif,Positif,Negatif,Negatif,Positif,susclavier

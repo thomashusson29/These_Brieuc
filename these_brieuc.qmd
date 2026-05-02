@@ -216,6 +216,7 @@ library(qgraph)
 library(readxl)
 library(nlme)
 library(pwr)
+library(nord)
 library(ape)
 library(survival)
 library(gmodels)
@@ -249,8 +250,8 @@ if (knitr::is_latex_output()) {
 #| label: import
 #| echo: false
 #| include: false
-#import formal xlsx de "recueil_bon.xlsx"
-df <- read_excel("recueil_bon.xlsx")
+# import du CSV dérivé de "recueil_bon.xlsx"
+df <- read.csv("recueil_bon.csv", stringsAsFactors = FALSE, check.names = FALSE)
 ```
 
 ## Dates
@@ -278,6 +279,18 @@ class(df$Age)
 ```
 
 ## Variables catégorielles
+
+### Sexe
+
+```{r}
+#| label: sexe
+#| echo: true
+#| include: true
+#| results: "hide"
+# Convertir la variable "Sexe" en facteur
+df$Sexe <- factor(c(M = "Masculin", F = "Féminin")[df$Sexe], levels = c("Masculin", "Féminin"))
+table(df$Sexe, useNA = "ifany")
+```
 
 ### Côté
 
@@ -602,4 +615,230 @@ table(df$Sc_E2_positif, useNA = "ifany")
 
 # Résultats
 
-## Caractéristiques de la population
+## Caractéristiques initiales de la population
+
+-   Variables disponibles : Âge (`df$Age`), Sexe (`df$Sexe`), Côté (`df$Cote`), Niveau (`df$Niveau`)
+
+### Âge
+
+```{r}
+#| label: âge
+#| echo: false
+#| include: true
+#| results: "asis"
+# Résumé de la variable âge
+resume_age <- data.frame(as.list(summary(df$Age)), check.names = FALSE)
+
+kable(resume_age, caption = "variable âge") %>%
+    kable_styling(full_width = FALSE, position = "center")
+```
+
+-   Un patient a 125 ans.
+
+-   Pour l'instant, la médiane de la population lui est attribuée.
+
+```{r}
+
+#| label: âge corrigé
+#| echo: true
+#| include: true
+#| results: "hide"
+# Remplacer l'âge de 125 ans par la médiane des âges
+age_median <- median(df$Age, na.rm = TRUE)
+df$Age <- ifelse(df$Age == 125, age_median, df$Age)
+```
+
+-   Représentation de la variable âge après correction par histogramme avec densité et QQ-plot (le QQ plot se construit en comparant les quantiles de la variable âge à ceux d'une distribution normale théorique : si les points suivent une ligne droite, la variable suit une distribution normale).
+
+```{r}
+#| label: age-distribution
+#| fig-cap: "Distribution de l'âge"
+#| fig-width: 10
+#| fig-height: 4.6
+#| echo: false
+#| message: false
+#| warning: false
+#| results: hide
+# histogramme avec densité et Q-Q plot
+par(mfrow = c(1, 2))
+hist(
+    df$Age,
+    breaks = 10,
+    prob = TRUE,
+    main = "Distribution de l'âge",
+    xlab = "Âge",
+    ylab = "Densité",
+    col = "lightblue"
+)
+lines(density(df$Age, na.rm = TRUE), col = "red", lwd = 2)
+
+qqnorm(df$Age, main = "Q-Q plot de l'âge")
+qqline(df$Age, col = "red", lwd = 2)
+```
+
+-   L'âge semble suivre une distribution approximativement normale. Les tests statistiques de normalité (type Shapiro-Wilk) n'ont pas d'intérêt dans cette situation (permet uniquement de rejeter l’hypothèse de normalité si les données s’en écartent assez pour que le test ait la puissance nécessaire, or il n'y aura pas la puissance nécessaire avec seulement 50 patients).
+
+### Sexe
+
+-   Représentation de la variable sexe par un diagramme en barres et par un camembert (pie chart)
+
+```{r}
+#| label: sexe-distribution
+#| fig-cap: "Répartition du sexe"
+#| fig-width: 10
+#| fig-height: 4.6
+#| echo: false
+#| message: false
+#| warning: false
+#| results: hide
+sexe_table <- table(df$Sexe)
+sexe_pct <- round(100 * prop.table(sexe_table), 1)
+sexe_labels <- dimnames(sexe_table)[[1]]
+
+sexe_colors <- c(
+    Masculin = nord("frost")[2],
+    Féminin  = nord("lumina")[1]
+)
+
+par(mfrow = c(1, 2))
+
+bar_pos <- barplot(
+    sexe_table,
+    main = "Répartition du sexe",
+    col = sexe_colors[sexe_labels],
+    ylab = "Nombre de patients",
+    ylim = c(0, max(sexe_table) * 1.18)
+)
+
+text(
+    x = bar_pos,
+    y = sexe_table + max(sexe_table) * 0.05,
+    labels = paste0(sexe_pct, " %"),
+    cex = 0.9
+)
+
+pie(
+    sexe_table,
+    labels = paste0(names(sexe_table), "\n", sexe_pct, " %"),
+    main = "Répartition du sexe",
+    col = sexe_colors[names(sexe_table)]
+)
+```
+
+-   Même si le camembert est plus visuel, le diagramme en barres est plus précis pour comparer les effectifs et les proportions (car affiche les effectifs totaux).
+
+#### Côté
+
+-   Représentation de la variable côté par un diagramme en barres et par un camembert (pie chart)
+
+```{r}
+#| label: côté-distribution
+#| fig-cap: "Répartition du côté"
+#| fig-width: 10
+#| fig-height: 4.6
+#| echo: false
+#| message: false
+#| warning: false
+#| results: hide
+cote_table <- table(df$Cote)
+cote_pct <- round(100 * prop.table(cote_table), 1)
+cote_labels <- dimnames(cote_table)[[1]]
+cote_colors <- c(
+    Gauche = nord("aurora")[1],
+    Droite  = nord("aurora")[4]
+)
+par(mfrow = c(1, 2))
+bar_pos <- barplot(
+    cote_table,
+    main = "Répartition du côté",
+    col = cote_colors[cote_labels],
+    ylab = "Nombre de patients",
+    ylim = c(0, max(cote_table) * 1.18)
+)
+text(
+    x = bar_pos,
+    y = cote_table + max(cote_table) * 0.05,
+    labels = paste0(cote_pct, " %"),
+    cex = 0.9
+)
+pie(
+    cote_table,
+    labels = paste0(names(cote_table), "\n", cote_pct, " %"),
+    main = "Répartition du côté",
+    col = cote_colors[names(cote_table)]
+)
+```
+
+#### Niveau
+
+-   Représentation de la variable niveau par un diagramme en barres et par un camembert (pie chart)
+
+```{r}
+#| label: niveau-distribution
+#| fig-cap: "Répartition du niveau"
+#| fig-width: 7
+#| fig-height: 3.8
+#| echo: false
+#| message: false
+#| warning: false
+#| results: hide
+
+niveau_table <- table(factor(df$Niveau, levels = c("C4", "C5", "C6", "C7", "C8")))
+niveau_pct <- round(100 * prop.table(niveau_table), 1)
+niveau_labels <- dimnames(niveau_table)[[1]]
+
+niveau_colors <- c(
+    C4 = nord("lumina")[1],
+    C5 = nord("lumina")[2],
+    C6 = nord("lumina")[3],
+    C7 = nord("lumina")[4],
+    C8 = nord("lumina")[5]
+)
+
+niveau_table <- rev(niveau_table)
+niveau_pct <- rev(niveau_pct)
+niveau_labels <- rev(niveau_labels)
+
+# bar plot HORIZONTAL, pas de pie chart
+par(mfrow = c(1, 1))
+
+bar_pos <- barplot(
+    niveau_table,
+    main = "Répartition du niveau",
+    col = niveau_colors[niveau_labels],
+    xlab = "Nombre de patients",
+    horiz = TRUE,
+    xlim = c(0, max(niveau_table) * 1.18)
+)
+
+text(
+    y = bar_pos,
+    x = niveau_table + max(niveau_table) * 0.05,
+    labels = paste0(niveau_pct, " %"),
+    cex = 0.9
+)
+```
+
+#### Tableau de caractéristiques initiales
+
+```{r}
+#| label: caractéristiques initiales
+#| echo: true
+#| include: true
+#| results: "asis"
+# création tableau de caractéristiques initiales avec tbl_summary
+cols_carac <- c("Age", "Sexe", "Cote", "Niveau")
+tbl_carac <- df %>%
+    tbl_summary(
+        include = all_of(cols_carac),
+        statistic = list(
+            all_continuous() ~ "{median} ({sd})",
+            all_categorical() ~ "{n} ({p}%)"
+        ),
+        digits = all_continuous() ~ 1
+        ) %>%
+    modify_header(label = "**Caractéristiques initiales**")
+
+# affichage du tableau
+tbl_carac
+```
