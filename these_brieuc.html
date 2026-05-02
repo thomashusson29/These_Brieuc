@@ -1,14 +1,12 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
-<head>
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.26">
 
-<meta charset="utf-8" />
-<meta name="generator" content="quarto-1.8.26" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-
-<meta name="author" content="Thomas Husson" />
+<meta name="author" content="Thomas Husson">
 
 <title>Stats Thèse Brieuc</title>
 <style>
@@ -60,20 +58,81 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }
 </style>
 
-<!-- htmldependencies:E3FAD763 -->
+
+<script src="these_brieuc_files/libs/clipboard/clipboard.min.js"></script>
+<script src="these_brieuc_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="these_brieuc_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="these_brieuc_files/libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="these_brieuc_files/libs/quarto-html/popper.min.js"></script>
+<script src="these_brieuc_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="these_brieuc_files/libs/quarto-html/anchor.min.js"></script>
+<link href="these_brieuc_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="these_brieuc_files/libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="these_brieuc_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="these_brieuc_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="these_brieuc_files/libs/bootstrap/bootstrap-d6a003b94517c951b2d65075d42fb01b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script src="these_brieuc_files/libs/kePrint-0.0.1/kePrint.js"></script>
-<link href="these_brieuc_files/libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+<link href="these_brieuc_files/libs/lightable-0.0.1/lightable.css" rel="stylesheet">
 
 
 </head>
 
-<body>
+<body class="quarto-light">
 
 <div id="quarto-content" class="page-columns page-rows-contents page-layout-article toc-left">
 <div id="quarto-sidebar-toc-left" class="sidebar toc-left">
-  <div id="quarto-toc-target"></div>
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table des matières</h2>
+   
+  <ul>
+  <li><a href="#import-de-la-base-et-préparation-des-données" id="toc-import-de-la-base-et-préparation-des-données" class="nav-link active" data-scroll-target="#import-de-la-base-et-préparation-des-données"><span class="header-section-number">1</span> Import de la base et préparation des données</a>
+  <ul>
+  <li><a href="#dates" id="toc-dates" class="nav-link" data-scroll-target="#dates"><span class="header-section-number">1.1</span> Dates</a></li>
+  <li><a href="#variables-numériques" id="toc-variables-numériques" class="nav-link" data-scroll-target="#variables-numériques"><span class="header-section-number">1.2</span> Variables numériques</a></li>
+  <li><a href="#variables-catégorielles" id="toc-variables-catégorielles" class="nav-link" data-scroll-target="#variables-catégorielles"><span class="header-section-number">1.3</span> Variables catégorielles</a>
+  <ul>
+  <li><a href="#sexe" id="toc-sexe" class="nav-link" data-scroll-target="#sexe"><span class="header-section-number">1.3.1</span> Sexe</a></li>
+  <li><a href="#côté" id="toc-côté" class="nav-link" data-scroll-target="#côté"><span class="header-section-number">1.3.2</span> Côté</a></li>
+  <li><a href="#niveau" id="toc-niveau" class="nav-link" data-scroll-target="#niveau"><span class="header-section-number">1.3.3</span> Niveau</a></li>
+  <li><a href="#examen-clinique" id="toc-examen-clinique" class="nav-link" data-scroll-target="#examen-clinique"><span class="header-section-number">1.3.4</span> Examen clinique</a></li>
+  <li><a href="#irm" id="toc-irm" class="nav-link" data-scroll-target="#irm"><span class="header-section-number">1.3.5</span> IRM</a></li>
+  <li><a href="#infiltrations" id="toc-infiltrations" class="nav-link" data-scroll-target="#infiltrations"><span class="header-section-number">1.3.6</span> Infiltrations</a></li>
+  <li><a href="#gold-standard" id="toc-gold-standard" class="nav-link" data-scroll-target="#gold-standard"><span class="header-section-number">1.3.7</span> Gold Standard</a></li>
+  <li><a href="#tests-cliniques-évaluateur-1" id="toc-tests-cliniques-évaluateur-1" class="nav-link" data-scroll-target="#tests-cliniques-évaluateur-1"><span class="header-section-number">1.3.8</span> Tests cliniques évaluateur 1</a>
+  <ul class="collapse">
+  <li><a href="#u1_e1" id="toc-u1_e1" class="nav-link" data-scroll-target="#u1_e1"><span class="header-section-number">1.3.8.1</span> U1_E1</a></li>
+  <li><a href="#u2a_e1" id="toc-u2a_e1" class="nav-link" data-scroll-target="#u2a_e1"><span class="header-section-number">1.3.8.2</span> U2a_E1</a></li>
+  <li><a href="#u2b_e1" id="toc-u2b_e1" class="nav-link" data-scroll-target="#u2b_e1"><span class="header-section-number">1.3.8.3</span> U2b_E1</a></li>
+  <li><a href="#u3_e1" id="toc-u3_e1" class="nav-link" data-scroll-target="#u3_e1"><span class="header-section-number">1.3.8.4</span> U3_E1</a></li>
+  <li><a href="#sc_e1" id="toc-sc_e1" class="nav-link" data-scroll-target="#sc_e1"><span class="header-section-number">1.3.8.5</span> Sc_E1</a></li>
+  <li><a href="#gachette-évaluateur-1" id="toc-gachette-évaluateur-1" class="nav-link" data-scroll-target="#gachette-évaluateur-1"><span class="header-section-number">1.3.8.6</span> Gachette évaluateur 1</a></li>
+  <li><a href="#tests-cliniques-évaluateur-2" id="toc-tests-cliniques-évaluateur-2" class="nav-link" data-scroll-target="#tests-cliniques-évaluateur-2"><span class="header-section-number">1.3.8.7</span> Tests cliniques évaluateur 2</a></li>
+  <li><a href="#u1_e2" id="toc-u1_e2" class="nav-link" data-scroll-target="#u1_e2"><span class="header-section-number">1.3.8.8</span> U1_E2</a></li>
+  <li><a href="#u2a_e2" id="toc-u2a_e2" class="nav-link" data-scroll-target="#u2a_e2"><span class="header-section-number">1.3.8.9</span> U2a_E2</a></li>
+  <li><a href="#u2b_e2" id="toc-u2b_e2" class="nav-link" data-scroll-target="#u2b_e2"><span class="header-section-number">1.3.8.10</span> U2b_E2</a></li>
+  <li><a href="#u3_e2" id="toc-u3_e2" class="nav-link" data-scroll-target="#u3_e2"><span class="header-section-number">1.3.8.11</span> U3_E2</a></li>
+  <li><a href="#sc_e2" id="toc-sc_e2" class="nav-link" data-scroll-target="#sc_e2"><span class="header-section-number">1.3.8.12</span> Sc_E2</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link" data-scroll-target="#introduction"><span class="header-section-number">2</span> Introduction</a></li>
+  <li><a href="#résultats" id="toc-résultats" class="nav-link" data-scroll-target="#résultats"><span class="header-section-number">3</span> Résultats</a>
+  <ul>
+  <li><a href="#caractéristiques-initiales-de-la-population" id="toc-caractéristiques-initiales-de-la-population" class="nav-link" data-scroll-target="#caractéristiques-initiales-de-la-population"><span class="header-section-number">3.1</span> Caractéristiques initiales de la population</a>
+  <ul>
+  <li><a href="#âge" id="toc-âge" class="nav-link" data-scroll-target="#âge"><span class="header-section-number">3.1.1</span> Âge</a></li>
+  <li><a href="#sexe-1" id="toc-sexe-1" class="nav-link" data-scroll-target="#sexe-1"><span class="header-section-number">3.1.2</span> Sexe</a>
+  <ul class="collapse">
+  <li><a href="#côté-1" id="toc-côté-1" class="nav-link" data-scroll-target="#côté-1"><span class="header-section-number">3.1.2.1</span> Côté</a></li>
+  <li><a href="#niveau-1" id="toc-niveau-1" class="nav-link" data-scroll-target="#niveau-1"><span class="header-section-number">3.1.2.2</span> Niveau</a></li>
+  <li><a href="#tableau-de-caractéristiques-initiales" id="toc-tableau-de-caractéristiques-initiales" class="nav-link" data-scroll-target="#tableau-de-caractéristiques-initiales"><span class="header-section-number">3.1.2.3</span> Tableau de caractéristiques initiales</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="these_brieuc.docx"><i class="bi bi-file-word"></i>MS Word</a></li><li><a href="these_brieuc.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
 </div>
-<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
 </div>
 <main class="content" id="quarto-document-content">
 
@@ -101,61 +160,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </header>
 
-<nav id="TOC" role="doc-toc">
-    <h2 id="toc-title">Table des matières</h2>
-   
-  <ul>
-  <li><a href="#import-de-la-base-et-préparation-des-données" id="toc-import-de-la-base-et-préparation-des-données"><span class="header-section-number">1</span> Import de la base et préparation des données</a>
-  <ul>
-  <li><a href="#dates" id="toc-dates"><span class="header-section-number">1.1</span> Dates</a></li>
-  <li><a href="#variables-numériques" id="toc-variables-numériques"><span class="header-section-number">1.2</span> Variables numériques</a></li>
-  <li><a href="#variables-catégorielles" id="toc-variables-catégorielles"><span class="header-section-number">1.3</span> Variables catégorielles</a>
-  <ul>
-  <li><a href="#sexe" id="toc-sexe"><span class="header-section-number">1.3.1</span> Sexe</a></li>
-  <li><a href="#côté" id="toc-côté"><span class="header-section-number">1.3.2</span> Côté</a></li>
-  <li><a href="#niveau" id="toc-niveau"><span class="header-section-number">1.3.3</span> Niveau</a></li>
-  <li><a href="#examen-clinique" id="toc-examen-clinique"><span class="header-section-number">1.3.4</span> Examen clinique</a></li>
-  <li><a href="#irm" id="toc-irm"><span class="header-section-number">1.3.5</span> IRM</a></li>
-  <li><a href="#infiltrations" id="toc-infiltrations"><span class="header-section-number">1.3.6</span> Infiltrations</a></li>
-  <li><a href="#gold-standard" id="toc-gold-standard"><span class="header-section-number">1.3.7</span> Gold Standard</a></li>
-  <li><a href="#tests-cliniques-évaluateur-1" id="toc-tests-cliniques-évaluateur-1"><span class="header-section-number">1.3.8</span> Tests cliniques évaluateur 1</a>
-  <ul>
-  <li><a href="#u1_e1" id="toc-u1_e1"><span class="header-section-number">1.3.8.1</span> U1_E1</a></li>
-  <li><a href="#u2a_e1" id="toc-u2a_e1"><span class="header-section-number">1.3.8.2</span> U2a_E1</a></li>
-  <li><a href="#u2b_e1" id="toc-u2b_e1"><span class="header-section-number">1.3.8.3</span> U2b_E1</a></li>
-  <li><a href="#u3_e1" id="toc-u3_e1"><span class="header-section-number">1.3.8.4</span> U3_E1</a></li>
-  <li><a href="#sc_e1" id="toc-sc_e1"><span class="header-section-number">1.3.8.5</span> Sc_E1</a></li>
-  <li><a href="#gachette-évaluateur-1" id="toc-gachette-évaluateur-1"><span class="header-section-number">1.3.8.6</span> Gachette évaluateur 1</a></li>
-  <li><a href="#tests-cliniques-évaluateur-2" id="toc-tests-cliniques-évaluateur-2"><span class="header-section-number">1.3.8.7</span> Tests cliniques évaluateur 2</a></li>
-  <li><a href="#u1_e2" id="toc-u1_e2"><span class="header-section-number">1.3.8.8</span> U1_E2</a></li>
-  <li><a href="#u2a_e2" id="toc-u2a_e2"><span class="header-section-number">1.3.8.9</span> U2a_E2</a></li>
-  <li><a href="#u2b_e2" id="toc-u2b_e2"><span class="header-section-number">1.3.8.10</span> U2b_E2</a></li>
-  <li><a href="#u3_e2" id="toc-u3_e2"><span class="header-section-number">1.3.8.11</span> U3_E2</a></li>
-  <li><a href="#sc_e2" id="toc-sc_e2"><span class="header-section-number">1.3.8.12</span> Sc_E2</a></li>
-  </ul></li>
-  </ul></li>
-  </ul></li>
-  <li><a href="#introduction" id="toc-introduction"><span class="header-section-number">2</span> Introduction</a></li>
-  <li><a href="#résultats" id="toc-résultats"><span class="header-section-number">3</span> Résultats</a>
-  <ul>
-  <li><a href="#caractéristiques-initiales-de-la-population" id="toc-caractéristiques-initiales-de-la-population"><span class="header-section-number">3.1</span> Caractéristiques initiales de la population</a>
-  <ul>
-  <li><a href="#âge" id="toc-âge"><span class="header-section-number">3.1.1</span> Âge</a></li>
-  <li><a href="#sexe-1" id="toc-sexe-1"><span class="header-section-number">3.1.2</span> Sexe</a>
-  <ul>
-  <li><a href="#côté-1" id="toc-côté-1"><span class="header-section-number">3.1.2.1</span> Côté</a></li>
-  <li><a href="#niveau-1" id="toc-niveau-1"><span class="header-section-number">3.1.2.2</span> Niveau</a></li>
-  <li><a href="#tableau-de-caractéristiques-initiales" id="toc-tableau-de-caractéristiques-initiales"><span class="header-section-number">3.1.2.3</span> Tableau de caractéristiques initiales</a></li>
-  </ul></li>
-  </ul></li>
-  </ul></li>
-  </ul>
-</nav>
+
 <div style="page-break-after: always;"></div>
 <div class="callout callout-style-default callout-note callout-titled" title="Origine de ce document">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
-<i class='callout-icon'></i>
+<i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
 <span class="screen-reader-only">Note</span>Origine de ce document
@@ -175,251 +185,251 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="import-de-la-base-et-préparation-des-données" class="level1" data-number="1">
 <h1 data-number="1"><span class="header-section-number">1</span> Import de la base et préparation des données</h1>
 <section id="dates" class="level2" data-number="1.1">
-<h2 data-number="1.1"><span class="header-section-number">1.1</span> Dates</h2>
+<h2 data-number="1.1" class="anchored" data-anchor-id="dates"><span class="header-section-number">1.1</span> Dates</h2>
 </section>
 <section id="variables-numériques" class="level2" data-number="1.2">
-<h2 data-number="1.2"><span class="header-section-number">1.2</span> Variables numériques</h2>
+<h2 data-number="1.2" class="anchored" data-anchor-id="variables-numériques"><span class="header-section-number">1.2</span> Variables numériques</h2>
 <div class="cell">
-<div class="sourceCode" id="cb1"><pre class="sourceCode r cell-code"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Convertir les variables numériques</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Convertir les variables numériques</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>Age <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(df<span class="sc">$</span>Age)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(df<span class="sc">$</span>Age)</span></code></pre></div>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(df<span class="sc">$</span>Age)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="variables-catégorielles" class="level2" data-number="1.3">
-<h2 data-number="1.3"><span class="header-section-number">1.3</span> Variables catégorielles</h2>
+<h2 data-number="1.3" class="anchored" data-anchor-id="variables-catégorielles"><span class="header-section-number">1.3</span> Variables catégorielles</h2>
 <section id="sexe" class="level3" data-number="1.3.1">
-<h3 data-number="1.3.1"><span class="header-section-number">1.3.1</span> Sexe</h3>
+<h3 data-number="1.3.1" class="anchored" data-anchor-id="sexe"><span class="header-section-number">1.3.1</span> Sexe</h3>
 <div class="cell">
-<div class="sourceCode" id="cb2"><pre class="sourceCode r cell-code"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Convertir la variable &quot;Sexe&quot; en facteur</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>Sexe <span class="ot">&lt;-</span> <span class="fu">factor</span>(<span class="fu">c</span>(<span class="at">M =</span> <span class="st">&quot;Masculin&quot;</span>, <span class="at">F =</span> <span class="st">&quot;Féminin&quot;</span>)[df<span class="sc">$</span>Sexe], <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">&quot;Masculin&quot;</span>, <span class="st">&quot;Féminin&quot;</span>))</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>Sexe, <span class="at">useNA =</span> <span class="st">&quot;ifany&quot;</span>)</span></code></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Convertir la variable "Sexe" en facteur</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>Sexe <span class="ot">&lt;-</span> <span class="fu">factor</span>(<span class="fu">c</span>(<span class="at">M =</span> <span class="st">"Masculin"</span>, <span class="at">F =</span> <span class="st">"Féminin"</span>)[df<span class="sc">$</span>Sexe], <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Masculin"</span>, <span class="st">"Féminin"</span>))</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>Sexe, <span class="at">useNA =</span> <span class="st">"ifany"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="côté" class="level3" data-number="1.3.2">
-<h3 data-number="1.3.2"><span class="header-section-number">1.3.2</span> Côté</h3>
+<h3 data-number="1.3.2" class="anchored" data-anchor-id="côté"><span class="header-section-number">1.3.2</span> Côté</h3>
 <div class="cell">
-<div class="sourceCode" id="cb3"><pre class="sourceCode r cell-code"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Convertir la variable &quot;Côté&quot; en facteur</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Convertir la variable "Côté" en facteur</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>Cote <span class="ot">&lt;-</span> <span class="fu">factor</span>(</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">c</span>(<span class="at">G =</span> <span class="st">&quot;Gauche&quot;</span>, <span class="at">D =</span> <span class="st">&quot;Droite&quot;</span>)[df<span class="sc">$</span>Cote],</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">&quot;Gauche&quot;</span>, <span class="st">&quot;Droite&quot;</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">c</span>(<span class="at">G =</span> <span class="st">"Gauche"</span>, <span class="at">D =</span> <span class="st">"Droite"</span>)[df<span class="sc">$</span>Cote],</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Gauche"</span>, <span class="st">"Droite"</span>)</span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>Cote, <span class="at">useNA =</span> <span class="st">&quot;ifany&quot;</span>)</span></code></pre></div>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>Cote, <span class="at">useNA =</span> <span class="st">"ifany"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="niveau" class="level3" data-number="1.3.3">
-<h3 data-number="1.3.3"><span class="header-section-number">1.3.3</span> Niveau</h3>
+<h3 data-number="1.3.3" class="anchored" data-anchor-id="niveau"><span class="header-section-number">1.3.3</span> Niveau</h3>
 <div class="cell">
-<div class="sourceCode" id="cb4"><pre class="sourceCode r cell-code"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Convertir la variable &quot;Niveau&quot; en facteur ordonné</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Convertir la variable "Niveau" en facteur ordonné</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>Niveau</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>Niveau <span class="ot">&lt;-</span> <span class="fu">factor</span>(</span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    df<span class="sc">$</span>Niveau,</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">&quot;C4&quot;</span>, <span class="st">&quot;C5&quot;</span>, <span class="st">&quot;C6&quot;</span>, <span class="st">&quot;C7&quot;</span>, <span class="st">&quot;C8&quot;</span>),</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"C4"</span>, <span class="st">"C5"</span>, <span class="st">"C6"</span>, <span class="st">"C7"</span>, <span class="st">"C8"</span>),</span>
 <span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">ordered =</span> <span class="cn">TRUE</span></span>
 <span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>Niveau, <span class="at">useNA =</span> <span class="st">&quot;ifany&quot;</span>)</span></code></pre></div>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>Niveau, <span class="at">useNA =</span> <span class="st">"ifany"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="examen-clinique" class="level3" data-number="1.3.4">
-<h3 data-number="1.3.4"><span class="header-section-number">1.3.4</span> Examen clinique</h3>
+<h3 data-number="1.3.4" class="anchored" data-anchor-id="examen-clinique"><span class="header-section-number">1.3.4</span> Examen clinique</h3>
 <div class="cell">
-<div class="sourceCode" id="cb5"><pre class="sourceCode r cell-code"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(df<span class="sc">$</span>Examen_Clinique)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(df<span class="sc">$</span>Examen_Clinique)</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(df<span class="sc">$</span>Examen_Clinique)</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">unique</span>(df<span class="sc">$</span>Examen_Clinique)</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co">#création d&#39;une variable binaire &quot;Examen_Clinique_Binaire&quot; (1 = Positif, 0 = Negatif ou Douteux)</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>Examen_Clinique_Positif_YN <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(df<span class="sc">$</span>Examen_Clinique <span class="sc">==</span> <span class="st">&quot;Positif&quot;</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>Examen_Clinique_Positif_YN, <span class="at">useNA =</span> <span class="st">&quot;ifany&quot;</span>)</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co">#création d&#39;une variable binaire &quot;Examen_Clinique_Douteux_YN&quot; (1 = Douteux, 0 = Positif ou Negatif)</span></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>Examen_Clinique_Douteux_YN <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(df<span class="sc">$</span>Examen_Clinique <span class="sc">==</span> <span class="st">&quot;Douteux&quot;</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>Examen_Clinique_Douteux_YN, <span class="at">useNA =</span> <span class="st">&quot;ifany&quot;</span>)</span></code></pre></div>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co">#création d'une variable binaire "Examen_Clinique_Binaire" (1 = Positif, 0 = Negatif ou Douteux)</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>Examen_Clinique_Positif_YN <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(df<span class="sc">$</span>Examen_Clinique <span class="sc">==</span> <span class="st">"Positif"</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>Examen_Clinique_Positif_YN, <span class="at">useNA =</span> <span class="st">"ifany"</span>)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co">#création d'une variable binaire "Examen_Clinique_Douteux_YN" (1 = Douteux, 0 = Positif ou Negatif)</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>Examen_Clinique_Douteux_YN <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(df<span class="sc">$</span>Examen_Clinique <span class="sc">==</span> <span class="st">"Douteux"</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>Examen_Clinique_Douteux_YN, <span class="at">useNA =</span> <span class="st">"ifany"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="irm" class="level3" data-number="1.3.5">
-<h3 data-number="1.3.5"><span class="header-section-number">1.3.5</span> IRM</h3>
+<h3 data-number="1.3.5" class="anchored" data-anchor-id="irm"><span class="header-section-number">1.3.5</span> IRM</h3>
 <div class="cell">
-<div class="sourceCode" id="cb6"><pre class="sourceCode r cell-code"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(df<span class="sc">$</span>IRM)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(df<span class="sc">$</span>IRM)</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(df<span class="sc">$</span>IRM)</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">unique</span>(df<span class="sc">$</span>IRM)</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co">#création d&#39;une variable binaire &quot;IRM_Positif_YN&quot; (1 = Positif, 0 = Negatif ou Douteux)</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>IRM_Positif_YN <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(df<span class="sc">$</span>IRM <span class="sc">==</span> <span class="st">&quot;Positif&quot;</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>IRM_Positif_YN, <span class="at">useNA =</span> <span class="st">&quot;ifany&quot;</span>)</span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co">#création d&#39;une variable binaire &quot;IRM_Douteux_YN&quot; (1 = Douteux, 0 = Positif ou Negatif)</span></span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>IRM_Douteux_YN <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(df<span class="sc">$</span>IRM <span class="sc">==</span> <span class="st">&quot;Douteux&quot;</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>IRM_Douteux_YN, <span class="at">useNA =</span> <span class="st">&quot;ifany&quot;</span>)</span></code></pre></div>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co">#création d'une variable binaire "IRM_Positif_YN" (1 = Positif, 0 = Negatif ou Douteux)</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>IRM_Positif_YN <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(df<span class="sc">$</span>IRM <span class="sc">==</span> <span class="st">"Positif"</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>IRM_Positif_YN, <span class="at">useNA =</span> <span class="st">"ifany"</span>)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co">#création d'une variable binaire "IRM_Douteux_YN" (1 = Douteux, 0 = Positif ou Negatif)</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>IRM_Douteux_YN <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(df<span class="sc">$</span>IRM <span class="sc">==</span> <span class="st">"Douteux"</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>IRM_Douteux_YN, <span class="at">useNA =</span> <span class="st">"ifany"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="infiltrations" class="level3" data-number="1.3.6">
-<h3 data-number="1.3.6"><span class="header-section-number">1.3.6</span> Infiltrations</h3>
+<h3 data-number="1.3.6" class="anchored" data-anchor-id="infiltrations"><span class="header-section-number">1.3.6</span> Infiltrations</h3>
 <div class="cell">
-<div class="sourceCode" id="cb7"><pre class="sourceCode r cell-code"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(df<span class="sc">$</span>Infiltrations)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(df<span class="sc">$</span>Infiltrations)</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(df<span class="sc">$</span>Infiltrations)</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">unique</span>(df<span class="sc">$</span>Infiltrations)</span>
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co">#modification infiltrations pour mettre 1 et 0</span></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>Infiltrations <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(df<span class="sc">$</span>Infiltrations <span class="sc">==</span> <span class="st">&quot;oui&quot;</span>, <span class="dv">1</span>, <span class="fu">ifelse</span>(df<span class="sc">$</span>Infiltrations <span class="sc">==</span> <span class="st">&quot;non&quot;</span>, <span class="dv">0</span>, <span class="cn">NA</span>))</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>Infiltrations, <span class="at">useNA =</span> <span class="st">&quot;ifany&quot;</span>)</span></code></pre></div>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>Infiltrations <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(df<span class="sc">$</span>Infiltrations <span class="sc">==</span> <span class="st">"oui"</span>, <span class="dv">1</span>, <span class="fu">ifelse</span>(df<span class="sc">$</span>Infiltrations <span class="sc">==</span> <span class="st">"non"</span>, <span class="dv">0</span>, <span class="cn">NA</span>))</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>Infiltrations, <span class="at">useNA =</span> <span class="st">"ifany"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="gold-standard" class="level3" data-number="1.3.7">
-<h3 data-number="1.3.7"><span class="header-section-number">1.3.7</span> Gold Standard</h3>
+<h3 data-number="1.3.7" class="anchored" data-anchor-id="gold-standard"><span class="header-section-number">1.3.7</span> Gold Standard</h3>
 <div class="cell">
-<div class="sourceCode" id="cb8"><pre class="sourceCode r cell-code"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co">#création d&#39;une variable binaire &quot;Gold_Standard_Positif_YN&quot; (1 = Positif, 0 = Negatif ou Douteux ou NA)</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>Gold_Standard_Positif_YN <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(df<span class="sc">$</span>Gold_Standard <span class="sc">==</span> <span class="st">&quot;Positif&quot;</span>, <span class="dv">1</span>,</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ifelse</span>(df<span class="sc">$</span>Gold_Standard <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;Negatif&quot;</span>, <span class="st">&quot;Douteux&quot;</span>), <span class="dv">0</span>, <span class="cn">NA</span>)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co">#création d'une variable binaire "Gold_Standard_Positif_YN" (1 = Positif, 0 = Negatif ou Douteux ou NA)</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>Gold_Standard_Positif_YN <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(df<span class="sc">$</span>Gold_Standard <span class="sc">==</span> <span class="st">"Positif"</span>, <span class="dv">1</span>,</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ifelse</span>(df<span class="sc">$</span>Gold_Standard <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Negatif"</span>, <span class="st">"Douteux"</span>), <span class="dv">0</span>, <span class="cn">NA</span>)</span>
 <span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>Gold_Standard_Positif_YN, <span class="at">useNA =</span> <span class="st">&quot;ifany&quot;</span>)</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>Gold_Standard_Positif_YN, <span class="at">useNA =</span> <span class="st">"ifany"</span>)</span>
 <span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co">#création d&#39;une variable binaire &quot;Gold_Standard_Douteux_YN&quot; (1 = Douteux, 0 = Positif ou Negatif ou NA)</span></span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>Gold_Standard_Douteux_YN <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(df<span class="sc">$</span>Gold_Standard <span class="sc">==</span> <span class="st">&quot;Douteux&quot;</span>, <span class="dv">1</span>,</span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ifelse</span>(df<span class="sc">$</span>Gold_Standard <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;Positif&quot;</span>, <span class="st">&quot;Negatif&quot;</span>), <span class="dv">0</span>, <span class="cn">NA</span>)</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co">#création d'une variable binaire "Gold_Standard_Douteux_YN" (1 = Douteux, 0 = Positif ou Negatif ou NA)</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>Gold_Standard_Douteux_YN <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(df<span class="sc">$</span>Gold_Standard <span class="sc">==</span> <span class="st">"Douteux"</span>, <span class="dv">1</span>,</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ifelse</span>(df<span class="sc">$</span>Gold_Standard <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Positif"</span>, <span class="st">"Negatif"</span>), <span class="dv">0</span>, <span class="cn">NA</span>)</span>
 <span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>Gold_Standard_Douteux_YN, <span class="at">useNA =</span> <span class="st">&quot;ifany&quot;</span>)</span></code></pre></div>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>Gold_Standard_Douteux_YN, <span class="at">useNA =</span> <span class="st">"ifany"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="tests-cliniques-évaluateur-1" class="level3" data-number="1.3.8">
-<h3 data-number="1.3.8"><span class="header-section-number">1.3.8</span> Tests cliniques évaluateur 1</h3>
+<h3 data-number="1.3.8" class="anchored" data-anchor-id="tests-cliniques-évaluateur-1"><span class="header-section-number">1.3.8</span> Tests cliniques évaluateur 1</h3>
 <p>Les variables sont transformées en numériques binaires (1 = Positif / 0 = Negatif) pour faciliter les tests.</p>
 <section id="u1_e1" class="level4" data-number="1.3.8.1">
-<h4 data-number="1.3.8.1"><span class="header-section-number">1.3.8.1</span> U1_E1</h4>
+<h4 data-number="1.3.8.1" class="anchored" data-anchor-id="u1_e1"><span class="header-section-number">1.3.8.1</span> U1_E1</h4>
 <div class="cell">
-<div class="sourceCode" id="cb9"><pre class="sourceCode r cell-code"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(df<span class="sc">$</span>U1_E1)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(df<span class="sc">$</span>U1_E1)</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(df<span class="sc">$</span>U1_E1)</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>U1_E1, <span class="at">useNA =</span> <span class="st">&quot;ifany&quot;</span>)</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co">#création d&#39;une variable binaire &quot;U1_E1_Positif_YN&quot; (1 = Positif, 0 = Negatif ou NA) </span></span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>U1_E1_positif <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(df<span class="sc">$</span>U1_E1 <span class="sc">==</span> <span class="st">&quot;Positif&quot;</span>)</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>U1_E1_positif, <span class="at">useNA =</span> <span class="st">&quot;ifany&quot;</span>)</span></code></pre></div>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>U1_E1, <span class="at">useNA =</span> <span class="st">"ifany"</span>)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co">#création d'une variable binaire "U1_E1_Positif_YN" (1 = Positif, 0 = Negatif ou NA) </span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>U1_E1_positif <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(df<span class="sc">$</span>U1_E1 <span class="sc">==</span> <span class="st">"Positif"</span>)</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>U1_E1_positif, <span class="at">useNA =</span> <span class="st">"ifany"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="u2a_e1" class="level4" data-number="1.3.8.2">
-<h4 data-number="1.3.8.2"><span class="header-section-number">1.3.8.2</span> U2a_E1</h4>
+<h4 data-number="1.3.8.2" class="anchored" data-anchor-id="u2a_e1"><span class="header-section-number">1.3.8.2</span> U2a_E1</h4>
 <div class="cell">
-<div class="sourceCode" id="cb10"><pre class="sourceCode r cell-code"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(df<span class="sc">$</span>U2a_E1)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(df<span class="sc">$</span>U2a_E1)</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(df<span class="sc">$</span>U2a_E1)</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>U2a_E1, <span class="at">useNA =</span> <span class="st">&quot;ifany&quot;</span>)</span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co">#création d&#39;une variable binaire &quot;U2a_E1_Positif_YN&quot; (1 = Positif, 0 = Negatif ou NA) </span></span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>U2a_E1_positif <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(df<span class="sc">$</span>U2a_E1 <span class="sc">==</span> <span class="st">&quot;Positif&quot;</span>)</span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>U2a_E1_positif, <span class="at">useNA =</span> <span class="st">&quot;ifany&quot;</span>)</span></code></pre></div>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>U2a_E1, <span class="at">useNA =</span> <span class="st">"ifany"</span>)</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co">#création d'une variable binaire "U2a_E1_Positif_YN" (1 = Positif, 0 = Negatif ou NA) </span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>U2a_E1_positif <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(df<span class="sc">$</span>U2a_E1 <span class="sc">==</span> <span class="st">"Positif"</span>)</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>U2a_E1_positif, <span class="at">useNA =</span> <span class="st">"ifany"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="u2b_e1" class="level4" data-number="1.3.8.3">
-<h4 data-number="1.3.8.3"><span class="header-section-number">1.3.8.3</span> U2b_E1</h4>
+<h4 data-number="1.3.8.3" class="anchored" data-anchor-id="u2b_e1"><span class="header-section-number">1.3.8.3</span> U2b_E1</h4>
 <div class="cell">
-<div class="sourceCode" id="cb11"><pre class="sourceCode r cell-code"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(df<span class="sc">$</span>U2b_E1)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(df<span class="sc">$</span>U2b_E1)</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(df<span class="sc">$</span>U2b_E1)</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>U2b_E1, <span class="at">useNA =</span> <span class="st">&quot;ifany&quot;</span>)</span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="co">#création d&#39;une variable binaire &quot;U2b_E1_Positif_YN&quot; (1 = Positif, 0 = Negatif ou NA) </span></span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>U2b_E1_positif <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(df<span class="sc">$</span>U2b_E1 <span class="sc">==</span> <span class="st">&quot;Positif&quot;</span>)</span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>U2b_E1_positif, <span class="at">useNA =</span> <span class="st">&quot;ifany&quot;</span>)</span></code></pre></div>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>U2b_E1, <span class="at">useNA =</span> <span class="st">"ifany"</span>)</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="co">#création d'une variable binaire "U2b_E1_Positif_YN" (1 = Positif, 0 = Negatif ou NA) </span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>U2b_E1_positif <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(df<span class="sc">$</span>U2b_E1 <span class="sc">==</span> <span class="st">"Positif"</span>)</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>U2b_E1_positif, <span class="at">useNA =</span> <span class="st">"ifany"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="u3_e1" class="level4" data-number="1.3.8.4">
-<h4 data-number="1.3.8.4"><span class="header-section-number">1.3.8.4</span> U3_E1</h4>
+<h4 data-number="1.3.8.4" class="anchored" data-anchor-id="u3_e1"><span class="header-section-number">1.3.8.4</span> U3_E1</h4>
 <div class="cell">
-<div class="sourceCode" id="cb12"><pre class="sourceCode r cell-code"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(df<span class="sc">$</span>U3_E1)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(df<span class="sc">$</span>U3_E1)</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(df<span class="sc">$</span>U3_E1)</span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>U3_E1, <span class="at">useNA =</span> <span class="st">&quot;ifany&quot;</span>)</span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co">#création d&#39;une variable binaire &quot;U3_E1_Positif_YN&quot; (1 = Positif, 0 = Negatif ou NA) </span></span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>U3_E1_positif <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(df<span class="sc">$</span>U3_E1 <span class="sc">==</span> <span class="st">&quot;Positif&quot;</span>)</span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>U3_E1_positif, <span class="at">useNA =</span> <span class="st">&quot;ifany&quot;</span>)</span></code></pre></div>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>U3_E1, <span class="at">useNA =</span> <span class="st">"ifany"</span>)</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co">#création d'une variable binaire "U3_E1_Positif_YN" (1 = Positif, 0 = Negatif ou NA) </span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>U3_E1_positif <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(df<span class="sc">$</span>U3_E1 <span class="sc">==</span> <span class="st">"Positif"</span>)</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>U3_E1_positif, <span class="at">useNA =</span> <span class="st">"ifany"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="sc_e1" class="level4" data-number="1.3.8.5">
-<h4 data-number="1.3.8.5"><span class="header-section-number">1.3.8.5</span> Sc_E1</h4>
+<h4 data-number="1.3.8.5" class="anchored" data-anchor-id="sc_e1"><span class="header-section-number">1.3.8.5</span> Sc_E1</h4>
 <p>Il existe un “NT” dans Sc_E1, traité comme NA</p>
 <div class="cell">
-<div class="sourceCode" id="cb13"><pre class="sourceCode r cell-code"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(df<span class="sc">$</span>Sc_E1)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(df<span class="sc">$</span>Sc_E1)</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(df<span class="sc">$</span>Sc_E1)</span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>Sc_E1, <span class="at">useNA =</span> <span class="st">&quot;ifany&quot;</span>)</span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="co"># conversion de &quot;NT&quot; en NA</span></span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>Sc_E1 <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(df<span class="sc">$</span>Sc_E1 <span class="sc">==</span> <span class="st">&quot;NT&quot;</span>, <span class="cn">NA</span>, df<span class="sc">$</span>Sc_E1)</span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>Sc_E1, <span class="at">useNA =</span> <span class="st">&quot;ifany&quot;</span>)</span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="co">#création d&#39;une variable binaire &quot;Sc_E1_Positif_YN&quot; (1 = Positif, 0 = Negatif ou NA) </span></span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>Sc_E1_positif <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(df<span class="sc">$</span>Sc_E1 <span class="sc">==</span> <span class="st">&quot;Positif&quot;</span>)</span>
-<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>Sc_E1_positif, <span class="at">useNA =</span> <span class="st">&quot;ifany&quot;</span>)</span></code></pre></div>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>Sc_E1, <span class="at">useNA =</span> <span class="st">"ifany"</span>)</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="co"># conversion de "NT" en NA</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>Sc_E1 <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(df<span class="sc">$</span>Sc_E1 <span class="sc">==</span> <span class="st">"NT"</span>, <span class="cn">NA</span>, df<span class="sc">$</span>Sc_E1)</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>Sc_E1, <span class="at">useNA =</span> <span class="st">"ifany"</span>)</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="co">#création d'une variable binaire "Sc_E1_Positif_YN" (1 = Positif, 0 = Negatif ou NA) </span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>Sc_E1_positif <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(df<span class="sc">$</span>Sc_E1 <span class="sc">==</span> <span class="st">"Positif"</span>)</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>Sc_E1_positif, <span class="at">useNA =</span> <span class="st">"ifany"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="gachette-évaluateur-1" class="level4" data-number="1.3.8.6">
-<h4 data-number="1.3.8.6"><span class="header-section-number">1.3.8.6</span> Gachette évaluateur 1</h4>
+<h4 data-number="1.3.8.6" class="anchored" data-anchor-id="gachette-évaluateur-1"><span class="header-section-number">1.3.8.6</span> Gachette évaluateur 1</h4>
 <p>Renommage de la variable “Gachette” en “Gachette_E1” pour plus de clarté</p>
 <div class="cell">
-<div class="sourceCode" id="cb14"><pre class="sourceCode r cell-code"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Renommage de la variable &quot;Gachette&quot; en &quot;Gachette1&quot;</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(df)[<span class="fu">names</span>(df) <span class="sc">==</span> <span class="st">&quot;Gachette&quot;</span>] <span class="ot">&lt;-</span> <span class="st">&quot;Gachette1&quot;</span></span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>Gachette1, <span class="at">useNA =</span> <span class="st">&quot;ifany&quot;</span>)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Renommage de la variable "Gachette" en "Gachette1"</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(df)[<span class="fu">names</span>(df) <span class="sc">==</span> <span class="st">"Gachette"</span>] <span class="ot">&lt;-</span> <span class="st">"Gachette1"</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>Gachette1, <span class="at">useNA =</span> <span class="st">"ifany"</span>)</span>
 <span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="co"># transformation de la variable en factoriel non ordonné </span></span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>Gachette1 <span class="ot">&lt;-</span> <span class="fu">factor</span>(df<span class="sc">$</span>Gachette1, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">&quot;paraspinal&quot;</span>, <span class="st">&quot;susclavier&quot;</span>))</span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>Gachette1, <span class="at">useNA =</span> <span class="st">&quot;ifany&quot;</span>)</span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(df<span class="sc">$</span>Gachette1)</span></code></pre></div>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>Gachette1 <span class="ot">&lt;-</span> <span class="fu">factor</span>(df<span class="sc">$</span>Gachette1, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"paraspinal"</span>, <span class="st">"susclavier"</span>))</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>Gachette1, <span class="at">useNA =</span> <span class="st">"ifany"</span>)</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(df<span class="sc">$</span>Gachette1)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="tests-cliniques-évaluateur-2" class="level4" data-number="1.3.8.7">
-<h4 data-number="1.3.8.7"><span class="header-section-number">1.3.8.7</span> Tests cliniques évaluateur 2</h4>
+<h4 data-number="1.3.8.7" class="anchored" data-anchor-id="tests-cliniques-évaluateur-2"><span class="header-section-number">1.3.8.7</span> Tests cliniques évaluateur 2</h4>
 </section>
 <section id="u1_e2" class="level4" data-number="1.3.8.8">
-<h4 data-number="1.3.8.8"><span class="header-section-number">1.3.8.8</span> U1_E2</h4>
+<h4 data-number="1.3.8.8" class="anchored" data-anchor-id="u1_e2"><span class="header-section-number">1.3.8.8</span> U1_E2</h4>
 <div class="cell">
-<div class="sourceCode" id="cb15"><pre class="sourceCode r cell-code"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(df<span class="sc">$</span>U1_E2)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(df<span class="sc">$</span>U1_E2)</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(df<span class="sc">$</span>U1_E2)</span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>U1_E2, <span class="at">useNA =</span> <span class="st">&quot;ifany&quot;</span>)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>U1_E2, <span class="at">useNA =</span> <span class="st">"ifany"</span>)</span>
 <span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="co">#transformation NT en NA </span></span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>U1_E2 <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(df<span class="sc">$</span>U1_E2 <span class="sc">==</span> <span class="st">&quot;NT&quot;</span>, <span class="cn">NA</span>, df<span class="sc">$</span>U1_E2)</span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>U1_E2, <span class="at">useNA =</span> <span class="st">&quot;ifany&quot;</span>)</span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="co">#création d&#39;une variable binaire &quot;U1_E2_Positif_YN&quot; (1 = Positif, 0 = Negatif ou NA) </span></span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>U1_E2_positif <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(df<span class="sc">$</span>U1_E2 <span class="sc">==</span> <span class="st">&quot;Positif&quot;</span>)</span>
-<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>U1_E2_positif, <span class="at">useNA =</span> <span class="st">&quot;ifany&quot;</span>)</span></code></pre></div>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>U1_E2 <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(df<span class="sc">$</span>U1_E2 <span class="sc">==</span> <span class="st">"NT"</span>, <span class="cn">NA</span>, df<span class="sc">$</span>U1_E2)</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>U1_E2, <span class="at">useNA =</span> <span class="st">"ifany"</span>)</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="co">#création d'une variable binaire "U1_E2_Positif_YN" (1 = Positif, 0 = Negatif ou NA) </span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>U1_E2_positif <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(df<span class="sc">$</span>U1_E2 <span class="sc">==</span> <span class="st">"Positif"</span>)</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>U1_E2_positif, <span class="at">useNA =</span> <span class="st">"ifany"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="u2a_e2" class="level4" data-number="1.3.8.9">
-<h4 data-number="1.3.8.9"><span class="header-section-number">1.3.8.9</span> U2a_E2</h4>
+<h4 data-number="1.3.8.9" class="anchored" data-anchor-id="u2a_e2"><span class="header-section-number">1.3.8.9</span> U2a_E2</h4>
 <div class="cell">
-<div class="sourceCode" id="cb16"><pre class="sourceCode r cell-code"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(df<span class="sc">$</span>U2a_E2)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(df<span class="sc">$</span>U2a_E2)</span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(df<span class="sc">$</span>U2a_E2)</span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>U2a_E2, <span class="at">useNA =</span> <span class="st">&quot;ifany&quot;</span>)</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>U2a_E2, <span class="at">useNA =</span> <span class="st">"ifany"</span>)</span>
 <span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="co">#transformation NT en NA </span></span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>U2a_E2 <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(df<span class="sc">$</span>U2a_E2 <span class="sc">==</span> <span class="st">&quot;NT&quot;</span>, <span class="cn">NA</span>, df<span class="sc">$</span>U2a_E2)</span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>U2a_E2, <span class="at">useNA =</span> <span class="st">&quot;ifany&quot;</span>)</span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="co">#création d&#39;une variable binaire &quot;U2a_E2_Positif_YN&quot; (1 = Positif, 0 = Negatif ou NA) </span></span>
-<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>U2a_E2_positif <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(df<span class="sc">$</span>U2a_E2 <span class="sc">==</span> <span class="st">&quot;Positif&quot;</span>)</span>
-<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>U2a_E2_positif, <span class="at">useNA =</span> <span class="st">&quot;ifany&quot;</span>)</span></code></pre></div>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>U2a_E2 <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(df<span class="sc">$</span>U2a_E2 <span class="sc">==</span> <span class="st">"NT"</span>, <span class="cn">NA</span>, df<span class="sc">$</span>U2a_E2)</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>U2a_E2, <span class="at">useNA =</span> <span class="st">"ifany"</span>)</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="co">#création d'une variable binaire "U2a_E2_Positif_YN" (1 = Positif, 0 = Negatif ou NA) </span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>U2a_E2_positif <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(df<span class="sc">$</span>U2a_E2 <span class="sc">==</span> <span class="st">"Positif"</span>)</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>U2a_E2_positif, <span class="at">useNA =</span> <span class="st">"ifany"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="u2b_e2" class="level4" data-number="1.3.8.10">
-<h4 data-number="1.3.8.10"><span class="header-section-number">1.3.8.10</span> U2b_E2</h4>
+<h4 data-number="1.3.8.10" class="anchored" data-anchor-id="u2b_e2"><span class="header-section-number">1.3.8.10</span> U2b_E2</h4>
 <div class="cell">
-<div class="sourceCode" id="cb17"><pre class="sourceCode r cell-code"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(df<span class="sc">$</span>U2b_E2)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(df<span class="sc">$</span>U2b_E2)</span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(df<span class="sc">$</span>U2b_E2)</span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>U2b_E2, <span class="at">useNA =</span> <span class="st">&quot;ifany&quot;</span>)</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>U2b_E2, <span class="at">useNA =</span> <span class="st">"ifany"</span>)</span>
 <span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="co">#transformation NT en NA</span></span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>U2b_E2 <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(df<span class="sc">$</span>U2b_E2 <span class="sc">==</span> <span class="st">&quot;NT&quot;</span>, <span class="cn">NA</span>, df<span class="sc">$</span>U2b_E2)</span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>U2b_E2, <span class="at">useNA =</span> <span class="st">&quot;ifany&quot;</span>)</span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="co">#création d&#39;une variable binaire &quot;U2b_E2_Positif_YN&quot; (1 = Positif, 0 = Negatif ou NA) </span></span>
-<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>U2b_E2_positif <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(df<span class="sc">$</span>U2b_E2 <span class="sc">==</span> <span class="st">&quot;Positif&quot;</span>)</span>
-<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>U2b_E2_positif, <span class="at">useNA =</span> <span class="st">&quot;ifany&quot;</span>)</span></code></pre></div>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>U2b_E2 <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(df<span class="sc">$</span>U2b_E2 <span class="sc">==</span> <span class="st">"NT"</span>, <span class="cn">NA</span>, df<span class="sc">$</span>U2b_E2)</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>U2b_E2, <span class="at">useNA =</span> <span class="st">"ifany"</span>)</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="co">#création d'une variable binaire "U2b_E2_Positif_YN" (1 = Positif, 0 = Negatif ou NA) </span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>U2b_E2_positif <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(df<span class="sc">$</span>U2b_E2 <span class="sc">==</span> <span class="st">"Positif"</span>)</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>U2b_E2_positif, <span class="at">useNA =</span> <span class="st">"ifany"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="u3_e2" class="level4" data-number="1.3.8.11">
-<h4 data-number="1.3.8.11"><span class="header-section-number">1.3.8.11</span> U3_E2</h4>
+<h4 data-number="1.3.8.11" class="anchored" data-anchor-id="u3_e2"><span class="header-section-number">1.3.8.11</span> U3_E2</h4>
 <div class="cell">
-<div class="sourceCode" id="cb18"><pre class="sourceCode r cell-code"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(df<span class="sc">$</span>U3_E2)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(df<span class="sc">$</span>U3_E2)</span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(df<span class="sc">$</span>U3_E2)</span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>U3_E2, <span class="at">useNA =</span> <span class="st">&quot;ifany&quot;</span>)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>U3_E2, <span class="at">useNA =</span> <span class="st">"ifany"</span>)</span>
 <span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="co">#transformation NT en NA</span></span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>U3_E2 <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(df<span class="sc">$</span>U3_E2 <span class="sc">==</span> <span class="st">&quot;NT&quot;</span>, <span class="cn">NA</span>, df<span class="sc">$</span>U3_E2)</span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>U3_E2, <span class="at">useNA =</span> <span class="st">&quot;ifany&quot;</span>)</span>
-<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a><span class="co">#création d&#39;une variable binaire &quot;U3_E2_Positif_YN&quot; (1 = Positif, 0 = Negatif ou NA) </span></span>
-<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>U3_E2_positif <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(df<span class="sc">$</span>U3_E2 <span class="sc">==</span> <span class="st">&quot;Positif&quot;</span>)</span>
-<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>U3_E2_positif, <span class="at">useNA =</span> <span class="st">&quot;ifany&quot;</span>)</span></code></pre></div>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>U3_E2 <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(df<span class="sc">$</span>U3_E2 <span class="sc">==</span> <span class="st">"NT"</span>, <span class="cn">NA</span>, df<span class="sc">$</span>U3_E2)</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>U3_E2, <span class="at">useNA =</span> <span class="st">"ifany"</span>)</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a><span class="co">#création d'une variable binaire "U3_E2_Positif_YN" (1 = Positif, 0 = Negatif ou NA) </span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>U3_E2_positif <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(df<span class="sc">$</span>U3_E2 <span class="sc">==</span> <span class="st">"Positif"</span>)</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>U3_E2_positif, <span class="at">useNA =</span> <span class="st">"ifany"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="sc_e2" class="level4" data-number="1.3.8.12">
-<h4 data-number="1.3.8.12"><span class="header-section-number">1.3.8.12</span> Sc_E2</h4>
+<h4 data-number="1.3.8.12" class="anchored" data-anchor-id="sc_e2"><span class="header-section-number">1.3.8.12</span> Sc_E2</h4>
 <div class="cell">
-<div class="sourceCode" id="cb19"><pre class="sourceCode r cell-code"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(df<span class="sc">$</span>Sc_E2)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(df<span class="sc">$</span>Sc_E2)</span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(df<span class="sc">$</span>Sc_E2)</span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>Sc_E2, <span class="at">useNA =</span> <span class="st">&quot;ifany&quot;</span>)</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>Sc_E2, <span class="at">useNA =</span> <span class="st">"ifany"</span>)</span>
 <span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="co">#transformation NT en NA</span></span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>Sc_E2 <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(df<span class="sc">$</span>Sc_E2 <span class="sc">==</span> <span class="st">&quot;NT&quot;</span>, <span class="cn">NA</span>, df<span class="sc">$</span>Sc_E2)</span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>Sc_E2, <span class="at">useNA =</span> <span class="st">&quot;ifany&quot;</span>)</span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="co">#création d&#39;une variable binaire &quot;Sc_E2_Positif_YN&quot; (1 = Positif, 0 = Negatif ou NA) </span></span>
-<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>Sc_E2_positif <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(df<span class="sc">$</span>Sc_E2 <span class="sc">==</span> <span class="st">&quot;Positif&quot;</span>)</span>
-<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>Sc_E2_positif, <span class="at">useNA =</span> <span class="st">&quot;ifany&quot;</span>)</span></code></pre></div>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>Sc_E2 <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(df<span class="sc">$</span>Sc_E2 <span class="sc">==</span> <span class="st">"NT"</span>, <span class="cn">NA</span>, df<span class="sc">$</span>Sc_E2)</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>Sc_E2, <span class="at">useNA =</span> <span class="st">"ifany"</span>)</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="co">#création d'une variable binaire "Sc_E2_Positif_YN" (1 = Positif, 0 = Negatif ou NA) </span></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>Sc_E2_positif <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(df<span class="sc">$</span>Sc_E2 <span class="sc">==</span> <span class="st">"Positif"</span>)</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>Sc_E2_positif, <span class="at">useNA =</span> <span class="st">"ifany"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 </section>
@@ -440,13 +450,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="résultats" class="level1" data-number="3">
 <h1 data-number="3"><span class="header-section-number">3</span> Résultats</h1>
 <section id="caractéristiques-initiales-de-la-population" class="level2" data-number="3.1">
-<h2 data-number="3.1"><span class="header-section-number">3.1</span> Caractéristiques initiales de la population</h2>
+<h2 data-number="3.1" class="anchored" data-anchor-id="caractéristiques-initiales-de-la-population"><span class="header-section-number">3.1</span> Caractéristiques initiales de la population</h2>
 <ul>
 <li>Variables disponibles : Âge (<code>df$Age</code>), Sexe (<code>df$Sexe</code>), Côté (<code>df$Cote</code>), Niveau (<code>df$Niveau</code>)</li>
 </ul>
 <section id="âge" class="level3" data-number="3.1.1">
-<h3 data-number="3.1.1"><span class="header-section-number">3.1.1</span> Âge</h3>
-<table class="table caption-top" data-quarto-postprocess="true" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<h3 data-number="3.1.1" class="anchored" data-anchor-id="âge"><span class="header-section-number">3.1.1</span> Âge</h3>
+<table class="table caption-top">
 <caption>variable âge</caption>
 <thead>
 <tr class="header">
@@ -474,13 +484,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><p>Pour l’instant, la médiane de la population lui est attribuée.</p></li>
 </ul>
 <div class="cell">
-<div class="sourceCode" id="cb20"><pre class="sourceCode r cell-code"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: âge corrigé</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: âge corrigé</span></span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: true</span></span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="co">#| results: &quot;hide&quot;</span></span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Remplacer l&#39;âge de 125 ans par la médiane des âges</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="co">#| results: "hide"</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Remplacer l'âge de 125 ans par la médiane des âges</span></span>
 <span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>age_median <span class="ot">&lt;-</span> <span class="fu">median</span>(df<span class="sc">$</span>Age, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>Age <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(df<span class="sc">$</span>Age <span class="sc">==</span> <span class="dv">125</span>, age_median, df<span class="sc">$</span>Age)</span></code></pre></div>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>Age <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(df<span class="sc">$</span>Age <span class="sc">==</span> <span class="dv">125</span>, age_median, df<span class="sc">$</span>Age)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <ul>
 <li>Représentation de la variable âge après correction par histogramme avec densité et QQ-plot (le QQ plot se construit en comparant les quantiles de la variable âge à ceux d’une distribution normale théorique : si les points suivent une ligne droite, la variable suit une distribution normale).</li>
@@ -488,8 +498,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img src="these_brieuc_files/figure-html/age-distribution-1.png" class="img-fluid" width="960" /></p>
+<figure class="figure">
+<p><img src="these_brieuc_files/figure-html/age-distribution-1.png" class="img-fluid figure-img" width="960"></p>
 <figcaption>Distribution de l’âge</figcaption>
 </figure>
 </div>
@@ -500,15 +510,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
 </section>
 <section id="sexe-1" class="level3" data-number="3.1.2">
-<h3 data-number="3.1.2"><span class="header-section-number">3.1.2</span> Sexe</h3>
+<h3 data-number="3.1.2" class="anchored" data-anchor-id="sexe-1"><span class="header-section-number">3.1.2</span> Sexe</h3>
 <ul>
 <li>Représentation de la variable sexe par un diagramme en barres et par un camembert (pie chart)</li>
 </ul>
 <div class="cell">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img src="these_brieuc_files/figure-html/sexe-distribution-1.png" class="img-fluid" width="960" /></p>
+<figure class="figure">
+<p><img src="these_brieuc_files/figure-html/sexe-distribution-1.png" class="img-fluid figure-img" width="960"></p>
 <figcaption>Répartition du sexe</figcaption>
 </figure>
 </div>
@@ -518,15 +528,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>Même si le camembert est plus visuel, le diagramme en barres est plus précis pour comparer les effectifs et les proportions (car affiche les effectifs totaux).</li>
 </ul>
 <section id="côté-1" class="level4" data-number="3.1.2.1">
-<h4 data-number="3.1.2.1"><span class="header-section-number">3.1.2.1</span> Côté</h4>
+<h4 data-number="3.1.2.1" class="anchored" data-anchor-id="côté-1"><span class="header-section-number">3.1.2.1</span> Côté</h4>
 <ul>
 <li>Représentation de la variable côté par un diagramme en barres et par un camembert (pie chart)</li>
 </ul>
 <div class="cell">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img src="these_brieuc_files/figure-html/côté-distribution-1.png" class="img-fluid" width="960" /></p>
+<figure class="figure">
+<p><img src="these_brieuc_files/figure-html/côté-distribution-1.png" class="img-fluid figure-img" width="960"></p>
 <figcaption>Répartition du côté</figcaption>
 </figure>
 </div>
@@ -534,15 +544,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </section>
 <section id="niveau-1" class="level4" data-number="3.1.2.2">
-<h4 data-number="3.1.2.2"><span class="header-section-number">3.1.2.2</span> Niveau</h4>
+<h4 data-number="3.1.2.2" class="anchored" data-anchor-id="niveau-1"><span class="header-section-number">3.1.2.2</span> Niveau</h4>
 <ul>
 <li>Représentation de la variable niveau par un diagramme en barres et par un camembert (pie chart)</li>
 </ul>
 <div class="cell">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img src="these_brieuc_files/figure-html/niveau-distribution-1.png" class="img-fluid" width="672" /></p>
+<figure class="figure">
+<p><img src="these_brieuc_files/figure-html/niveau-distribution-1.png" class="img-fluid figure-img" width="672"></p>
 <figcaption>Répartition du niveau</figcaption>
 </figure>
 </div>
@@ -550,556 +560,92 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </section>
 <section id="tableau-de-caractéristiques-initiales" class="level4" data-number="3.1.2.3">
-<h4 data-number="3.1.2.3"><span class="header-section-number">3.1.2.3</span> Tableau de caractéristiques initiales</h4>
-<div class="sourceCode" id="cb21"><pre class="sourceCode r cell-code"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># création tableau de caractéristiques initiales avec tbl_summary</span></span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>cols_carac <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;Age&quot;</span>, <span class="st">&quot;Sexe&quot;</span>, <span class="st">&quot;Cote&quot;</span>, <span class="st">&quot;Niveau&quot;</span>)</span>
+<h4 data-number="3.1.2.3" class="anchored" data-anchor-id="tableau-de-caractéristiques-initiales"><span class="header-section-number">3.1.2.3</span> Tableau de caractéristiques initiales</h4>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># création tableau de caractéristiques initiales avec tbl_summary</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>cols_carac <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Age"</span>, <span class="st">"Sexe"</span>, <span class="st">"Cote"</span>, <span class="st">"Niveau"</span>)</span>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>tbl_carac <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
 <span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tbl_summary</span>(</span>
 <span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>        <span class="at">include =</span> <span class="fu">all_of</span>(cols_carac),</span>
 <span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">statistic =</span> <span class="fu">list</span>(</span>
-<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>            <span class="fu">all_continuous</span>() <span class="sc">~</span> <span class="st">&quot;{median} ({sd})&quot;</span>,</span>
-<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>            <span class="fu">all_categorical</span>() <span class="sc">~</span> <span class="st">&quot;{n} ({p}%)&quot;</span></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>            <span class="fu">all_continuous</span>() <span class="sc">~</span> <span class="st">"{median} ({sd})"</span>,</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>            <span class="fu">all_categorical</span>() <span class="sc">~</span> <span class="st">"{n} ({p}%)"</span></span>
 <span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>        ),</span>
 <span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>        <span class="at">digits =</span> <span class="fu">all_continuous</span>() <span class="sc">~</span> <span class="dv">1</span></span>
 <span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>        ) <span class="sc">%&gt;%</span></span>
-<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">modify_header</span>(<span class="at">label =</span> <span class="st">&quot;**Caractéristiques initiales**&quot;</span>)</span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">modify_header</span>(<span class="at">label =</span> <span class="st">"**Caractéristiques initiales**"</span>)</span>
 <span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a><span class="co"># affichage du tableau</span></span>
-<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a>tbl_carac</span></code></pre></div>
-<div id="titqfxjrxr" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#titqfxjrxr table {
-  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-#titqfxjrxr thead, #titqfxjrxr tbody, #titqfxjrxr tfoot, #titqfxjrxr tr, #titqfxjrxr td, #titqfxjrxr th {
-  border-style: none;
-}
-
-#titqfxjrxr p {
-  margin: 0;
-  padding: 0;
-}
-
-#titqfxjrxr .gt_table {
-  display: table;
-  border-collapse: collapse;
-  line-height: normal;
-  margin-left: auto;
-  margin-right: auto;
-  color: #333333;
-  font-size: 16px;
-  font-weight: normal;
-  font-style: normal;
-  background-color: #FFFFFF;
-  width: auto;
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #A8A8A8;
-  border-right-style: none;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #A8A8A8;
-  border-left-style: none;
-  border-left-width: 2px;
-  border-left-color: #D3D3D3;
-}
-
-#titqfxjrxr .gt_caption {
-  padding-top: 4px;
-  padding-bottom: 4px;
-}
-
-#titqfxjrxr .gt_title {
-  color: #333333;
-  font-size: 125%;
-  font-weight: initial;
-  padding-top: 4px;
-  padding-bottom: 4px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-bottom-color: #FFFFFF;
-  border-bottom-width: 0;
-}
-
-#titqfxjrxr .gt_subtitle {
-  color: #333333;
-  font-size: 85%;
-  font-weight: initial;
-  padding-top: 3px;
-  padding-bottom: 5px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-top-color: #FFFFFF;
-  border-top-width: 0;
-}
-
-#titqfxjrxr .gt_heading {
-  background-color: #FFFFFF;
-  text-align: center;
-  border-bottom-color: #FFFFFF;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-}
-
-#titqfxjrxr .gt_bottom_border {
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-}
-
-#titqfxjrxr .gt_col_headings {
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-}
-
-#titqfxjrxr .gt_col_heading {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: normal;
-  text-transform: inherit;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-  vertical-align: bottom;
-  padding-top: 5px;
-  padding-bottom: 6px;
-  padding-left: 5px;
-  padding-right: 5px;
-  overflow-x: hidden;
-}
-
-#titqfxjrxr .gt_column_spanner_outer {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: normal;
-  text-transform: inherit;
-  padding-top: 0;
-  padding-bottom: 0;
-  padding-left: 4px;
-  padding-right: 4px;
-}
-
-#titqfxjrxr .gt_column_spanner_outer:first-child {
-  padding-left: 0;
-}
-
-#titqfxjrxr .gt_column_spanner_outer:last-child {
-  padding-right: 0;
-}
-
-#titqfxjrxr .gt_column_spanner {
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  vertical-align: bottom;
-  padding-top: 5px;
-  padding-bottom: 5px;
-  overflow-x: hidden;
-  display: inline-block;
-  width: 100%;
-}
-
-#titqfxjrxr .gt_spanner_row {
-  border-bottom-style: hidden;
-}
-
-#titqfxjrxr .gt_group_heading {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  text-transform: inherit;
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-  vertical-align: middle;
-  text-align: left;
-}
-
-#titqfxjrxr .gt_empty_group_heading {
-  padding: 0.5px;
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  vertical-align: middle;
-}
-
-#titqfxjrxr .gt_from_md > :first-child {
-  margin-top: 0;
-}
-
-#titqfxjrxr .gt_from_md > :last-child {
-  margin-bottom: 0;
-}
-
-#titqfxjrxr .gt_row {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  margin: 10px;
-  border-top-style: solid;
-  border-top-width: 1px;
-  border-top-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-  vertical-align: middle;
-  overflow-x: hidden;
-}
-
-#titqfxjrxr .gt_stub {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  text-transform: inherit;
-  border-right-style: solid;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#titqfxjrxr .gt_stub_row_group {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  text-transform: inherit;
-  border-right-style: solid;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-  padding-left: 5px;
-  padding-right: 5px;
-  vertical-align: top;
-}
-
-#titqfxjrxr .gt_row_group_first td {
-  border-top-width: 2px;
-}
-
-#titqfxjrxr .gt_row_group_first th {
-  border-top-width: 2px;
-}
-
-#titqfxjrxr .gt_summary_row {
-  color: #333333;
-  background-color: #FFFFFF;
-  text-transform: inherit;
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#titqfxjrxr .gt_first_summary_row {
-  border-top-style: solid;
-  border-top-color: #D3D3D3;
-}
-
-#titqfxjrxr .gt_first_summary_row.thick {
-  border-top-width: 2px;
-}
-
-#titqfxjrxr .gt_last_summary_row {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-}
-
-#titqfxjrxr .gt_grand_summary_row {
-  color: #333333;
-  background-color: #FFFFFF;
-  text-transform: inherit;
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#titqfxjrxr .gt_first_grand_summary_row {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-top-style: double;
-  border-top-width: 6px;
-  border-top-color: #D3D3D3;
-}
-
-#titqfxjrxr .gt_last_grand_summary_row_top {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-bottom-style: double;
-  border-bottom-width: 6px;
-  border-bottom-color: #D3D3D3;
-}
-
-#titqfxjrxr .gt_striped {
-  background-color: rgba(128, 128, 128, 0.05);
-}
-
-#titqfxjrxr .gt_table_body {
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-}
-
-#titqfxjrxr .gt_footnotes {
-  color: #333333;
-  background-color: #FFFFFF;
-  border-bottom-style: none;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 2px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-}
-
-#titqfxjrxr .gt_footnote {
-  margin: 0px;
-  font-size: 90%;
-  padding-top: 4px;
-  padding-bottom: 4px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#titqfxjrxr .gt_sourcenotes {
-  color: #333333;
-  background-color: #FFFFFF;
-  border-bottom-style: none;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 2px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-}
-
-#titqfxjrxr .gt_sourcenote {
-  font-size: 90%;
-  padding-top: 4px;
-  padding-bottom: 4px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#titqfxjrxr .gt_left {
-  text-align: left;
-}
-
-#titqfxjrxr .gt_center {
-  text-align: center;
-}
-
-#titqfxjrxr .gt_right {
-  text-align: right;
-  font-variant-numeric: tabular-nums;
-}
-
-#titqfxjrxr .gt_font_normal {
-  font-weight: normal;
-}
-
-#titqfxjrxr .gt_font_bold {
-  font-weight: bold;
-}
-
-#titqfxjrxr .gt_font_italic {
-  font-style: italic;
-}
-
-#titqfxjrxr .gt_super {
-  font-size: 65%;
-}
-
-#titqfxjrxr .gt_footnote_marks {
-  font-size: 75%;
-  vertical-align: 0.4em;
-  position: initial;
-}
-
-#titqfxjrxr .gt_asterisk {
-  font-size: 100%;
-  vertical-align: 0;
-}
-
-#titqfxjrxr .gt_indent_1 {
-  text-indent: 5px;
-}
-
-#titqfxjrxr .gt_indent_2 {
-  text-indent: 10px;
-}
-
-#titqfxjrxr .gt_indent_3 {
-  text-indent: 15px;
-}
-
-#titqfxjrxr .gt_indent_4 {
-  text-indent: 20px;
-}
-
-#titqfxjrxr .gt_indent_5 {
-  text-indent: 25px;
-}
-
-#titqfxjrxr .katex-display {
-  display: inline-flex !important;
-  margin-bottom: 0.75em !important;
-}
-
-#titqfxjrxr div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
-  height: 0px !important;
-}
-</style>
-
-<table class="gt_table caption-top" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
-<colgroup>
-<col style="width: 50%" />
-<col style="width: 50%" />
-</colgroup>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a><span class="fu">as_kable</span>(tbl_carac)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<table class="caption-top table">
 <thead>
-<tr class="gt_col_headings header">
-<th id="label" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col"><strong>Caractéristiques initiales</strong></th>
-<th id="stat_0" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col"><strong>N = 54</strong><span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;line-height:0;"><sup>1</sup></span></th>
+<tr class="header">
+<th style="text-align: left;"><strong>Caractéristiques initiales</strong></th>
+<th style="text-align: center;"><strong>N = 54</strong></th>
 </tr>
 </thead>
-<tbody class="gt_table_body">
+<tbody>
 <tr class="odd">
-<td class="gt_row gt_left" headers="label">Age</td>
-<td class="gt_row gt_center" headers="stat_0">51.0 (12.3)</td>
+<td style="text-align: left;">Age</td>
+<td style="text-align: center;">51.0 (12.3)</td>
 </tr>
 <tr class="even">
-<td class="gt_row gt_left" headers="label">Sexe</td>
-<td class="gt_row gt_center" headers="stat_0"><br />
-</td>
+<td style="text-align: left;">Sexe</td>
+<td style="text-align: center;"></td>
 </tr>
 <tr class="odd">
-<td class="gt_row gt_left" headers="label">    Masculin</td>
-<td class="gt_row gt_center" headers="stat_0">19 (35%)</td>
+<td style="text-align: left;">Masculin</td>
+<td style="text-align: center;">19 (35%)</td>
 </tr>
 <tr class="even">
-<td class="gt_row gt_left" headers="label">    Féminin</td>
-<td class="gt_row gt_center" headers="stat_0">35 (65%)</td>
+<td style="text-align: left;">Féminin</td>
+<td style="text-align: center;">35 (65%)</td>
 </tr>
 <tr class="odd">
-<td class="gt_row gt_left" headers="label">Cote</td>
-<td class="gt_row gt_center" headers="stat_0"><br />
-</td>
+<td style="text-align: left;">Cote</td>
+<td style="text-align: center;"></td>
 </tr>
 <tr class="even">
-<td class="gt_row gt_left" headers="label">    Gauche</td>
-<td class="gt_row gt_center" headers="stat_0">25 (54%)</td>
+<td style="text-align: left;">Gauche</td>
+<td style="text-align: center;">25 (54%)</td>
 </tr>
 <tr class="odd">
-<td class="gt_row gt_left" headers="label">    Droite</td>
-<td class="gt_row gt_center" headers="stat_0">21 (46%)</td>
+<td style="text-align: left;">Droite</td>
+<td style="text-align: center;">21 (46%)</td>
 </tr>
 <tr class="even">
-<td class="gt_row gt_left" headers="label">    Unknown</td>
-<td class="gt_row gt_center" headers="stat_0">8</td>
+<td style="text-align: left;">Unknown</td>
+<td style="text-align: center;">8</td>
 </tr>
 <tr class="odd">
-<td class="gt_row gt_left" headers="label">Niveau</td>
-<td class="gt_row gt_center" headers="stat_0"><br />
-</td>
+<td style="text-align: left;">Niveau</td>
+<td style="text-align: center;"></td>
 </tr>
 <tr class="even">
-<td class="gt_row gt_left" headers="label">    C4</td>
-<td class="gt_row gt_center" headers="stat_0">1 (4.2%)</td>
+<td style="text-align: left;">C4</td>
+<td style="text-align: center;">1 (4.2%)</td>
 </tr>
 <tr class="odd">
-<td class="gt_row gt_left" headers="label">    C5</td>
-<td class="gt_row gt_center" headers="stat_0">1 (4.2%)</td>
+<td style="text-align: left;">C5</td>
+<td style="text-align: center;">1 (4.2%)</td>
 </tr>
 <tr class="even">
-<td class="gt_row gt_left" headers="label">    C6</td>
-<td class="gt_row gt_center" headers="stat_0">13 (54%)</td>
+<td style="text-align: left;">C6</td>
+<td style="text-align: center;">13 (54%)</td>
 </tr>
 <tr class="odd">
-<td class="gt_row gt_left" headers="label">    C7</td>
-<td class="gt_row gt_center" headers="stat_0">1 (4.2%)</td>
+<td style="text-align: left;">C7</td>
+<td style="text-align: center;">1 (4.2%)</td>
 </tr>
 <tr class="even">
-<td class="gt_row gt_left" headers="label">    C8</td>
-<td class="gt_row gt_center" headers="stat_0">8 (33%)</td>
+<td style="text-align: left;">C8</td>
+<td style="text-align: center;">8 (33%)</td>
 </tr>
 <tr class="odd">
-<td class="gt_row gt_left" headers="label">    Unknown</td>
-<td class="gt_row gt_center" headers="stat_0">30</td>
+<td style="text-align: left;">Unknown</td>
+<td style="text-align: center;">30</td>
 </tr>
-</tbody><tfoot>
-<tr class="gt_footnotes odd">
-<td colspan="2" class="gt_footnote"><span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;line-height:0;"><sup>1</sup></span> Median (SD); n (%)</td>
-</tr>
-</tfoot>
-
+</tbody>
 </table>
-
-</div>
 </section>
 </section>
 </section>
@@ -1107,7 +653,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </main>
 <!-- /main column -->
-<script id = "quarto-html-after-body" type="application/javascript">
+<script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";
     const anchorJS = new window.AnchorJS();
@@ -1509,6 +1055,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </script>
 </div> <!-- /content -->
 
-</body>
 
-</html>
+
+
+</body></html>
