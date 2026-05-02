@@ -1,45 +1,40 @@
 ---
-title: "Analyse statistique complète - thèse Brieuc (version_codex)"
+title: "Analyse statistique ultra complète - version_codex"
 author: "Travail Codex"
 format:
   html:
     toc: true
     toc-depth: 4
     number-sections: true
-    code-fold: false
     theme: cosmo
 execute:
   warning: false
   message: false
 ---
 
-## Objectif
+## Préambule
 
-Ce document reprend la logique du fichier initial `these_brieuc.qmd` et ajoute l'ensemble des analyses demandées dans `version_codex/protocole.md`, avec un focus sur :
-
-- performance diagnostique vs gold standard (U1, U2a, U2b, U3, Sc),
-- variabilité inter-observateur (E1 vs E2),
-- combinaison du nombre de tests positifs (1/4, 2/4, 3/4, 4/4),
-- taux de tests positifs selon le niveau métamérique,
-- indicateurs complémentaires (Se, Sp, VPP, VPN, LR+, LR-, accuracy, Youden, NNT),
-- rappel de dimensionnement d'échantillon avec `pwr`.
+Ce document reprend la logique du `these_brieuc.qmd` initial, en travaillant uniquement dans `version_codex`, avec extension complète des analyses demandées (protocole + retours vocaux).
 
 ```{r}
 #| label: setup
+# Reprise de la logique du fichier initial + packages spécialisés diagnostics/graphes
 library(readxl)
 library(dplyr)
 library(tidyr)
 library(ggplot2)
 library(epiR)
+library(pROC)
 library(psych)
 library(pwr)
+library(gtsummary)
+library(corrplot)
+library(plotly)
 
 raw <- read_excel("recueil_bon.xlsx")
-
 names(raw) <- gsub(" ", "_", names(raw))
 
 raw$Age <- suppressWarnings(as.numeric(raw$Age))
-
 raw$Cote <- as.character(raw$Cote)
 raw$Niveau <- as.character(raw$Niveau)
 raw$Gold_Standard <- as.character(raw$Gold_Standard)
@@ -54,240 +49,232 @@ raw$U2b_E2 <- as.character(raw$U2b_E2)
 raw$U3_E2 <- as.character(raw$U3_E2)
 raw$Sc_E2 <- as.character(raw$Sc_E2)
 
-# colonnes utiles ajoutées au recueil
 if(!"Sexe" %in% names(raw)) raw$Sexe <- NA
 if(!"Lateralite" %in% names(raw)) raw$Lateralite <- raw$Cote
 if(!"Niveau_metamerique" %in% names(raw)) raw$Niveau_metamerique <- raw$Niveau
 
-clean_pos <- function(x){
+norm <- function(x){
   y <- trimws(tolower(as.character(x)))
-  y[y %in% c("nt", "non", "", "na", "n/a")] <- NA
+  y[y %in% c("", "na", "n/a", "nt")] <- NA
   y[y %in% c("positif", "positive", "pos", "1", "oui", "true")] <- "Positif"
-  y[y %in% c("negatif", "négatif", "negative", "neg", "0", "non") ] <- "Negatif"
+  y[y %in% c("negatif", "négatif", "negative", "neg", "0", "false")] <- "Negatif"
   y
 }
 
 dat <- raw
+dat$Gold_Standard <- norm(dat$Gold_Standard)
+dat$U1_E1 <- norm(dat$U1_E1); dat$U2a_E1 <- norm(dat$U2a_E1); dat$U2b_E1 <- norm(dat$U2b_E1); dat$U3_E1 <- norm(dat$U3_E1); dat$Sc_E1 <- norm(dat$Sc_E1)
+dat$U1_E2 <- norm(dat$U1_E2); dat$U2a_E2 <- norm(dat$U2a_E2); dat$U2b_E2 <- norm(dat$U2b_E2); dat$U3_E2 <- norm(dat$U3_E2); dat$Sc_E2 <- norm(dat$Sc_E2)
 
-dat$Gold_Standard <- clean_pos(dat$Gold_Standard)
-dat$U1_E1 <- clean_pos(dat$U1_E1)
-dat$U2a_E1 <- clean_pos(dat$U2a_E1)
-dat$U2b_E1 <- clean_pos(dat$U2b_E1)
-dat$U3_E1 <- clean_pos(dat$U3_E1)
-dat$Sc_E1 <- clean_pos(dat$Sc_E1)
-dat$U1_E2 <- clean_pos(dat$U1_E2)
-dat$U2a_E2 <- clean_pos(dat$U2a_E2)
-dat$U2b_E2 <- clean_pos(dat$U2b_E2)
-dat$U3_E2 <- clean_pos(dat$U3_E2)
-dat$Sc_E2 <- clean_pos(dat$Sc_E2)
+dat$gold <- factor(dat$Gold_Standard, levels = c("Negatif", "Positif"))
+dat$u1 <- factor(dat$U1_E1, levels = c("Negatif", "Positif"))
+dat$u2a <- factor(dat$U2a_E1, levels = c("Negatif", "Positif"))
+dat$u2b <- factor(dat$U2b_E1, levels = c("Negatif", "Positif"))
+dat$u3 <- factor(dat$U3_E1, levels = c("Negatif", "Positif"))
+dat$sc <- factor(dat$Sc_E1, levels = c("Negatif", "Positif"))
 
-dat$Gold_bin <- ifelse(dat$Gold_Standard == "Positif", 1, ifelse(dat$Gold_Standard == "Negatif", 0, NA))
-dat$U1_bin <- ifelse(dat$U1_E1 == "Positif", 1, ifelse(dat$U1_E1 == "Negatif", 0, NA))
-dat$U2a_bin <- ifelse(dat$U2a_E1 == "Positif", 1, ifelse(dat$U2a_E1 == "Negatif", 0, NA))
-dat$U2b_bin <- ifelse(dat$U2b_E1 == "Positif", 1, ifelse(dat$U2b_E1 == "Negatif", 0, NA))
-dat$U3_bin <- ifelse(dat$U3_E1 == "Positif", 1, ifelse(dat$U3_E1 == "Negatif", 0, NA))
-dat$Sc_bin <- ifelse(dat$Sc_E1 == "Positif", 1, ifelse(dat$Sc_E1 == "Negatif", 0, NA))
+# version binaire pour ROC/combinaisons
+dat$gold_bin <- ifelse(dat$gold == "Positif", 1, ifelse(dat$gold == "Negatif", 0, NA))
+dat$u1_bin <- ifelse(dat$u1 == "Positif", 1, ifelse(dat$u1 == "Negatif", 0, NA))
+dat$u2a_bin <- ifelse(dat$u2a == "Positif", 1, ifelse(dat$u2a == "Negatif", 0, NA))
+dat$u2b_bin <- ifelse(dat$u2b == "Positif", 1, ifelse(dat$u2b == "Negatif", 0, NA))
+dat$u3_bin <- ifelse(dat$u3 == "Positif", 1, ifelse(dat$u3 == "Negatif", 0, NA))
+dat$sc_bin <- ifelse(dat$sc == "Positif", 1, ifelse(dat$sc == "Negatif", 0, NA))
 ```
 
-## Description de la population
+## Description initiale des données
 
 ```{r}
-summary(dat$Age)
-table(dat$Sexe, useNA = "ifany")
-table(dat$Lateralite, useNA = "ifany")
-table(dat$Niveau_metamerique, useNA = "ifany")
+dat %>%
+  select(Age, Sexe, Lateralite, Niveau_metamerique, gold, u1, u2a, u2b, u3, sc) %>%
+  tbl_summary(missing = "ifany")
 ```
 
 ```{r}
-ggplot(dat, aes(x = Age)) +
-  geom_histogram(bins = 15, fill = "#2E86AB", color = "white") +
-  theme_minimal() +
-  labs(title = "Distribution de l'âge", x = "Âge", y = "Effectif")
+ggplot(dat, aes(Age)) + geom_histogram(bins = 15, fill = "#4c78a8", color = "white") + theme_minimal() + labs(title = "Âge")
+ggplot(dat, aes(x = Lateralite, fill = Lateralite)) + geom_bar() + theme_minimal() + labs(title = "Latéralité")
+ggplot(dat, aes(x = Niveau_metamerique, fill = Niveau_metamerique)) + geom_bar() + theme_minimal() + labs(title = "Niveau métamérique")
+ggplot(dat, aes(x = Sexe, fill = Sexe)) + geom_bar() + theme_minimal() + labs(title = "Sexe")
 ```
 
-## Métriques diagnostiques (sans boucle, syntaxe explicite)
+## Performance diagnostique via packages (epiR)
 
 ```{r}
-# U1
-keep_u1 <- !is.na(dat$U1_bin) & !is.na(dat$Gold_bin)
-TP_u1 <- sum(dat$U1_bin[keep_u1]==1 & dat$Gold_bin[keep_u1]==1)
-FP_u1 <- sum(dat$U1_bin[keep_u1]==1 & dat$Gold_bin[keep_u1]==0)
-FN_u1 <- sum(dat$U1_bin[keep_u1]==0 & dat$Gold_bin[keep_u1]==1)
-TN_u1 <- sum(dat$U1_bin[keep_u1]==0 & dat$Gold_bin[keep_u1]==0)
-Se_u1 <- TP_u1/(TP_u1+FN_u1); Sp_u1 <- TN_u1/(TN_u1+FP_u1); VPP_u1 <- TP_u1/(TP_u1+FP_u1); VPN_u1 <- TN_u1/(TN_u1+FN_u1)
-LRp_u1 <- Se_u1/(1-Sp_u1); LRn_u1 <- (1-Se_u1)/Sp_u1; Acc_u1 <- (TP_u1+TN_u1)/(TP_u1+FP_u1+FN_u1+TN_u1)
-Prev_u1 <- (TP_u1+FN_u1)/(TP_u1+FP_u1+FN_u1+TN_u1); Youden_u1 <- Se_u1 + Sp_u1 - 1; ARR_u1 <- VPP_u1-(1-Prev_u1); NNT_u1 <- ifelse(ARR_u1==0, NA, 1/ARR_u1)
+tab_u1 <- table(dat$u1, dat$gold)
+tab_u2a <- table(dat$u2a, dat$gold)
+tab_u2b <- table(dat$u2b, dat$gold)
+tab_u3 <- table(dat$u3, dat$gold)
+tab_sc <- table(dat$sc, dat$gold)
 
-# U2a
-keep_u2a <- !is.na(dat$U2a_bin) & !is.na(dat$Gold_bin)
-TP_u2a <- sum(dat$U2a_bin[keep_u2a]==1 & dat$Gold_bin[keep_u2a]==1); FP_u2a <- sum(dat$U2a_bin[keep_u2a]==1 & dat$Gold_bin[keep_u2a]==0)
-FN_u2a <- sum(dat$U2a_bin[keep_u2a]==0 & dat$Gold_bin[keep_u2a]==1); TN_u2a <- sum(dat$U2a_bin[keep_u2a]==0 & dat$Gold_bin[keep_u2a]==0)
-Se_u2a <- TP_u2a/(TP_u2a+FN_u2a); Sp_u2a <- TN_u2a/(TN_u2a+FP_u2a); VPP_u2a <- TP_u2a/(TP_u2a+FP_u2a); VPN_u2a <- TN_u2a/(TN_u2a+FN_u2a)
-LRp_u2a <- Se_u2a/(1-Sp_u2a); LRn_u2a <- (1-Se_u2a)/Sp_u2a; Acc_u2a <- (TP_u2a+TN_u2a)/(TP_u2a+FP_u2a+FN_u2a+TN_u2a)
-Prev_u2a <- (TP_u2a+FN_u2a)/(TP_u2a+FP_u2a+FN_u2a+TN_u2a); Youden_u2a <- Se_u2a + Sp_u2a - 1; ARR_u2a <- VPP_u2a-(1-Prev_u2a); NNT_u2a <- ifelse(ARR_u2a==0, NA, 1/ARR_u2a)
+epi_u1 <- epi.tests(tab_u1)
+epi_u2a <- epi.tests(tab_u2a)
+epi_u2b <- epi.tests(tab_u2b)
+epi_u3 <- epi.tests(tab_u3)
+epi_sc <- epi.tests(tab_sc)
 
-# U2b
-keep_u2b <- !is.na(dat$U2b_bin) & !is.na(dat$Gold_bin)
-TP_u2b <- sum(dat$U2b_bin[keep_u2b]==1 & dat$Gold_bin[keep_u2b]==1); FP_u2b <- sum(dat$U2b_bin[keep_u2b]==1 & dat$Gold_bin[keep_u2b]==0)
-FN_u2b <- sum(dat$U2b_bin[keep_u2b]==0 & dat$Gold_bin[keep_u2b]==1); TN_u2b <- sum(dat$U2b_bin[keep_u2b]==0 & dat$Gold_bin[keep_u2b]==0)
-Se_u2b <- TP_u2b/(TP_u2b+FN_u2b); Sp_u2b <- TN_u2b/(TN_u2b+FP_u2b); VPP_u2b <- TP_u2b/(TP_u2b+FP_u2b); VPN_u2b <- TN_u2b/(TN_u2b+FN_u2b)
-LRp_u2b <- Se_u2b/(1-Sp_u2b); LRn_u2b <- (1-Se_u2b)/Sp_u2b; Acc_u2b <- (TP_u2b+TN_u2b)/(TP_u2b+FP_u2b+FN_u2b+TN_u2b)
-Prev_u2b <- (TP_u2b+FN_u2b)/(TP_u2b+FP_u2b+FN_u2b+TN_u2b); Youden_u2b <- Se_u2b + Sp_u2b - 1; ARR_u2b <- VPP_u2b-(1-Prev_u2b); NNT_u2b <- ifelse(ARR_u2b==0, NA, 1/ARR_u2b)
+epi_u1
+epi_u2a
+epi_u2b
+epi_u3
+epi_sc
+```
 
-# U3
-keep_u3 <- !is.na(dat$U3_bin) & !is.na(dat$Gold_bin)
-TP_u3 <- sum(dat$U3_bin[keep_u3]==1 & dat$Gold_bin[keep_u3]==1); FP_u3 <- sum(dat$U3_bin[keep_u3]==1 & dat$Gold_bin[keep_u3]==0)
-FN_u3 <- sum(dat$U3_bin[keep_u3]==0 & dat$Gold_bin[keep_u3]==1); TN_u3 <- sum(dat$U3_bin[keep_u3]==0 & dat$Gold_bin[keep_u3]==0)
-Se_u3 <- TP_u3/(TP_u3+FN_u3); Sp_u3 <- TN_u3/(TN_u3+FP_u3); VPP_u3 <- TP_u3/(TP_u3+FP_u3); VPN_u3 <- TN_u3/(TN_u3+FN_u3)
-LRp_u3 <- Se_u3/(1-Sp_u3); LRn_u3 <- (1-Se_u3)/Sp_u3; Acc_u3 <- (TP_u3+TN_u3)/(TP_u3+FP_u3+FN_u3+TN_u3)
-Prev_u3 <- (TP_u3+FN_u3)/(TP_u3+FP_u3+FN_u3+TN_u3); Youden_u3 <- Se_u3 + Sp_u3 - 1; ARR_u3 <- VPP_u3-(1-Prev_u3); NNT_u3 <- ifelse(ARR_u3==0, NA, 1/ARR_u3)
-
-# Scratch
-keep_sc <- !is.na(dat$Sc_bin) & !is.na(dat$Gold_bin)
-TP_sc <- sum(dat$Sc_bin[keep_sc]==1 & dat$Gold_bin[keep_sc]==1); FP_sc <- sum(dat$Sc_bin[keep_sc]==1 & dat$Gold_bin[keep_sc]==0)
-FN_sc <- sum(dat$Sc_bin[keep_sc]==0 & dat$Gold_bin[keep_sc]==1); TN_sc <- sum(dat$Sc_bin[keep_sc]==0 & dat$Gold_bin[keep_sc]==0)
-Se_sc <- TP_sc/(TP_sc+FN_sc); Sp_sc <- TN_sc/(TN_sc+FP_sc); VPP_sc <- TP_sc/(TP_sc+FP_sc); VPN_sc <- TN_sc/(TN_sc+FN_sc)
-LRp_sc <- Se_sc/(1-Sp_sc); LRn_sc <- (1-Se_sc)/Sp_sc; Acc_sc <- (TP_sc+TN_sc)/(TP_sc+FP_sc+FN_sc+TN_sc)
-Prev_sc <- (TP_sc+FN_sc)/(TP_sc+FP_sc+FN_sc+TN_sc); Youden_sc <- Se_sc + Sp_sc - 1; ARR_sc <- VPP_sc-(1-Prev_sc); NNT_sc <- ifelse(ARR_sc==0, NA, 1/ARR_sc)
-
-res_metrics <- data.frame(
-  Test=c("U1","U2a","U2b","U3","Scratch"),
-  TP=c(TP_u1,TP_u2a,TP_u2b,TP_u3,TP_sc), FP=c(FP_u1,FP_u2a,FP_u2b,FP_u3,FP_sc),
-  FN=c(FN_u1,FN_u2a,FN_u2b,FN_u3,FN_sc), TN=c(TN_u1,TN_u2a,TN_u2b,TN_u3,TN_sc),
-  Se=c(Se_u1,Se_u2a,Se_u2b,Se_u3,Se_sc), Sp=c(Sp_u1,Sp_u2a,Sp_u2b,Sp_u3,Sp_sc),
-  VPP=c(VPP_u1,VPP_u2a,VPP_u2b,VPP_u3,VPP_sc), VPN=c(VPN_u1,VPN_u2a,VPN_u2b,VPN_u3,VPN_sc),
-  LRp=c(LRp_u1,LRp_u2a,LRp_u2b,LRp_u3,LRp_sc), LRn=c(LRn_u1,LRn_u2a,LRn_u2b,LRn_u3,LRn_sc),
-  Accuracy=c(Acc_u1,Acc_u2a,Acc_u2b,Acc_u3,Acc_sc), Prevalence=c(Prev_u1,Prev_u2a,Prev_u2b,Prev_u3,Prev_sc),
-  Youden=c(Youden_u1,Youden_u2a,Youden_u2b,Youden_u3,Youden_sc), NNT=c(NNT_u1,NNT_u2a,NNT_u2b,NNT_u3,NNT_sc)
+```{r}
+# extraction indicateurs clés (avec package epiR)
+perf <- data.frame(
+  Test = c("U1","U2a","U2b","U3","Scratch"),
+  Se = c(epi_u1$detail$se[1], epi_u2a$detail$se[1], epi_u2b$detail$se[1], epi_u3$detail$se[1], epi_sc$detail$se[1]),
+  Sp = c(epi_u1$detail$sp[1], epi_u2a$detail$sp[1], epi_u2b$detail$sp[1], epi_u3$detail$sp[1], epi_sc$detail$sp[1]),
+  VPP = c(epi_u1$detail$ppv[1], epi_u2a$detail$ppv[1], epi_u2b$detail$ppv[1], epi_u3$detail$ppv[1], epi_sc$detail$ppv[1]),
+  VPN = c(epi_u1$detail$npv[1], epi_u2a$detail$npv[1], epi_u2b$detail$npv[1], epi_u3$detail$npv[1], epi_sc$detail$npv[1]),
+  LRp = c(epi_u1$detail$lrp[1], epi_u2a$detail$lrp[1], epi_u2b$detail$lrp[1], epi_u3$detail$lrp[1], epi_sc$detail$lrp[1]),
+  LRn = c(epi_u1$detail$lrn[1], epi_u2a$detail$lrn[1], epi_u2b$detail$lrn[1], epi_u3$detail$lrn[1], epi_sc$detail$lrn[1]),
+  Youden = c(epi_u1$detail$youden[1], epi_u2a$detail$youden[1], epi_u2b$detail$youden[1], epi_u3$detail$youden[1], epi_sc$detail$youden[1])
 )
-res_metrics
+
+perf
 ```
 
-## Sensibilité/spécificité selon nombre de tests positifs (ULNT 1-4)
+```{r}
+perf_long <- perf %>% pivot_longer(cols = c(Se,Sp,VPP,VPN,LRp,LRn,Youden), names_to = "Mesure", values_to = "Valeur")
+ggplot(perf_long, aes(Test, Valeur, fill = Mesure)) + geom_col(position = "dodge") + theme_minimal() + labs(title = "Performances diagnostiques (epiR)")
+```
+
+## Combinaisons de tests positifs ULNT (1/4,2/4,3/4,4/4)
 
 ```{r}
-dat$n_pos_4 <- dat$U1_bin + dat$U2a_bin + dat$U2b_bin + dat$U3_bin
+dat$n_pos <- dat$u1_bin + dat$u2a_bin + dat$u2b_bin + dat$u3_bin
+dat$c1 <- ifelse(dat$n_pos >= 1, "Positif", "Negatif")
+dat$c2 <- ifelse(dat$n_pos >= 2, "Positif", "Negatif")
+dat$c3 <- ifelse(dat$n_pos >= 3, "Positif", "Negatif")
+dat$c4 <- ifelse(dat$n_pos >= 4, "Positif", "Negatif")
 
-dat$combo_ge1 <- ifelse(dat$n_pos_4 >= 1, 1, ifelse(is.na(dat$n_pos_4), NA, 0))
-dat$combo_ge2 <- ifelse(dat$n_pos_4 >= 2, 1, ifelse(is.na(dat$n_pos_4), NA, 0))
-dat$combo_ge3 <- ifelse(dat$n_pos_4 >= 3, 1, ifelse(is.na(dat$n_pos_4), NA, 0))
-dat$combo_ge4 <- ifelse(dat$n_pos_4 >= 4, 1, ifelse(is.na(dat$n_pos_4), NA, 0))
+dat$c1 <- factor(dat$c1, levels = c("Negatif","Positif"))
+dat$c2 <- factor(dat$c2, levels = c("Negatif","Positif"))
+dat$c3 <- factor(dat$c3, levels = c("Negatif","Positif"))
+dat$c4 <- factor(dat$c4, levels = c("Negatif","Positif"))
 
-keep_ge1 <- !is.na(dat$combo_ge1) & !is.na(dat$Gold_bin)
-TP_ge1 <- sum(dat$combo_ge1[keep_ge1]==1 & dat$Gold_bin[keep_ge1]==1); FP_ge1 <- sum(dat$combo_ge1[keep_ge1]==1 & dat$Gold_bin[keep_ge1]==0)
-FN_ge1 <- sum(dat$combo_ge1[keep_ge1]==0 & dat$Gold_bin[keep_ge1]==1); TN_ge1 <- sum(dat$combo_ge1[keep_ge1]==0 & dat$Gold_bin[keep_ge1]==0)
-Se_ge1 <- TP_ge1/(TP_ge1+FN_ge1); Sp_ge1 <- TN_ge1/(TN_ge1+FP_ge1)
+epi_c1 <- epi.tests(table(dat$c1, dat$gold))
+epi_c2 <- epi.tests(table(dat$c2, dat$gold))
+epi_c3 <- epi.tests(table(dat$c3, dat$gold))
+epi_c4 <- epi.tests(table(dat$c4, dat$gold))
 
-keep_ge2 <- !is.na(dat$combo_ge2) & !is.na(dat$Gold_bin)
-TP_ge2 <- sum(dat$combo_ge2[keep_ge2]==1 & dat$Gold_bin[keep_ge2]==1); FP_ge2 <- sum(dat$combo_ge2[keep_ge2]==1 & dat$Gold_bin[keep_ge2]==0)
-FN_ge2 <- sum(dat$combo_ge2[keep_ge2]==0 & dat$Gold_bin[keep_ge2]==1); TN_ge2 <- sum(dat$combo_ge2[keep_ge2]==0 & dat$Gold_bin[keep_ge2]==0)
-Se_ge2 <- TP_ge2/(TP_ge2+FN_ge2); Sp_ge2 <- TN_ge2/(TN_ge2+FP_ge2)
-
-keep_ge3 <- !is.na(dat$combo_ge3) & !is.na(dat$Gold_bin)
-TP_ge3 <- sum(dat$combo_ge3[keep_ge3]==1 & dat$Gold_bin[keep_ge3]==1); FP_ge3 <- sum(dat$combo_ge3[keep_ge3]==1 & dat$Gold_bin[keep_ge3]==0)
-FN_ge3 <- sum(dat$combo_ge3[keep_ge3]==0 & dat$Gold_bin[keep_ge3]==1); TN_ge3 <- sum(dat$combo_ge3[keep_ge3]==0 & dat$Gold_bin[keep_ge3]==0)
-Se_ge3 <- TP_ge3/(TP_ge3+FN_ge3); Sp_ge3 <- TN_ge3/(TN_ge3+FP_ge3)
-
-keep_ge4 <- !is.na(dat$combo_ge4) & !is.na(dat$Gold_bin)
-TP_ge4 <- sum(dat$combo_ge4[keep_ge4]==1 & dat$Gold_bin[keep_ge4]==1); FP_ge4 <- sum(dat$combo_ge4[keep_ge4]==1 & dat$Gold_bin[keep_ge4]==0)
-FN_ge4 <- sum(dat$combo_ge4[keep_ge4]==0 & dat$Gold_bin[keep_ge4]==1); TN_ge4 <- sum(dat$combo_ge4[keep_ge4]==0 & dat$Gold_bin[keep_ge4]==0)
-Se_ge4 <- TP_ge4/(TP_ge4+FN_ge4); Sp_ge4 <- TN_ge4/(TN_ge4+FP_ge4)
-
-res_combo <- data.frame(
-  Seuil=c(">=1/4 positif",">=2/4 positifs",">=3/4 positifs",">=4/4 positifs"),
-  Sensibilite=c(Se_ge1,Se_ge2,Se_ge3,Se_ge4),
-  Specificite=c(Sp_ge1,Sp_ge2,Sp_ge3,Sp_ge4)
+combo <- data.frame(
+  Seuil = c(">=1 positif", ">=2 positifs", ">=3 positifs", "4/4 positifs"),
+  Sensibilite = c(epi_c1$detail$se[1], epi_c2$detail$se[1], epi_c3$detail$se[1], epi_c4$detail$se[1]),
+  Specificite = c(epi_c1$detail$sp[1], epi_c2$detail$sp[1], epi_c3$detail$sp[1], epi_c4$detail$sp[1])
 )
-res_combo
+combo
 ```
 
 ```{r}
-plot_combo <- res_combo[,c("Seuil","Sensibilite","Specificite")]
-plot_combo_long <- pivot_longer(plot_combo, cols = c("Sensibilite","Specificite"), names_to = "Mesure", values_to = "Valeur")
-
-ggplot(plot_combo_long, aes(x = Seuil, y = Valeur, fill = Mesure)) +
-  geom_col(position = "dodge") +
-  ylim(0,1) +
-  theme_minimal() +
-  labs(title = "Sensibilité et spécificité selon combinaison de tests", x = "Règle de positivité", y = "Proportion")
+combo_long <- combo %>% pivot_longer(cols = c(Sensibilite, Specificite), names_to = "Mesure", values_to = "Valeur")
+ggplot(combo_long, aes(Seuil, Valeur, fill = Mesure)) + geom_col(position = "dodge") + ylim(0,1) + theme_minimal() + labs(title = "Se/Sp selon addition de tests")
 ```
 
-## Taux de tests positifs en fonction du niveau métamérique
+## Taux de positivité selon niveau métamérique
 
 ```{r}
-niveau_u1 <- dat %>% filter(!is.na(Niveau_metamerique), !is.na(U1_bin)) %>% group_by(Niveau_metamerique) %>% summarise(taux = mean(U1_bin), n=n())
-niveau_u2a <- dat %>% filter(!is.na(Niveau_metamerique), !is.na(U2a_bin)) %>% group_by(Niveau_metamerique) %>% summarise(taux = mean(U2a_bin), n=n())
-niveau_u2b <- dat %>% filter(!is.na(Niveau_metamerique), !is.na(U2b_bin)) %>% group_by(Niveau_metamerique) %>% summarise(taux = mean(U2b_bin), n=n())
-niveau_u3 <- dat %>% filter(!is.na(Niveau_metamerique), !is.na(U3_bin)) %>% group_by(Niveau_metamerique) %>% summarise(taux = mean(U3_bin), n=n())
+niv <- dat %>%
+  select(Niveau_metamerique, u1_bin, u2a_bin, u2b_bin, u3_bin, sc_bin) %>%
+  pivot_longer(cols = c(u1_bin, u2a_bin, u2b_bin, u3_bin, sc_bin), names_to = "Test", values_to = "Positif") %>%
+  group_by(Niveau_metamerique, Test) %>%
+  summarise(Taux = mean(Positif, na.rm = TRUE), N = sum(!is.na(Positif)), .groups = "drop")
 
-niveau_u1$Test <- "U1"
-niveau_u2a$Test <- "U2a"
-niveau_u2b$Test <- "U2b"
-niveau_u3$Test <- "U3"
+niv
 
-niveau_all <- bind_rows(niveau_u1, niveau_u2a, niveau_u2b, niveau_u3)
-
-ggplot(niveau_all, aes(x = Niveau_metamerique, y = taux, fill = Test)) +
-  geom_col(position = "dodge") +
-  ylim(0,1) +
-  theme_minimal() +
-  labs(title = "Taux de positivité selon niveau métamérique", x = "Niveau", y = "Taux positif")
+ggplot(niv, aes(Niveau_metamerique, Taux, fill = Test)) + geom_col(position = "dodge") + ylim(0,1) + theme_minimal() + labs(title = "Taux de positivité par niveau métamérique")
+ggplot(niv, aes(Niveau_metamerique, Taux, color = Test, group = Test)) + geom_line() + geom_point() + ylim(0,1) + theme_minimal() + labs(title = "Courbes de positivité par niveau")
 ```
 
-## Variabilité inter-observateur (E1 vs E2)
+## Reproductibilité inter-observateur
 
 ```{r}
-kap_u1 <- psych::cohen.kappa(cbind(dat$U1_E1, dat$U1_E2))
-kap_u2a <- psych::cohen.kappa(cbind(dat$U2a_E1, dat$U2a_E2))
-kap_u2b <- psych::cohen.kappa(cbind(dat$U2b_E1, dat$U2b_E2))
-kap_u3 <- psych::cohen.kappa(cbind(dat$U3_E1, dat$U3_E2))
-kap_sc <- psych::cohen.kappa(cbind(dat$Sc_E1, dat$Sc_E2))
+k_u1 <- psych::cohen.kappa(cbind(dat$U1_E1, dat$U1_E2))
+k_u2a <- psych::cohen.kappa(cbind(dat$U2a_E1, dat$U2a_E2))
+k_u2b <- psych::cohen.kappa(cbind(dat$U2b_E1, dat$U2b_E2))
+k_u3 <- psych::cohen.kappa(cbind(dat$U3_E1, dat$U3_E2))
+k_sc <- psych::cohen.kappa(cbind(dat$Sc_E1, dat$Sc_E2))
 
-kappa_table <- data.frame(
-  Test = c("U1", "U2a", "U2b", "U3", "Scratch"),
-  Kappa = c(kap_u1$kappa, kap_u2a$kappa, kap_u2b$kappa, kap_u3$kappa, kap_sc$kappa)
+kappa_tab <- data.frame(Test = c("U1","U2a","U2b","U3","Scratch"), Kappa = c(k_u1$kappa, k_u2a$kappa, k_u2b$kappa, k_u3$kappa, k_sc$kappa))
+kappa_tab
+
+ggplot(kappa_tab, aes(Test, Kappa, fill = Test)) + geom_col() + theme_minimal() + labs(title = "Kappa inter-observateur")
+```
+
+## ROC isolées + ROC superposées + AUC (pROC)
+
+```{r}
+roc_u1 <- roc(dat$gold_bin, dat$u1_bin, quiet = TRUE)
+roc_u2a <- roc(dat$gold_bin, dat$u2a_bin, quiet = TRUE)
+roc_u2b <- roc(dat$gold_bin, dat$u2b_bin, quiet = TRUE)
+roc_u3 <- roc(dat$gold_bin, dat$u3_bin, quiet = TRUE)
+roc_sc <- roc(dat$gold_bin, dat$sc_bin, quiet = TRUE)
+
+auc_u1 <- auc(roc_u1); auc_u2a <- auc(roc_u2a); auc_u2b <- auc(roc_u2b); auc_u3 <- auc(roc_u3); auc_sc <- auc(roc_sc)
+
+data.frame(Test = c("U1","U2a","U2b","U3","Scratch"), AUC = c(auc_u1, auc_u2a, auc_u2b, auc_u3, auc_sc))
+```
+
+```{r}
+plot(roc_u1, col = "#1b9e77", main = "ROC U1"); abline(0,1,lty=2)
+plot(roc_u2a, col = "#d95f02", main = "ROC U2a"); abline(0,1,lty=2)
+plot(roc_u2b, col = "#7570b3", main = "ROC U2b"); abline(0,1,lty=2)
+plot(roc_u3, col = "#e7298a", main = "ROC U3"); abline(0,1,lty=2)
+plot(roc_sc, col = "#66a61e", main = "ROC Scratch"); abline(0,1,lty=2)
+```
+
+```{r}
+plot(roc_u1, col = "#1b9e77", main = "ROC superposées", legacy.axes = TRUE)
+plot(roc_u2a, col = "#d95f02", add = TRUE)
+plot(roc_u2b, col = "#7570b3", add = TRUE)
+plot(roc_u3, col = "#e7298a", add = TRUE)
+plot(roc_sc, col = "#66a61e", add = TRUE)
+abline(0,1,lty=2)
+legend("bottomright", legend = c(
+  paste0("U1 AUC=", round(auc_u1,3)),
+  paste0("U2a AUC=", round(auc_u2a,3)),
+  paste0("U2b AUC=", round(auc_u2b,3)),
+  paste0("U3 AUC=", round(auc_u3,3)),
+  paste0("Scratch AUC=", round(auc_sc,3))
+), col = c("#1b9e77", "#d95f02", "#7570b3", "#e7298a", "#66a61e"), lwd = 2)
+```
+
+## Corrélation entre tests et heatmap
+
+```{r}
+mat <- dat %>% select(u1_bin, u2a_bin, u2b_bin, u3_bin, sc_bin, gold_bin)
+cor_mat <- cor(mat, use = "pairwise.complete.obs")
+cor_mat
+corrplot(cor_mat, method = "color", type = "upper", addCoef.col = "black")
+```
+
+## NNT (mention et calcul explicite)
+
+```{r}
+# NNT dérivé ici d'un ARR sur probabilité post-test positive vs référence (1-prévalence)
+prev <- mean(dat$gold_bin, na.rm = TRUE)
+arr_u1 <- perf$VPP[perf$Test=="U1"] - (1 - prev)
+arr_u2a <- perf$VPP[perf$Test=="U2a"] - (1 - prev)
+arr_u2b <- perf$VPP[perf$Test=="U2b"] - (1 - prev)
+arr_u3 <- perf$VPP[perf$Test=="U3"] - (1 - prev)
+arr_sc <- perf$VPP[perf$Test=="Scratch"] - (1 - prev)
+
+nnt <- data.frame(
+  Test = c("U1","U2a","U2b","U3","Scratch"),
+  ARR = c(arr_u1, arr_u2a, arr_u2b, arr_u3, arr_sc),
+  NNT = c(1/arr_u1, 1/arr_u2a, 1/arr_u2b, 1/arr_u3, 1/arr_sc)
 )
-kappa_table
+nnt
 ```
+
+## Dimensionnement / puissance (pwr)
 
 ```{r}
-ggplot(kappa_table, aes(x = Test, y = Kappa, fill = Test)) +
-  geom_col() +
-  theme_minimal() +
-  labs(title = "Concordance inter-observateur (Kappa)", y = "Kappa", x = "Test")
+# Exemples correspondant aux hypothèses de spécificité discutées
+h1 <- ES.h(0.90, 0.75)
+h2 <- ES.h(0.85, 0.60)
+
+pwr.2p.test(h = h1, sig.level = 0.05, power = 0.80, alternative = "two.sided")
+pwr.2p.test(h = h2, sig.level = 0.05, power = 0.80, alternative = "two.sided")
 ```
-
-## Intervalles de confiance binomiaux (Clopper-Pearson)
-
-```{r}
-# Exemple: spécificité U1 avec IC exact
-u1_keep <- !is.na(dat$U1_bin) & !is.na(dat$Gold_bin)
-TN_u1 <- sum(dat$U1_bin[u1_keep]==0 & dat$Gold_bin[u1_keep]==0)
-FP_u1 <- sum(dat$U1_bin[u1_keep]==1 & dat$Gold_bin[u1_keep]==0)
-
-binom.test(TN_u1, TN_u1 + FP_u1, conf.level = 0.95)
-```
-
-## Puissance et dimensionnement (package pwr)
-
-```{r}
-# Exemple illustratif: comparaison d'une proportion observée à une proportion de référence
-# à adapter selon hypothèses finales de la méthodologiste
-p_ref <- 0.75
-p_alt <- 0.85
-h <- ES.h(p_alt, p_ref)
-
-pwr.2p.test(h = h, sig.level = 0.05, power = 0.80, alternative = "two.sided")
-```
-
-## Conclusion
-
-Le document calcule les indicateurs principaux et secondaires demandés au protocole :
-
-- Se, Sp, VPP, VPN, LR+, LR-, accuracy, Youden, NNT,
-- comparaison Gold standard vs U1/U2a/U2b/U3/Scratch (E1),
-- variabilité inter-observateur E1 vs E2 (kappa),
-- performances selon addition des tests positifs (1,2,3,4/4),
-- taux de positivité par niveau métamérique,
-- exemple d'IC exact de Clopper-Pearson et calcul de puissance `pwr`.
-
