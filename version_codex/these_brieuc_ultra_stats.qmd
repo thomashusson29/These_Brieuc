@@ -1,0 +1,280 @@
+---
+title: "Analyse statistique ultra complète - version_codex"
+author: "Travail Codex"
+format:
+  html:
+    toc: true
+    toc-depth: 4
+    number-sections: true
+    theme: cosmo
+execute:
+  warning: false
+  message: false
+---
+
+## Préambule
+
+Ce document reprend la logique du `these_brieuc.qmd` initial, en travaillant uniquement dans `version_codex`, avec extension complète des analyses demandées (protocole + retours vocaux).
+
+```{r}
+#| label: setup
+# Reprise de la logique du fichier initial + packages spécialisés diagnostics/graphes
+library(readxl)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(epiR)
+library(pROC)
+library(psych)
+library(pwr)
+library(gtsummary)
+library(corrplot)
+library(plotly)
+
+raw <- read_excel("recueil_bon.xlsx")
+names(raw) <- gsub(" ", "_", names(raw))
+
+raw$Age <- suppressWarnings(as.numeric(raw$Age))
+raw$Cote <- as.character(raw$Cote)
+raw$Niveau <- as.character(raw$Niveau)
+raw$Gold_Standard <- as.character(raw$Gold_Standard)
+raw$U1_E1 <- as.character(raw$U1_E1)
+raw$U2a_E1 <- as.character(raw$U2a_E1)
+raw$U2b_E1 <- as.character(raw$U2b_E1)
+raw$U3_E1 <- as.character(raw$U3_E1)
+raw$Sc_E1 <- as.character(raw$Sc_E1)
+raw$U1_E2 <- as.character(raw$U1_E2)
+raw$U2a_E2 <- as.character(raw$U2a_E2)
+raw$U2b_E2 <- as.character(raw$U2b_E2)
+raw$U3_E2 <- as.character(raw$U3_E2)
+raw$Sc_E2 <- as.character(raw$Sc_E2)
+
+if(!"Sexe" %in% names(raw)) raw$Sexe <- NA
+if(!"Lateralite" %in% names(raw)) raw$Lateralite <- raw$Cote
+if(!"Niveau_metamerique" %in% names(raw)) raw$Niveau_metamerique <- raw$Niveau
+
+norm <- function(x){
+  y <- trimws(tolower(as.character(x)))
+  y[y %in% c("", "na", "n/a", "nt")] <- NA
+  y[y %in% c("positif", "positive", "pos", "1", "oui", "true")] <- "Positif"
+  y[y %in% c("negatif", "négatif", "negative", "neg", "0", "false")] <- "Negatif"
+  y
+}
+
+dat <- raw
+dat$Gold_Standard <- norm(dat$Gold_Standard)
+dat$U1_E1 <- norm(dat$U1_E1); dat$U2a_E1 <- norm(dat$U2a_E1); dat$U2b_E1 <- norm(dat$U2b_E1); dat$U3_E1 <- norm(dat$U3_E1); dat$Sc_E1 <- norm(dat$Sc_E1)
+dat$U1_E2 <- norm(dat$U1_E2); dat$U2a_E2 <- norm(dat$U2a_E2); dat$U2b_E2 <- norm(dat$U2b_E2); dat$U3_E2 <- norm(dat$U3_E2); dat$Sc_E2 <- norm(dat$Sc_E2)
+
+dat$gold <- factor(dat$Gold_Standard, levels = c("Negatif", "Positif"))
+dat$u1 <- factor(dat$U1_E1, levels = c("Negatif", "Positif"))
+dat$u2a <- factor(dat$U2a_E1, levels = c("Negatif", "Positif"))
+dat$u2b <- factor(dat$U2b_E1, levels = c("Negatif", "Positif"))
+dat$u3 <- factor(dat$U3_E1, levels = c("Negatif", "Positif"))
+dat$sc <- factor(dat$Sc_E1, levels = c("Negatif", "Positif"))
+
+# version binaire pour ROC/combinaisons
+dat$gold_bin <- ifelse(dat$gold == "Positif", 1, ifelse(dat$gold == "Negatif", 0, NA))
+dat$u1_bin <- ifelse(dat$u1 == "Positif", 1, ifelse(dat$u1 == "Negatif", 0, NA))
+dat$u2a_bin <- ifelse(dat$u2a == "Positif", 1, ifelse(dat$u2a == "Negatif", 0, NA))
+dat$u2b_bin <- ifelse(dat$u2b == "Positif", 1, ifelse(dat$u2b == "Negatif", 0, NA))
+dat$u3_bin <- ifelse(dat$u3 == "Positif", 1, ifelse(dat$u3 == "Negatif", 0, NA))
+dat$sc_bin <- ifelse(dat$sc == "Positif", 1, ifelse(dat$sc == "Negatif", 0, NA))
+```
+
+## Description initiale des données
+
+```{r}
+dat %>%
+  select(Age, Sexe, Lateralite, Niveau_metamerique, gold, u1, u2a, u2b, u3, sc) %>%
+  tbl_summary(missing = "ifany")
+```
+
+```{r}
+ggplot(dat, aes(Age)) + geom_histogram(bins = 15, fill = "#4c78a8", color = "white") + theme_minimal() + labs(title = "Âge")
+ggplot(dat, aes(x = Lateralite, fill = Lateralite)) + geom_bar() + theme_minimal() + labs(title = "Latéralité")
+ggplot(dat, aes(x = Niveau_metamerique, fill = Niveau_metamerique)) + geom_bar() + theme_minimal() + labs(title = "Niveau métamérique")
+ggplot(dat, aes(x = Sexe, fill = Sexe)) + geom_bar() + theme_minimal() + labs(title = "Sexe")
+```
+
+## Performance diagnostique via packages (epiR)
+
+```{r}
+tab_u1 <- table(dat$u1, dat$gold)
+tab_u2a <- table(dat$u2a, dat$gold)
+tab_u2b <- table(dat$u2b, dat$gold)
+tab_u3 <- table(dat$u3, dat$gold)
+tab_sc <- table(dat$sc, dat$gold)
+
+epi_u1 <- epi.tests(tab_u1)
+epi_u2a <- epi.tests(tab_u2a)
+epi_u2b <- epi.tests(tab_u2b)
+epi_u3 <- epi.tests(tab_u3)
+epi_sc <- epi.tests(tab_sc)
+
+epi_u1
+epi_u2a
+epi_u2b
+epi_u3
+epi_sc
+```
+
+```{r}
+# extraction indicateurs clés (avec package epiR)
+perf <- data.frame(
+  Test = c("U1","U2a","U2b","U3","Scratch"),
+  Se = c(epi_u1$detail$se[1], epi_u2a$detail$se[1], epi_u2b$detail$se[1], epi_u3$detail$se[1], epi_sc$detail$se[1]),
+  Sp = c(epi_u1$detail$sp[1], epi_u2a$detail$sp[1], epi_u2b$detail$sp[1], epi_u3$detail$sp[1], epi_sc$detail$sp[1]),
+  VPP = c(epi_u1$detail$ppv[1], epi_u2a$detail$ppv[1], epi_u2b$detail$ppv[1], epi_u3$detail$ppv[1], epi_sc$detail$ppv[1]),
+  VPN = c(epi_u1$detail$npv[1], epi_u2a$detail$npv[1], epi_u2b$detail$npv[1], epi_u3$detail$npv[1], epi_sc$detail$npv[1]),
+  LRp = c(epi_u1$detail$lrp[1], epi_u2a$detail$lrp[1], epi_u2b$detail$lrp[1], epi_u3$detail$lrp[1], epi_sc$detail$lrp[1]),
+  LRn = c(epi_u1$detail$lrn[1], epi_u2a$detail$lrn[1], epi_u2b$detail$lrn[1], epi_u3$detail$lrn[1], epi_sc$detail$lrn[1]),
+  Youden = c(epi_u1$detail$youden[1], epi_u2a$detail$youden[1], epi_u2b$detail$youden[1], epi_u3$detail$youden[1], epi_sc$detail$youden[1])
+)
+
+perf
+```
+
+```{r}
+perf_long <- perf %>% pivot_longer(cols = c(Se,Sp,VPP,VPN,LRp,LRn,Youden), names_to = "Mesure", values_to = "Valeur")
+ggplot(perf_long, aes(Test, Valeur, fill = Mesure)) + geom_col(position = "dodge") + theme_minimal() + labs(title = "Performances diagnostiques (epiR)")
+```
+
+## Combinaisons de tests positifs ULNT (1/4,2/4,3/4,4/4)
+
+```{r}
+dat$n_pos <- dat$u1_bin + dat$u2a_bin + dat$u2b_bin + dat$u3_bin
+dat$c1 <- ifelse(dat$n_pos >= 1, "Positif", "Negatif")
+dat$c2 <- ifelse(dat$n_pos >= 2, "Positif", "Negatif")
+dat$c3 <- ifelse(dat$n_pos >= 3, "Positif", "Negatif")
+dat$c4 <- ifelse(dat$n_pos >= 4, "Positif", "Negatif")
+
+dat$c1 <- factor(dat$c1, levels = c("Negatif","Positif"))
+dat$c2 <- factor(dat$c2, levels = c("Negatif","Positif"))
+dat$c3 <- factor(dat$c3, levels = c("Negatif","Positif"))
+dat$c4 <- factor(dat$c4, levels = c("Negatif","Positif"))
+
+epi_c1 <- epi.tests(table(dat$c1, dat$gold))
+epi_c2 <- epi.tests(table(dat$c2, dat$gold))
+epi_c3 <- epi.tests(table(dat$c3, dat$gold))
+epi_c4 <- epi.tests(table(dat$c4, dat$gold))
+
+combo <- data.frame(
+  Seuil = c(">=1 positif", ">=2 positifs", ">=3 positifs", "4/4 positifs"),
+  Sensibilite = c(epi_c1$detail$se[1], epi_c2$detail$se[1], epi_c3$detail$se[1], epi_c4$detail$se[1]),
+  Specificite = c(epi_c1$detail$sp[1], epi_c2$detail$sp[1], epi_c3$detail$sp[1], epi_c4$detail$sp[1])
+)
+combo
+```
+
+```{r}
+combo_long <- combo %>% pivot_longer(cols = c(Sensibilite, Specificite), names_to = "Mesure", values_to = "Valeur")
+ggplot(combo_long, aes(Seuil, Valeur, fill = Mesure)) + geom_col(position = "dodge") + ylim(0,1) + theme_minimal() + labs(title = "Se/Sp selon addition de tests")
+```
+
+## Taux de positivité selon niveau métamérique
+
+```{r}
+niv <- dat %>%
+  select(Niveau_metamerique, u1_bin, u2a_bin, u2b_bin, u3_bin, sc_bin) %>%
+  pivot_longer(cols = c(u1_bin, u2a_bin, u2b_bin, u3_bin, sc_bin), names_to = "Test", values_to = "Positif") %>%
+  group_by(Niveau_metamerique, Test) %>%
+  summarise(Taux = mean(Positif, na.rm = TRUE), N = sum(!is.na(Positif)), .groups = "drop")
+
+niv
+
+ggplot(niv, aes(Niveau_metamerique, Taux, fill = Test)) + geom_col(position = "dodge") + ylim(0,1) + theme_minimal() + labs(title = "Taux de positivité par niveau métamérique")
+ggplot(niv, aes(Niveau_metamerique, Taux, color = Test, group = Test)) + geom_line() + geom_point() + ylim(0,1) + theme_minimal() + labs(title = "Courbes de positivité par niveau")
+```
+
+## Reproductibilité inter-observateur
+
+```{r}
+k_u1 <- psych::cohen.kappa(cbind(dat$U1_E1, dat$U1_E2))
+k_u2a <- psych::cohen.kappa(cbind(dat$U2a_E1, dat$U2a_E2))
+k_u2b <- psych::cohen.kappa(cbind(dat$U2b_E1, dat$U2b_E2))
+k_u3 <- psych::cohen.kappa(cbind(dat$U3_E1, dat$U3_E2))
+k_sc <- psych::cohen.kappa(cbind(dat$Sc_E1, dat$Sc_E2))
+
+kappa_tab <- data.frame(Test = c("U1","U2a","U2b","U3","Scratch"), Kappa = c(k_u1$kappa, k_u2a$kappa, k_u2b$kappa, k_u3$kappa, k_sc$kappa))
+kappa_tab
+
+ggplot(kappa_tab, aes(Test, Kappa, fill = Test)) + geom_col() + theme_minimal() + labs(title = "Kappa inter-observateur")
+```
+
+## ROC isolées + ROC superposées + AUC (pROC)
+
+```{r}
+roc_u1 <- roc(dat$gold_bin, dat$u1_bin, quiet = TRUE)
+roc_u2a <- roc(dat$gold_bin, dat$u2a_bin, quiet = TRUE)
+roc_u2b <- roc(dat$gold_bin, dat$u2b_bin, quiet = TRUE)
+roc_u3 <- roc(dat$gold_bin, dat$u3_bin, quiet = TRUE)
+roc_sc <- roc(dat$gold_bin, dat$sc_bin, quiet = TRUE)
+
+auc_u1 <- auc(roc_u1); auc_u2a <- auc(roc_u2a); auc_u2b <- auc(roc_u2b); auc_u3 <- auc(roc_u3); auc_sc <- auc(roc_sc)
+
+data.frame(Test = c("U1","U2a","U2b","U3","Scratch"), AUC = c(auc_u1, auc_u2a, auc_u2b, auc_u3, auc_sc))
+```
+
+```{r}
+plot(roc_u1, col = "#1b9e77", main = "ROC U1"); abline(0,1,lty=2)
+plot(roc_u2a, col = "#d95f02", main = "ROC U2a"); abline(0,1,lty=2)
+plot(roc_u2b, col = "#7570b3", main = "ROC U2b"); abline(0,1,lty=2)
+plot(roc_u3, col = "#e7298a", main = "ROC U3"); abline(0,1,lty=2)
+plot(roc_sc, col = "#66a61e", main = "ROC Scratch"); abline(0,1,lty=2)
+```
+
+```{r}
+plot(roc_u1, col = "#1b9e77", main = "ROC superposées", legacy.axes = TRUE)
+plot(roc_u2a, col = "#d95f02", add = TRUE)
+plot(roc_u2b, col = "#7570b3", add = TRUE)
+plot(roc_u3, col = "#e7298a", add = TRUE)
+plot(roc_sc, col = "#66a61e", add = TRUE)
+abline(0,1,lty=2)
+legend("bottomright", legend = c(
+  paste0("U1 AUC=", round(auc_u1,3)),
+  paste0("U2a AUC=", round(auc_u2a,3)),
+  paste0("U2b AUC=", round(auc_u2b,3)),
+  paste0("U3 AUC=", round(auc_u3,3)),
+  paste0("Scratch AUC=", round(auc_sc,3))
+), col = c("#1b9e77", "#d95f02", "#7570b3", "#e7298a", "#66a61e"), lwd = 2)
+```
+
+## Corrélation entre tests et heatmap
+
+```{r}
+mat <- dat %>% select(u1_bin, u2a_bin, u2b_bin, u3_bin, sc_bin, gold_bin)
+cor_mat <- cor(mat, use = "pairwise.complete.obs")
+cor_mat
+corrplot(cor_mat, method = "color", type = "upper", addCoef.col = "black")
+```
+
+## NNT (mention et calcul explicite)
+
+```{r}
+# NNT dérivé ici d'un ARR sur probabilité post-test positive vs référence (1-prévalence)
+prev <- mean(dat$gold_bin, na.rm = TRUE)
+arr_u1 <- perf$VPP[perf$Test=="U1"] - (1 - prev)
+arr_u2a <- perf$VPP[perf$Test=="U2a"] - (1 - prev)
+arr_u2b <- perf$VPP[perf$Test=="U2b"] - (1 - prev)
+arr_u3 <- perf$VPP[perf$Test=="U3"] - (1 - prev)
+arr_sc <- perf$VPP[perf$Test=="Scratch"] - (1 - prev)
+
+nnt <- data.frame(
+  Test = c("U1","U2a","U2b","U3","Scratch"),
+  ARR = c(arr_u1, arr_u2a, arr_u2b, arr_u3, arr_sc),
+  NNT = c(1/arr_u1, 1/arr_u2a, 1/arr_u2b, 1/arr_u3, 1/arr_sc)
+)
+nnt
+```
+
+## Dimensionnement / puissance (pwr)
+
+```{r}
+# Exemples correspondant aux hypothèses de spécificité discutées
+h1 <- ES.h(0.90, 0.75)
+h2 <- ES.h(0.85, 0.60)
+
+pwr.2p.test(h = h1, sig.level = 0.05, power = 0.80, alternative = "two.sided")
+pwr.2p.test(h = h2, sig.level = 0.05, power = 0.80, alternative = "two.sided")
+```
