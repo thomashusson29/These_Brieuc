@@ -629,8 +629,14 @@ table(df$Sc_E2_positif, useNA = "ifany")
 # Résumé de la variable âge
 resume_age <- data.frame(as.list(summary(df$Age)), check.names = FALSE)
 
-kable(resume_age, caption = "variable âge") %>%
-    kable_styling(full_width = FALSE, position = "center")
+resume_age_kable <- kable(resume_age, caption = "variable âge")
+
+if (knitr::is_latex_output() || knitr::is_html_output()) {
+    resume_age_kable %>%
+        kable_styling(full_width = FALSE, position = "center")
+} else {
+    resume_age_kable
+}
 ```
 
 -   Un patient a 125 ans.
@@ -840,5 +846,5 @@ tbl_carac <- df %>%
     modify_header(label = "**Caractéristiques initiales**")
 
 # affichage du tableau
-tbl_carac
+as_kable(tbl_carac)
 ```
