@@ -841,10 +841,11 @@ tbl_carac <- df %>%
             all_continuous() ~ "{median} ({sd})",
             all_categorical() ~ "{n} ({p}%)"
         ),
-        digits = all_continuous() ~ 1
+        digits = all_continuous() ~ 1,
+        missing = "ifany"
         ) %>%
     modify_header(label = "**Caractéristiques initiales**")
 
 # affichage du tableau
-as_kable(tbl_carac)
+tbl_carac
 ```
