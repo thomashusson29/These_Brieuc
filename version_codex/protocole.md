@@ -126,7 +126,6 @@ height="0.5722911198600175in"}
 > névralgie cervico brachiale repose sur un faisceau d'arguments
 > cliniques
 >
-> Le Scratch collaps test est un test clinique qui à déjà fait ses
 > preuves dans le dépistage et diagnostique de différentes neuropathies
 > périphériques notamment syndrome canalaire ulnaire et médian avec
 > lesquels ils ont montré une bonne spécificité et VPP
@@ -145,7 +144,6 @@ height="0.5722911198600175in"}
 > **Objectif principal**
 >
 > Évaluation de la performance diagnostique, par rapport au gold
-> standard, des ULNT et du Scratch Collapse Test pour le le diagnostic
 > des névralgies cervicobrachiales en consultation de chir ortho.
 >
 > **Critère de jugement principal :**
@@ -161,7 +159,6 @@ height="0.5722911198600175in"}
 -   Evaluation des performances diagnostiques des tests X, X et X (les
     autres) de l'ULNT vs gold standard
 
--   Evaluation des performances diagnostiques du Scratch collapse test
     vs gold standard
 
 -   Evaluation de la reproductibilité inter-observateur de chacun des 5
@@ -180,7 +177,6 @@ height="0.5722911198600175in"}
 -   Sensibilité, spécificité, VPP, VPN, RVP et RVN des tests X, X et X
     (les autres) de l'ULNT vs gold standard
 
--   Sensibilité, spécificité, VPP, VPN, RVP et RVN du Scratch collapse
     test vs gold standard
 
 -   Concordance inter observateurs de chacun des 5 tests avec le
@@ -210,7 +206,6 @@ height="0.5722911198600175in"}
 > névralgie cervico-brachiale par le chir ortho confirmée par une
 > évolution favorable après infiltration et/ou geste chirurgical
 >
-> Tests ULNT et Scartch Collapse Test standardisés selon technique
 > décrite dans réf XX...
 >
 > Les différents chirurgiens bénéficieront d'une courte formation sur la
@@ -302,7 +297,6 @@ height="0.5722911198600175in"}
 >
 > Etape 2:
 >
-> Une fois inclus, les tests cliniques d'ULNT et Scratch Collape Test
 > (détails des tests en annexe) seront réalisés par le praticien (en
 > aveugle du futur examen clinique standard et de la lecture de l\'IRM)
 > et les résultats (positif/négatif) seront notés dans le cahier
@@ -512,7 +506,6 @@ height="0.5722911198600175in"}
 > que leur association pour éclaircir leur place dans le diagnostic et
 > le dépistage.
 >
-> La fiabilité du Scratch Collaps Test dans les NCB n'a pas encore été
 > étudiée. Elle a montré dans plusieurs études une importante
 > spécificité proche de 100% donc pour le diagnostic des syndromes
 > canalaire ulnaire et médian (Urska Cebron, revue systématique 2017)
@@ -1268,7 +1261,6 @@ height="0.5722911198600175in"}
 > The scratch collapse test: a systematic review, Urska Cebron , 2017,
 > https://doi.org/10.1016/j.bjps.2018.09.003
 >
-> Scratch Collapse Test for Evaluation of Carpal and Cubital Tunnel
 > Syndrome, Christine J. Cheng,
 > https://doi.org/10.1016/j.jhsa.2008.05.022
 >
@@ -1361,7 +1353,6 @@ height="0.5722911198600175in"}
 2.  augmentation/décroissance des douleurs avec différenciation
     structurelle
 
-## Scratch collapse test
 
 -   patient assis en face de l'opérateur
 
@@ -1421,7 +1412,6 @@ height="2.44125in"}
 +----------------------------+--------------------+--------------------+
 | > ULNT3                    |                    |                    |
 +----------------------------+--------------------+--------------------+
-| > Scratch collapse test    |                    |                    |
 +----------------------------+--------------------+--------------------+
 | > Gold Standard            |                    |                    |
 +----------------------------+--------------------+--------------------+
