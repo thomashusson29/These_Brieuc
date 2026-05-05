@@ -12,6 +12,8 @@ format:
         toc-sticky: true
         number-sections: true
         theme: default
+        code-fold: true
+        code-summary: "Afficher le code"
 
     docx:
         toc: true
@@ -175,8 +177,10 @@ geometry: margin=2.5cm
 
 ```{r}
 #| label: setup
-#| include: false
-#| echo: false
+#| include: true
+#| echo: !expr "(!knitr::is_latex_output())"
+#| message: false
+#| warning: false
 library(forecast)
 library(cobalt)
 library(plotrix)
@@ -254,8 +258,9 @@ if (knitr::is_latex_output()) {
 
 ```{r}
 #| label: import
-#| echo: false
-#| include: false
+#| echo: !expr "(!knitr::is_latex_output())"
+#| include: true
+#| results: "hide"
 # import en xlsx de "recueil_bon.xlsx"
 df <- as.data.frame(read_excel("recueil_bon.xlsx"), stringsAsFactors = FALSE)
 
@@ -273,23 +278,19 @@ for (v in c("Gold_Standard", "U1_E1", "U2a_E1", "U2b_E1", "U3_E1", "U1_E2", "U2a
 }
 ```
 
-## Dates
-
 ```{r}
 #| label: dates au format date
-#| echo: true
-#| include: false
+#| echo: !expr "(!knitr::is_latex_output())"
+#| include: true
 #| results: "hide"
 # Convertir les colonnes de dates au format Date
 df$DDN <- as.Date(df$DDN, format = "%Y-%m-%d")
 df$Date_de_recueil <- as.Date(df$Date_de_recueil, format = "%Y-%m-%d")
 ```
 
-## Variables numériques
-
 ```{r}
 #| label: variables numériques
-#| echo: true
+#| echo: !expr "(!knitr::is_latex_output())"
 #| include: true
 #| results: "hide"
 # Convertir les variables numériques
@@ -297,13 +298,9 @@ df$Age <- as.numeric(df$Age)
 class(df$Age)
 ```
 
-## Variables catégorielles
-
-### Sexe
-
 ```{r}
 #| label: sexe
-#| echo: true
+#| echo: !expr "(!knitr::is_latex_output())"
 #| include: true
 #| results: "hide"
 # Convertir la variable "Sexe" en facteur
@@ -311,11 +308,9 @@ df$Sexe <- factor(c(M = "Masculin", F = "Féminin")[df$Sexe], levels = c("Mascul
 table(df$Sexe, useNA = "ifany")
 ```
 
-### Côté
-
 ```{r}
 #| label: côté
-#| echo: true
+#| echo: !expr "(!knitr::is_latex_output())"
 #| include: true
 #| results: "hide"
 # Convertir la variable "Côté" en facteur
@@ -326,11 +321,9 @@ df$Cote <- factor(
 table(df$Cote, useNA = "ifany")
 ```
 
-### Niveau
-
 ```{r}
 #| label: niveau
-#| echo: true
+#| echo: !expr "(!knitr::is_latex_output())"
 #| include: true
 #| results: "hide"
 # Convertir la variable "Niveau" en facteur ordonné
@@ -343,11 +336,9 @@ df$Niveau <- factor(
 table(df$Niveau, useNA = "ifany")
 ```
 
-### Examen clinique
-
 ```{r}
 #| label: examen clinique
-#| echo: true
+#| echo: !expr "(!knitr::is_latex_output())"
 #| include: true
 #| results: "hide"
 str(df$Examen_Clinique)
@@ -361,11 +352,9 @@ df$Examen_Clinique_Douteux_YN <- ifelse(df$Examen_Clinique == "Douteux", 1, 0)
 table(df$Examen_Clinique_Douteux_YN, useNA = "ifany")
 ```
 
-### IRM
-
 ```{r}
 #| label: irm
-#| echo: true
+#| echo: !expr "(!knitr::is_latex_output())"
 #| include: true
 #| results: "hide"
 str(df$IRM)
@@ -379,11 +368,9 @@ df$IRM_Douteux_YN <- ifelse(df$IRM == "Douteux", 1, 0)
 table(df$IRM_Douteux_YN, useNA = "ifany")
 ```
 
-### Infiltrations
-
 ```{r}
 #| label: infiltrations
-#| echo: true
+#| echo: !expr "(!knitr::is_latex_output())"
 #| include: true
 #| results: "hide"
 str(df$Infiltrations)
@@ -396,8 +383,9 @@ table(df$Infiltrations, useNA = "ifany")
 
 ```{r}
 #| label: resultat infiltrations
-#| echo: false
-#| include: false
+#| echo: !expr "(!knitr::is_latex_output())"
+#| include: true
+#| results: "hide"
 str(df$Resultat_Inf)
 class(df$Resultat_Inf)
 unique(df$Resultat_Inf)
@@ -406,11 +394,9 @@ df$Resultat_Inf <- ifelse(df$Resultat_Inf == "Positif", 1, ifelse(df$Resultat_In
 table(df$Resultat_Inf, useNA = "ifany")
 ```
 
-### Gold Standard
-
 ```{r}
 #| label: gold standard
-#| echo: true
+#| echo: !expr "(!knitr::is_latex_output())"
 #| include: true
 #| results: "hide"
 #création d'une variable binaire "Gold_Standard_Positif_YN" (1 = Positif, 0 = Negatif ou Douteux ou NA)
@@ -426,15 +412,9 @@ df$Gold_Standard_Douteux_YN <- ifelse(df$Gold_Standard == "Douteux", 1,
 table(df$Gold_Standard_Douteux_YN, useNA = "ifany")
 ```
 
-### Tests cliniques évaluateur 1
-
-Les variables sont transformées en numériques binaires (1 = Positif / 0 = Negatif) pour faciliter les tests. 
-
-#### U1_E1
-
 ```{r}
 #| label: ulnt1
-#| echo: true
+#| echo: !expr "(!knitr::is_latex_output())"
 #| include: true
 #| results: "hide"
 str(df$U1_E1)
@@ -445,11 +425,9 @@ df$U1_E1_positif <- as.numeric(df$U1_E1 == "Positif")
 table(df$U1_E1_positif, useNA = "ifany")
 ```
 
-#### U2a_E1
-
 ```{r}
 #| label: ulnt2a
-#| echo: true
+#| echo: !expr "(!knitr::is_latex_output())"
 #| include: true
 #| results: "hide"
 str(df$U2a_E1)
@@ -460,11 +438,9 @@ df$U2a_E1_positif <- as.numeric(df$U2a_E1 == "Positif")
 table(df$U2a_E1_positif, useNA = "ifany")
 ```
 
-#### U2b_E1
-
 ```{r}
 #| label: ulnt2b
-#| echo: true
+#| echo: !expr "(!knitr::is_latex_output())"
 #| include: true
 #| results: "hide"
 str(df$U2b_E1)
@@ -475,11 +451,9 @@ df$U2b_E1_positif <- as.numeric(df$U2b_E1 == "Positif")
 table(df$U2b_E1_positif, useNA = "ifany")
 ```
 
-#### U3_E1
-
 ```{r}
 #| label: ulnt3
-#| echo: true
+#| echo: !expr "(!knitr::is_latex_output())"
 #| include: true
 #| results: "hide"
 str(df$U3_E1)
@@ -490,13 +464,9 @@ df$U3_E1_positif <- as.numeric(df$U3_E1 == "Positif")
 table(df$U3_E1_positif, useNA = "ifany")
 ```
 
-#### Sc_E1
-
-Il existe un "NT" dans Sc_E1, traité comme NA
-
 ```{r}
 #| label: sc1
-#| echo: true
+#| echo: !expr "(!knitr::is_latex_output())"
 #| include: true
 #| results: "hide"
 str(df$Sc_E1)
@@ -510,13 +480,9 @@ df$Sc_E1_positif <- as.numeric(df$Sc_E1 == "Positif")
 table(df$Sc_E1_positif, useNA = "ifany")
 ```
 
-#### Gachette évaluateur 1
-
-Renommage de la variable "Gachette" en "Gachette_E1" pour plus de clarté
-
 ```{r}
 #| label: gachette1
-#| echo: true
+#| echo: !expr "(!knitr::is_latex_output())"
 #| include: true
 #| results: "hide"
 # Renommage de la variable "Gachette" en "Gachette1"
@@ -528,13 +494,9 @@ table(df$Gachette1, useNA = "ifany")
 class(df$Gachette1)
 ```
 
-#### Tests cliniques évaluateur 2
-
-#### U1_E2
-
 ```{r}
 #| label: ulnt1e2
-#| echo: true
+#| echo: !expr "(!knitr::is_latex_output())"
 #| include: true
 #| results: "hide"
 str(df$U1_E2)
@@ -548,11 +510,9 @@ df$U1_E2_positif <- as.numeric(df$U1_E2 == "Positif")
 table(df$U1_E2_positif, useNA = "ifany")
 ```
 
-#### U2a_E2
-
 ```{r}
 #| label: ulnt2ae2
-#| echo: true
+#| echo: !expr "(!knitr::is_latex_output())"
 #| include: true
 #| results: "hide"
 str(df$U2a_E2)
@@ -566,11 +526,9 @@ df$U2a_E2_positif <- as.numeric(df$U2a_E2 == "Positif")
 table(df$U2a_E2_positif, useNA = "ifany")
 ```
 
-#### U2b_E2
-
 ```{r}
 #| label: ulnt2be2
-#| echo: true
+#| echo: !expr "(!knitr::is_latex_output())"
 #| include: true
 #| results: "hide"
 str(df$U2b_E2)
@@ -584,11 +542,9 @@ df$U2b_E2_positif <- as.numeric(df$U2b_E2 == "Positif")
 table(df$U2b_E2_positif, useNA = "ifany")
 ```
 
-#### U3_E2
-
 ```{r}
 #| label: ulnt3e2
-#| echo: true
+#| echo: !expr "(!knitr::is_latex_output())"
 #| include: true
 #| results: "hide"
 str(df$U3_E2)
@@ -602,11 +558,9 @@ df$U3_E2_positif <- as.numeric(df$U3_E2 == "Positif")
 table(df$U3_E2_positif, useNA = "ifany")
 ```
 
-#### Sc_E2
-
 ```{r}
 #| label: sc2
-#| echo: true
+#| echo: !expr "(!knitr::is_latex_output())"
 #| include: true
 #| results: "hide"
 str(df$Sc_E2)
@@ -620,10 +574,13 @@ df$Sc_E2_positif <- as.numeric(df$Sc_E2 == "Positif")
 table(df$Sc_E2_positif, useNA = "ifany")
 ```
 
+# Construction des objets d'analyse
+
 ```{r}
-#| label: objets-analyses
-#| echo: false
-#| include: false
+#| label: objets-effectif
+#| echo: !expr "(!knitr::is_latex_output())"
+#| include: true
+#| results: "hide"
 #| message: false
 #| warning: false
 # Objets section effectif
@@ -716,6 +673,15 @@ if (knitr::is_latex_output()) {
         )
 }
 
+```
+
+```{r}
+#| label: objets-caracteristiques-initiales
+#| echo: !expr "(!knitr::is_latex_output())"
+#| include: true
+#| results: "hide"
+#| message: false
+#| warning: false
 # Objets section caractéristiques initiales
 age_median <- median(df$Age, na.rm = TRUE)
 df$Age <- ifelse(df$Age == 125, age_median, df$Age)
@@ -871,6 +837,15 @@ plot_niveau_distribution <- function() {
     )
 }
 
+```
+
+```{r}
+#| label: objets-ulnt1
+#| echo: !expr "(!knitr::is_latex_output())"
+#| include: true
+#| results: "hide"
+#| message: false
+#| warning: false
 # Objets ULNT1
 df$Gold_Standard_main <- ifelse(df$Gold_Standard == "Douteux", "Negatif", df$Gold_Standard)
 
@@ -1140,6 +1115,15 @@ plot_roc_u1 <- function() {
     plot(roc_u1, main = "Courbe ROC de U1 par rapport au gold standard", col = "blue", lwd = 2)
 }
 
+```
+
+```{r}
+#| label: objets-ulnt2a
+#| echo: !expr "(!knitr::is_latex_output())"
+#| include: true
+#| results: "hide"
+#| message: false
+#| warning: false
 # Objets ULNT2a
 u2a_data <- df %>%
     filter(
@@ -1410,6 +1394,15 @@ plot_roc_u2a <- function() {
     plot(roc_u2a, main = "Courbe ROC de U2a par rapport au gold standard", col = "blue", lwd = 2)
 }
 
+```
+
+```{r}
+#| label: objets-ulnt2b
+#| echo: !expr "(!knitr::is_latex_output())"
+#| include: true
+#| results: "hide"
+#| message: false
+#| warning: false
 # Objets ULNT2b
 u2b_data <- df %>%
     filter(
@@ -1632,6 +1625,15 @@ plot_roc_u2b <- function() {
     plot(roc_u2b, main = "Courbe ROC de U2b par rapport au gold standard", col = "blue", lwd = 2)
 }
 
+```
+
+```{r}
+#| label: objets-ulnt3
+#| echo: !expr "(!knitr::is_latex_output())"
+#| include: true
+#| results: "hide"
+#| message: false
+#| warning: false
 # Objets ULNT3
 u3_data <- df %>%
     filter(
@@ -1854,6 +1856,15 @@ plot_roc_u3 <- function() {
     plot(roc_u3, main = "Courbe ROC de U3 par rapport au gold standard", col = "blue", lwd = 2)
 }
 
+```
+
+```{r}
+#| label: objets-resultats-globaux
+#| echo: !expr "(!knitr::is_latex_output())"
+#| include: true
+#| results: "hide"
+#| message: false
+#| warning: false
 # Objets résultats globaux
 contingency_tab <- data.frame(
     Test = c("U1", "U2a", "U2b", "U3"),
@@ -1990,6 +2001,15 @@ roc_comparison_plot <- function() {
     )
 }
 
+```
+
+```{r}
+#| label: objets-resultats-par-niveau
+#| echo: !expr "(!knitr::is_latex_output())"
+#| include: true
+#| results: "hide"
+#| message: false
+#| warning: false
 # Objets résultats par niveau
 niv <- df %>%
     select(Niveau, U1_E1, U2a_E1, U2b_E1, U3_E1) %>%
@@ -2160,6 +2180,15 @@ diagnostic_by_level_heatmap <- ggplot(diagnostic_by_level_long, aes(x = Niveau, 
         fill = "Valeur"
     )
 
+```
+
+```{r}
+#| label: objets-reproductibilite
+#| echo: !expr "(!knitr::is_latex_output())"
+#| include: true
+#| results: "hide"
+#| message: false
+#| warning: false
 # Objets reproductibilité
 u1_kappa_data <- df %>% filter(!is.na(U1_E1), !is.na(U1_E2))
 u2a_kappa_data <- df %>% filter(!is.na(U2a_E1), !is.na(U2a_E2))
@@ -2245,6 +2274,15 @@ kappa_plot <- ggplot(kappa_tab, aes(x = Test, y = Kappa, fill = Test)) +
         fill = "Test"
     )
 
+```
+
+```{r}
+#| label: objets-score-combine
+#| echo: !expr "(!knitr::is_latex_output())"
+#| include: true
+#| results: "hide"
+#| message: false
+#| warning: false
 # Objets score combiné
 df$n_pos <- df$U1_E1_positif + df$U2a_E1_positif + df$U2b_E1_positif + df$U3_E1_positif
 
@@ -2421,14 +2459,14 @@ $$
 
 ```{r}
 #| label: calcul effectif
-#| echo: true
+#| echo: !expr "(!knitr::is_latex_output())"
 sample_size_scenarios
 ```
 
 ```{r}
 #| label: tbl-effectifs
 #| tbl-cap: "Effectif requis pour différents scénarios de spécificité cible, prévalence et marge"
-#| echo: true
+#| echo: !expr "(!knitr::is_latex_output())"
 #| include: true
 #| results: "asis"
 sample_size_table
@@ -2445,7 +2483,7 @@ sample_size_table
 
 ```{r}
 #| label: age
-#| echo: true
+#| echo: !expr "(!knitr::is_latex_output())"
 #| include: true
 #| results: "asis"
 resume_age_table
@@ -2462,7 +2500,7 @@ resume_age_table
 #| fig-cap: "Distribution de l'âge"
 #| fig-width: 10
 #| fig-height: 4.6
-#| echo: true
+#| echo: !expr "(!knitr::is_latex_output())"
 #| message: false
 #| warning: false
 plot_age_distribution()
@@ -2479,7 +2517,7 @@ plot_age_distribution()
 #| fig-cap: "Répartition du sexe"
 #| fig-width: 10
 #| fig-height: 4.6
-#| echo: true
+#| echo: !expr "(!knitr::is_latex_output())"
 #| message: false
 #| warning: false
 plot_sexe_distribution()
@@ -2496,7 +2534,7 @@ plot_sexe_distribution()
 #| fig-cap: "Répartition du côté"
 #| fig-width: 10
 #| fig-height: 4.6
-#| echo: true
+#| echo: !expr "(!knitr::is_latex_output())"
 #| message: false
 #| warning: false
 plot_cote_distribution()
@@ -2511,7 +2549,7 @@ plot_cote_distribution()
 #| fig-cap: "Répartition du niveau"
 #| fig-width: 7
 #| fig-height: 3.8
-#| echo: true
+#| echo: !expr "(!knitr::is_latex_output())"
 #| message: false
 #| warning: false
 plot_niveau_distribution()
@@ -2521,7 +2559,7 @@ plot_niveau_distribution()
 
 ```{r}
 #| label: caracs initiales 2
-#| echo: true
+#| echo: !expr "(!knitr::is_latex_output())"
 #| include: true
 #| results: "asis"
 baseline_tbl
@@ -2553,31 +2591,11 @@ baseline_tbl
 
 -   Résumé de la variable U1_E1
 
-```{r}
-#| label: ulnt1-e1
-#| echo: true
-#| include: false
-kable(
-    u1_effectifs,
-    caption = "Effectifs diagnostiques de U1 par rapport au gold standard",
-    align = "c"
-)
-```
-
-#### Tableaux récapitulatifs complémentaires
-
-```{r}
-#| label: ulnt-tables-setup
-#| echo: true
-#| include: false
-u1_performance_summary
-```
-
 #### Tableau descriptif des résultats des tests
 
 ```{r}
 #| label: ulnt-descriptive-table
-#| echo: true
+#| echo: !expr "(!knitr::is_latex_output())"
 #| results: "asis"
 kable(
     u1_descriptive,
@@ -2591,7 +2609,7 @@ kable(
 
 ```{r}
 #| label: ulnt-contingency-table
-#| echo: true
+#| echo: !expr "(!knitr::is_latex_output())"
 #| results: "asis"
 kable(
     u1_contingency,
@@ -2606,7 +2624,7 @@ kable(
 
 ```{r}
 #| label: ulnt1-effectifs-table
-#| echo: true
+#| echo: !expr "(!knitr::is_latex_output())"
 #| results: "asis"
 kable(
     u1_effectifs,
@@ -2619,7 +2637,7 @@ kable(
 
 ```{r}
 #| label: ulnt1-diagnostic-performance-table
-#| echo: true
+#| echo: !expr "(!knitr::is_latex_output())"
 #| results: "asis"
 kable(
     u1_performance_summary,
@@ -2663,7 +2681,7 @@ Paramètres évalués :
 ```{r}
 #| label: ulnt1-roc-curve
 #| fig-cap: "Courbe ROC de U1 par rapport au gold standard"
-#| echo: true
+#| echo: !expr "(!knitr::is_latex_output())"
 #| message: false
 #| warning: false
 plot_roc_u1()
@@ -2671,31 +2689,11 @@ plot_roc_u1()
 
 ### ULNT2a
 
-```{r}
-#| label: ulnt2a-e1
-#| echo: true
-#| include: false
-kable(
-    u2a_effectifs,
-    caption = "Effectifs diagnostiques de U2a par rapport au gold standard",
-    align = "c"
-)
-```
-
-#### Tableaux récapitulatifs complémentaires
-
-```{r}
-#| label: ulnt2a-tables-setup
-#| echo: true
-#| include: false
-u2a_performance_summary
-```
-
 #### Tableau descriptif des résultats des tests
 
 ```{r}
 #| label: ulnt2a-descriptive-table
-#| echo: true
+#| echo: !expr "(!knitr::is_latex_output())"
 #| results: "asis"
 kable(
     u2a_descriptive,
@@ -2709,7 +2707,7 @@ kable(
 
 ```{r}
 #| label: ulnt2a-contingency-table
-#| echo: true
+#| echo: !expr "(!knitr::is_latex_output())"
 #| results: "asis"
 kable(
     u2a_contingency,
@@ -2724,7 +2722,7 @@ kable(
 
 ```{r}
 #| label: ulnt2a-effectifs-table
-#| echo: true
+#| echo: !expr "(!knitr::is_latex_output())"
 #| results: "asis"
 kable(
     u2a_effectifs,
@@ -2737,7 +2735,7 @@ kable(
 
 ```{r}
 #| label: ulnt-diagnostic-performance-table
-#| echo: true
+#| echo: !expr "(!knitr::is_latex_output())"
 #| results: "asis"
 kable(
     u2a_performance_summary,
@@ -2777,7 +2775,7 @@ Paramètres évalués :
 ```{r}
 #| label: ulnt2a-roc-curve
 #| fig-cap: "Courbe ROC de U2a par rapport au gold standard"
-#| echo: true
+#| echo: !expr "(!knitr::is_latex_output())"
 #| message: false
 #| warning: false
 plot_roc_u2a()
@@ -2785,18 +2783,11 @@ plot_roc_u2a()
 
 ### ULNT2b
 
-```{r}
-#| label: ulnt2b-tables-setup
-#| echo: true
-#| include: false
-u2b_performance_summary
-```
-
 #### Tableau descriptif des résultats des tests
 
 ```{r}
 #| label: ulnt2b-descriptive-table
-#| echo: true
+#| echo: !expr "(!knitr::is_latex_output())"
 #| results: "asis"
 kable(
     u2b_descriptive,
@@ -2810,7 +2801,7 @@ kable(
 
 ```{r}
 #| label: ulnt2b-contingency-table
-#| echo: true
+#| echo: !expr "(!knitr::is_latex_output())"
 #| results: "asis"
 kable(
     u2b_contingency,
@@ -2825,7 +2816,7 @@ kable(
 
 ```{r}
 #| label: ulnt2b-effectifs-table
-#| echo: true
+#| echo: !expr "(!knitr::is_latex_output())"
 #| results: "asis"
 kable(
     u2b_effectifs,
@@ -2838,7 +2829,7 @@ kable(
 
 ```{r}
 #| label: ulnt2b-diagnostic-performance-table
-#| echo: true
+#| echo: !expr "(!knitr::is_latex_output())"
 #| results: "asis"
 kable(
     u2b_performance_summary,
@@ -2878,7 +2869,7 @@ Paramètres évalués :
 ```{r}
 #| label: ulnt2b-roc-curve
 #| fig-cap: "Courbe ROC de U2b par rapport au gold standard"
-#| echo: true
+#| echo: !expr "(!knitr::is_latex_output())"
 #| message: false
 #| warning: false
 plot_roc_u2b()
@@ -2886,18 +2877,11 @@ plot_roc_u2b()
 
 ### ULNT3
 
-```{r}
-#| label: ulnt3-tables-setup
-#| echo: true
-#| include: false
-u3_performance_summary
-```
-
 #### Tableau descriptif des résultats des tests
 
 ```{r}
 #| label: ulnt3-descriptive-table
-#| echo: true
+#| echo: !expr "(!knitr::is_latex_output())"
 #| results: "asis"
 kable(
     u3_descriptive,
@@ -2911,7 +2895,7 @@ kable(
 
 ```{r}
 #| label: ulnt3-contingency-table
-#| echo: true
+#| echo: !expr "(!knitr::is_latex_output())"
 #| results: "asis"
 kable(
     u3_contingency,
@@ -2926,7 +2910,7 @@ kable(
 
 ```{r}
 #| label: ulnt3-effectifs-table
-#| echo: true
+#| echo: !expr "(!knitr::is_latex_output())"
 #| results: "asis"
 kable(
     u3_effectifs,
@@ -2939,7 +2923,7 @@ kable(
 
 ```{r}
 #| label: ulnt3-diagnostic-performance-table
-#| echo: true
+#| echo: !expr "(!knitr::is_latex_output())"
 #| results: "asis"
 kable(
     u3_performance_summary,
@@ -2979,7 +2963,7 @@ Paramètres évalués :
 ```{r}
 #| label: ulnt3-roc-curve
 #| fig-cap: "Courbe ROC de U3 par rapport au gold standard"
-#| echo: true
+#| echo: !expr "(!knitr::is_latex_output())"
 #| message: false
 #| warning: false
 plot_roc_u3()
@@ -2991,7 +2975,7 @@ plot_roc_u3()
 
 ```{r}
 #| label: global-contingency-table
-#| echo: true
+#| echo: !expr "(!knitr::is_latex_output())"
 #| results: "asis"
 kable(
     contingency_tab,
@@ -3004,7 +2988,7 @@ kable(
 
 ```{r}
 #| label: global-diagnostic-performance-table
-#| echo: true
+#| echo: !expr "(!knitr::is_latex_output())"
 #| results: "asis"
 kable(
     diag_primary_round,
@@ -3021,7 +3005,7 @@ kable(
 
 ```{r}
 #| label: global-contingency-plot
-#| echo: true
+#| echo: !expr "(!knitr::is_latex_output())"
 #| fig-cap: "Composition des tableaux de contingence 2x2 par test"
 #| fig-width: 7
 #| fig-height: 5
@@ -3033,7 +3017,7 @@ contingency_plot
 
 ```{r}
 #| label: ROC-comparison-plot
-#| echo: true
+#| echo: !expr "(!knitr::is_latex_output())"
 #| fig-cap: "Comparaison des courbes ROC des ULNT"
 #| fig-width: 7
 #| fig-height: 5
@@ -3059,12 +3043,12 @@ Ces tests peuvent surtout servir comme outils d’orientation ou de dépistage, 
 
 ## Résultats par niveaux métamériques
 
-On calcule ici uniquement les taux de positivité par niveau métamérique (c'est à dire la proportion de tests positifs parmi les tests réalisés à chaque niveau, chez les patients ayant un résulta
+On calcule ici uniquement les taux de positivité par niveau métamérique, c'est à dire la proportion de tests positifs parmi les tests réalisés à chaque niveau.
 
 ```{r}
 #| label: results-by-level-rate
-#| echo: true
-#| include: false
+#| echo: !expr "(!knitr::is_latex_output())"
+#| include: true
 results_by_level_rate_plot
 ```
 
@@ -3076,8 +3060,8 @@ Section **descriptive** : données par niveau métamérique sont trop pauvres po
 
 ```{r}
 #| label: results-by-level-count
-#| echo: true
-#| include: false
+#| echo: !expr "(!knitr::is_latex_output())"
+#| include: true
 results_by_level_count_plot
 ```
 
@@ -3086,15 +3070,8 @@ results_by_level_count_plot
 Cette section complète les graphes descriptifs précédents en regardant non plus seulement la fréquence de positivité des tests, mais leurs **performances diagnostiques par niveau métamérique** par rapport au gold standard. Vu les effectifs très faibles à plusieurs niveaux, cette lecture doit rester **strictement exploratoire**.
 
 ```{r}
-#| label: diagnostic-by-level-setup
-#| echo: true
-#| include: false
-diagnostic_by_level_round
-```
-
-```{r}
 #| label: diagnostic-by-level-table
-#| echo: true
+#| echo: !expr "(!knitr::is_latex_output())"
 #| results: "asis"
 kable(
     diagnostic_by_level_round,
@@ -3105,7 +3082,7 @@ kable(
 
 ```{r}
 #| label: diagnostic-by-level-heatmap
-#| echo: true
+#| echo: !expr "(!knitr::is_latex_output())"
 #| fig-cap: "Heatmap exploratoire des performances diagnostiques selon le niveau métamérique"
 #| fig-width: 8
 #| fig-height: 5.5
@@ -3120,7 +3097,7 @@ Lecture pratique : ici, le bon dénominateur n'est plus “tous les tests positi
 
 ```{r}
 #| label: interrater-setup
-#| echo: true
+#| echo: !expr "(!knitr::is_latex_output())"
 kable(
     kappa_round,
     format = if (knitr::is_latex_output()) {
@@ -3138,7 +3115,7 @@ kable(
 
 ```{r}
 #| label: fig-kappa-interobserver
-#| echo: true
+#| echo: !expr "(!knitr::is_latex_output())"
 #| message: false
 #| warning: false
 #| fig-cap: "Kappa inter-observer agreement for each ultrasound test."
@@ -3169,7 +3146,7 @@ Interprétation selon tableau de Landis & Koch (1977) :
 
 ```{r}
 #| label: tbl-score-exact-et-seuils
-#| echo: true
+#| echo: !expr "(!knitr::is_latex_output())"
 #| message: false
 #| warning: false
 #| results: asis
@@ -3197,7 +3174,7 @@ exact_score_perf_table %>%
 
 ```{r}
 #| label: fig-score-probability
-#| echo: true
+#| echo: !expr "(!knitr::is_latex_output())"
 #| message: false
 #| warning: false
 #| fig-cap: "Probabilité observée de NCB selon le nombre de tests positifs."
@@ -3216,7 +3193,7 @@ DOR = différence d'Odds Ratio entre les patients positifs et négatifs : (VP/VN
 
 ```{r}
 #| label: score-probability
-#| echo: true
+#| echo: !expr "(!knitr::is_latex_output())"
 score_summary_table %>%
   kable(
     format = if (knitr::is_latex_output()) {
