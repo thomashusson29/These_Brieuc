@@ -17,7 +17,7 @@ execute:
 Ce document reprend la logique du `these_brieuc.qmd` initial, en conservant le même début de préparation des données (`df`, `Sexe`, `Cote`, `Niveau`, `Gold_Standard_Positif_YN`, `U1_E1_positif`, etc.), puis en ajoutant une passe complète d’extraction des résultats et de contrôle de validité statistique.
 
 **Cadre d’interprétation.**
-L’objectif principal est la performance diagnostique des ULNT et du Scratch Collapse Test vis-à-vis du gold standard. Les objectifs secondaires sont l’étude des combinaisons de tests, la reproductibilité inter-observateur et l’évaluation critique de la robustesse statistique du document.
+L’objectif principal est la performance diagnostique des ULNT vis-à-vis du gold standard. Les objectifs secondaires sont l’étude des combinaisons de tests, la reproductibilité inter-observateur et l’évaluation critique de la robustesse statistique du document.
 
 ```{r}
 #| label: setup
@@ -30,9 +30,10 @@ library(psych)
 library(pwr)
 library(gtsummary)
 library(corrplot)
+library(readxl)
 
-data_path <- if (file.exists("../recueil_bon.csv")) "../recueil_bon.csv" else "recueil_bon.csv"
-df <- read.csv(data_path, stringsAsFactors = FALSE, check.names = FALSE)
+data_path <- if (file.exists("../recueil_bon.xlsx")) "../recueil_bon.xlsx" else "recueil_bon.xlsx"
+df <- as.data.frame(read_excel(data_path), stringsAsFactors = FALSE)
 
 df$DDN <- as.Date(df$DDN, format = "%Y-%m-%d")
 df$Date_de_recueil <- as.Date(df$Date_de_recueil, format = "%Y-%m-%d")
@@ -49,7 +50,7 @@ norm_result <- function(x) {
   x
 }
 
-for (v in c("Gold_Standard", "U1_E1", "U2a_E1", "U2b_E1", "U3_E1", "Sc_E1", "U1_E2", "U2a_E2", "U2b_E2", "U3_E2", "Sc_E2")) {
+for (v in c("Gold_Standard", "U1_E1", "U2a_E1", "U2b_E1", "U3_E1", "U1_E2", "U2a_E2", "U2b_E2", "U3_E2")) {
   df[[v]] <- norm_result(df[[v]])
 }
 
@@ -58,12 +59,10 @@ df$U1_E1_positif <- as.numeric(df$U1_E1 == "Positif")
 df$U2a_E1_positif <- as.numeric(df$U2a_E1 == "Positif")
 df$U2b_E1_positif <- as.numeric(df$U2b_E1 == "Positif")
 df$U3_E1_positif <- as.numeric(df$U3_E1 == "Positif")
-df$Sc_E1_positif <- as.numeric(df$Sc_E1 == "Positif")
 df$U1_E2_positif <- as.numeric(df$U1_E2 == "Positif")
 df$U2a_E2_positif <- as.numeric(df$U2a_E2 == "Positif")
 df$U2b_E2_positif <- as.numeric(df$U2b_E2 == "Positif")
 df$U3_E2_positif <- as.numeric(df$U3_E2 == "Positif")
-df$Sc_E2_positif <- as.numeric(df$Sc_E2 == "Positif")
 
 # Choix méthodologique principal du rapport:
 # tous les Gold_Standard "Douteux" sont interprétés comme "Negatif".
@@ -191,16 +190,14 @@ diag_primary <- bind_rows(
   diag_metrics(df$U1_E1, df$Gold_Standard_main, "U1", doubtful_negative = FALSE),
   diag_metrics(df$U2a_E1, df$Gold_Standard_main, "U2a", doubtful_negative = FALSE),
   diag_metrics(df$U2b_E1, df$Gold_Standard_main, "U2b", doubtful_negative = FALSE),
-  diag_metrics(df$U3_E1, df$Gold_Standard_main, "U3", doubtful_negative = FALSE),
-  diag_metrics(df$Sc_E1, df$Gold_Standard_main, "Scratch", doubtful_negative = FALSE)
+  diag_metrics(df$U3_E1, df$Gold_Standard_main, "U3", doubtful_negative = FALSE)
 )
 
 diag_sensitivity <- bind_rows(
   diag_metrics(df$U1_E1, df$Gold_Standard, "U1", doubtful_negative = FALSE),
   diag_metrics(df$U2a_E1, df$Gold_Standard, "U2a", doubtful_negative = FALSE),
   diag_metrics(df$U2b_E1, df$Gold_Standard, "U2b", doubtful_negative = FALSE),
-  diag_metrics(df$U3_E1, df$Gold_Standard, "U3", doubtful_negative = FALSE),
-  diag_metrics(df$Sc_E1, df$Gold_Standard, "Scratch", doubtful_negative = FALSE)
+  diag_metrics(df$U3_E1, df$Gold_Standard, "U3", doubtful_negative = FALSE)
 )
 
 diag_primary_round <- diag_primary %>%
@@ -252,7 +249,7 @@ best_combo_screen <- combo_primary %>% arrange(desc(Se), LRn) %>% slice(1)
 best_combo_balance <- combo_primary %>% arrange(desc(Youden)) %>% slice(1)
 
 niv <- df %>%
-  select(Niveau, U1_E1, U2a_E1, U2b_E1, U3_E1, Sc_E1) %>%
+  select(Niveau, U1_E1, U2a_E1, U2b_E1, U3_E1) %>%
   pivot_longer(cols = -Niveau, names_to = "Test", values_to = "Resultat") %>%
   group_by(Niveau, Test) %>%
   summarise(
@@ -268,8 +265,7 @@ kappa_tab <- bind_rows(
   kappa_summary(df$U1_E1, df$U1_E2, "U1"),
   kappa_summary(df$U2a_E1, df$U2a_E2, "U2a"),
   kappa_summary(df$U2b_E1, df$U2b_E2, "U2b"),
-  kappa_summary(df$U3_E1, df$U3_E2, "U3"),
-  kappa_summary(df$Sc_E1, df$Sc_E2, "Scratch")
+  kappa_summary(df$U3_E1, df$U3_E2, "U3")
 )
 
 kappa_round <- kappa_tab %>%
@@ -283,8 +279,7 @@ roc_objects <- list(
   U1 = roc(as.numeric(df$Gold_Standard_main %in% "Positif"), as.numeric(df$U1_E1 == "Positif"), subset = df$Gold_Standard_main %in% c("Positif", "Negatif") & !is.na(df$U1_E1), quiet = TRUE),
   U2a = roc(as.numeric(df$Gold_Standard_main %in% "Positif"), as.numeric(df$U2a_E1 == "Positif"), subset = df$Gold_Standard_main %in% c("Positif", "Negatif") & !is.na(df$U2a_E1), quiet = TRUE),
   U2b = roc(as.numeric(df$Gold_Standard_main %in% "Positif"), as.numeric(df$U2b_E1 == "Positif"), subset = df$Gold_Standard_main %in% c("Positif", "Negatif") & !is.na(df$U2b_E1), quiet = TRUE),
-  U3 = roc(as.numeric(df$Gold_Standard_main %in% "Positif"), as.numeric(df$U3_E1 == "Positif"), subset = df$Gold_Standard_main %in% c("Positif", "Negatif") & !is.na(df$U3_E1), quiet = TRUE),
-  Scratch = roc(as.numeric(df$Gold_Standard_main %in% "Positif"), as.numeric(df$Sc_E1 == "Positif"), subset = df$Gold_Standard_main %in% c("Positif", "Negatif") & !is.na(df$Sc_E1), quiet = TRUE)
+  U3 = roc(as.numeric(df$Gold_Standard_main %in% "Positif"), as.numeric(df$U3_E1 == "Positif"), subset = df$Gold_Standard_main %in% c("Positif", "Negatif") & !is.na(df$U3_E1), quiet = TRUE)
 )
 
 auc_tab <- diag_primary %>%
@@ -301,7 +296,6 @@ mat <- df %>%
     U2a = as.numeric(U2a_E1 == "Positif"),
     U2b = as.numeric(U2b_E1 == "Positif"),
     U3 = as.numeric(U3_E1 == "Positif"),
-    Scratch = as.numeric(Sc_E1 == "Positif"),
     Gold = ifelse(Gold_Standard_main == "Positif", 1, ifelse(Gold_Standard_main == "Negatif", 0, NA))
   )
 cor_mat <- cor(mat, use = "pairwise.complete.obs")
@@ -390,7 +384,6 @@ validity_tab <- data.frame(
   Point = c(
     "Population d'analyse principale",
     "Gestion des Gold_Standard douteux",
-    "Scratch test",
     "Analyse par niveau metamerique",
     "ROC",
     "NNT",
@@ -399,7 +392,6 @@ validity_tab <- data.frame(
   Constat = c(
     paste0(primary_n, " dossiers avec gold standard binaire interpretable sur 54"),
     "3 dossiers Douteux: tous recodes Negatif dans l'analyse principale et annonces explicitement comme tels",
-    paste0(sum(is.na(df$Sc_E1)), " valeurs manquantes/NT pour E1"),
     paste0(sum(is.na(df$Niveau)), " niveaux manquants; C4, C5 et C7 n=1 chacun"),
     "Predicteurs binaires: l'AUC est descriptive et redondante avec Se/Sp",
     "Indicateur exploratoire non standard en diagnostique, a presenter separement du noyau principal",
@@ -413,7 +405,7 @@ validity_tab <- data.frame(
 
 ```{r}
 df %>%
-  select(Age, Sexe, Cote, Niveau, Gold_Standard, U1_E1, U2a_E1, U2b_E1, U3_E1, Sc_E1) %>%
+  select(Age, Sexe, Cote, Niveau, Gold_Standard, U1_E1, U2a_E1, U2b_E1, U3_E1) %>%
   tbl_summary(missing = "no")
 ```
 
@@ -443,25 +435,43 @@ L’âge moyen est de `r fmt_num(mean(df$Age, na.rm = TRUE), 1)` ans (ET `r fmt_
 
 ## Méthodes
 
-Les analyses ont été réalisées sous **R** (R Foundation for Statistical Computing, **Vienne, Autriche**) à partir du fichier `recueil_bon.csv`, après harmonisation des modalités textuelles et recodage des variables cliniques en indicateurs binaires lorsque nécessaire. Conformément au choix méthodologique retenu pour ce rapport, tous les cas de **gold standard “Douteux” ont été reclassés comme “Négatif”** et cette règle a été appliquée de façon homogène à l’ensemble des analyses principales. Les variables démographiques et cliniques ont d’abord été décrites par des statistiques descriptives adaptées à leur nature. Les performances diagnostiques des tests `U1`, `U2a`, `U2b`, `U3` et `Scratch Collapse Test` ont ensuite été évaluées par construction des tableaux de contingence 2x2, avec estimation des effectifs `TP`, `FP`, `FN` et `TN`, de la sensibilité, de la spécificité, des valeurs prédictives positive et négative, des rapports de vraisemblance positif et négatif, de l’indice de Youden et de leurs intervalles de confiance exacts à 95% lorsque pertinent. Les combinaisons de tests ULNT ont été étudiées selon plusieurs seuils de positivité (`>=1`, `>=2`, `>=3` et `4/4` tests positifs). La reproductibilité inter-observateur entre évaluateurs 1 et 2 a été quantifiée par le coefficient kappa de Cohen avec intervalle de confiance. Les courbes ROC et les aires sous la courbe ont été calculées à titre de résumé descriptif complémentaire, tout en considérant que la nature binaire des prédicteurs limite leur apport par rapport aux indices diagnostiques classiques. Les résultats sont présentés dans l’ordre suivant, comme dans un manuscrit scientifique: description de la population et préparation des données, justification de l’effectif, performances diagnostiques avec tableaux de contingence, précision des estimations, analyses de sensibilité, combinaisons de tests, analyses descriptives complémentaires (niveaux métamériques, corrélations, reproductibilité), probabilités post-test et enfin discussion critique de la validité statistique.
+Les analyses ont été réalisées sous **R** (R Foundation for Statistical Computing, **Vienne, Autriche**) à partir du fichier `recueil_bon.xlsx`, après harmonisation des modalités textuelles et recodage des variables cliniques en indicateurs binaires lorsque nécessaire. Conformément au choix méthodologique retenu pour ce rapport, tous les cas de **gold standard “Douteux” ont été reclassés comme “Négatif”** et cette règle a été appliquée de façon homogène à l’ensemble des analyses principales. Les variables démographiques et cliniques ont d’abord été décrites par des statistiques descriptives adaptées à leur nature. Les performances diagnostiques des tests `U1`, `U2a`, `U2b` et `U3` ont ensuite été évaluées par construction des tableaux de contingence 2x2, avec estimation des effectifs `TP`, `FP`, `FN` et `TN`, de la sensibilité, de la spécificité, des valeurs prédictives positive et négative, des rapports de vraisemblance positif et négatif, de l’indice de Youden et de leurs intervalles de confiance exacts à 95% lorsque pertinent. Cette version du rapport est volontairement **recentrée sur les ULNT**; le Scratch Collapse Test n’est donc pas intégré aux analyses principales comparatives et son éventuelle place clinique devrait être discutée séparément si l’on souhaite le réintroduire. Les combinaisons de tests ULNT ont été étudiées selon plusieurs seuils de positivité (`>=1`, `>=2`, `>=3` et `4/4` tests positifs). La reproductibilité inter-observateur entre évaluateurs 1 et 2 a été quantifiée par le coefficient kappa de Cohen avec intervalle de confiance. Les courbes ROC et les aires sous la courbe ont été calculées à titre de résumé descriptif complémentaire, tout en considérant que la nature binaire des prédicteurs limite leur apport par rapport aux indices diagnostiques classiques. Les résultats sont présentés dans l’ordre suivant, comme dans un manuscrit scientifique: description de la population et préparation des données, justification de l’effectif, performances diagnostiques avec tableaux de contingence, précision des estimations, analyses de sensibilité, combinaisons de tests, analyses descriptives complémentaires (niveaux métamériques, corrélations, reproductibilité), probabilités post-test et enfin discussion critique de la validité statistique.
 
 ## Justification de l’effectif
 
-Les captures transmises documentent un calcul de taille d’échantillon centré sur la **précision de la spécificité** par intervalle de confiance exact de Clopper-Pearson. Ici, les scénarios ne sont pas seulement recopiés: ils sont **recalculés dans R** à partir d’une borne inférieure unilatérale exacte à 95%, en recherchant le plus petit nombre de sujets négatifs permettant d’obtenir une largeur cible `ω` telle que:
+Cette sous-section répond à une question simple: **combien de patients faut-il inclure pour estimer la spécificité avec une précision jugée acceptable ?** Il s’agit ici d’un calcul de **précision d’estimation**, et non d’un calcul de puissance classique.
 
-\[
+Le point central est le suivant: la **spécificité** se calcule uniquement chez les sujets **sans NCB**, c’est-à-dire chez les patients classés **négatifs** par le gold standard. Le paramètre déterminant n’est donc pas seulement l’effectif total, mais d’abord le **nombre de sujets négatifs** effectivement disponibles.
+
+Les scénarios présentés sur l’image fournie ont été **recalculés dans R** à partir de la borne inférieure d’un intervalle de confiance exact unilatéral à 95% (méthode de Clopper-Pearson). Le raisonnement peut se résumer en trois étapes:
+
+1. fixer une **spécificité cible** `t` à atteindre, par exemple `0,85` ou `0,90`;
+2. fixer une **marge inférieure acceptable** `ω`, définie comme l’écart maximal toléré entre cette spécificité cible et la borne inférieure de son intervalle de confiance exact à 95%;
+3. calculer le plus petit nombre de **sujets négatifs** permettant de respecter cette contrainte, puis convertir ce nombre en **effectif total** selon la prévalence attendue.
+
+La définition utilisée pour `ω` est:
+
+$$
 \omega = t - L_{95\%, exact}
-\]
+$$
 
-où `t` est la spécificité cible et `L` la borne inférieure exacte de Clopper-Pearson. En pratique, **`ω` n’est pas la largeur totale d’un intervalle bilatéral**: c’est **la marge de sécurité vers le bas**, c’est-à-dire l’écart maximal toléré entre la spécificité visée et sa borne inférieure. Par exemple, si l’on vise une spécificité de 0,90 avec `ω = 0,10`, on veut garantir que la borne inférieure de l’IC exact reste autour de 0,80 ou plus. Plus `ω` est petit, plus on exige une estimation précise, donc plus l’effectif nécessaire augmente.
+où `t` est la spécificité cible et `L` la borne inférieure exacte de Clopper-Pearson. En pratique, **`ω` n’est pas la largeur totale d’un intervalle bilatéral**. Il s’agit de la **marge de sécurité vers le bas**. Par exemple, si l’on vise une spécificité de `0,90` avec `ω = 0,10`, on demande que la borne inférieure de l’intervalle exact reste voisine de `0,80` ou plus. Plus `ω` est petit, plus l’exigence de précision est forte, donc plus l’effectif requis augmente.
 
-L’effectif total requis est ensuite obtenu en tenant compte de la prévalence attendue:
+L’effectif total requis est ensuite déduit de la prévalence attendue `p` par:
 
-\[
+$$
 N_{total} = \left\lceil \frac{N_{negatifs}}{1-p} \right\rceil
-\]
+$$
 
-Cette logique est celle de l’image fournie.
+Autrement dit, si la prévalence attendue est élevée, la proportion de sujets négatifs diminue, et il faut inclure davantage de patients pour obtenir le même nombre de négatifs.
+
+::: {.callout-note icon=false title="Exemple concret"}
+Si l’on estime qu’il faut **50 sujets négatifs** pour documenter correctement une spécificité cible:
+- avec une prévalence attendue de **50%**, les sujets négatifs représentent environ la moitié de l’échantillon, donc il faut environ **100 patients au total**;
+- avec une prévalence attendue de **75%**, les sujets négatifs ne représentent plus qu’environ un quart de l’échantillon, donc il faut environ **200 patients au total**.
+
+Cette logique correspond exactement à celle des scénarios de l’image fournie.
+:::
 
 ```{r}
 sample_size_scenarios
@@ -474,7 +484,7 @@ ggplot(sample_size_scenarios, aes(x = Scenario, y = N_requis, fill = Specificite
   facet_wrap(~ Largeur_label) +
   theme_minimal() +
   labs(
-    title = "Effectif requis selon les scénarios de précision de la spécificité",
+    title = "Effectif total requis pour estimer la spécificité",
     subtitle = paste0("Ligne pointillée: effectif principal observé (n=", primary_n, ")"),
     x = "Scénario",
     y = "Effectif requis"
@@ -488,7 +498,7 @@ ggplot(sample_size_scenarios, aes(x = Prevalence, y = N_requis, color = Specific
   geom_hline(yintercept = primary_n, linetype = 2, color = "firebrick") +
   theme_minimal() +
   labs(
-    title = "Impact de la prévalence attendue sur l’effectif requis",
+    title = "Impact de la prévalence attendue sur l’effectif total requis",
     x = "Prévalence attendue",
     y = "Effectif requis"
   )
@@ -502,17 +512,17 @@ ggplot(sample_size_scenarios, aes(x = Scenario, y = Largeur_calculee, color = Sp
   facet_wrap(~ Largeur_label) +
   theme_minimal() +
   labs(
-    title = "Vérification du recalcul exact de la largeur d'IC",
-    y = "Largeur calculée (t - borne inférieure)"
+    title = "Vérification du recalcul de la marge inférieure cible",
+    y = "Marge calculée: ω = t - borne inférieure"
   )
 ```
 
 **Interprétation.**
-- Avec une **spécificité cible de 0,90** et une largeur d’IC proche de **0,15**, l’effectif requis peut descendre à **54** si la prévalence attendue est 0,50, ce qui est le scénario le plus proche de l’effectif observé.
-- Dès qu’on veut un **IC plus étroit** ou une **spécificité cible plus élevée**, l’effectif requis monte rapidement au-delà de la cohorte actuelle.
-- L’effectif analysé ici (`r primary_n`) est donc **compatible avec une étude exploratoire / de précision modérée**, mais reste court pour revendiquer des estimations très précises de spécificité, surtout test par test.
+- Avec une **spécificité cible de 0,90** et une exigence de précision relativement modérée (`ω` proche de `0,15`), l’effectif total requis peut descendre à **54** si la prévalence attendue est `0,50`; c’est le scénario le plus proche de l’effectif observé.
+- Dès que l’on demande une **borne inférieure plus haute** ou une **spécificité cible plus ambitieuse**, l’effectif requis augmente rapidement et dépasse la cohorte actuelle.
+- L’effectif analysé ici (`r primary_n`) est donc **compatible avec une étude exploratoire**, capable de fournir une première estimation de la spécificité, mais insuffisant pour revendiquer une précision étroite test par test.
 
-En pratique, le recalcul retrouve les ordres de grandeur de l’image: il faut environ **`r unique(sample_size_scenarios$N_negatifs_requis[sample_size_scenarios$Specificite_cible==0.90 & sample_size_scenarios$Largeur_IC==0.099])` négatifs** pour viser une spécificité de 0,90 avec une largeur proche de 0,10, contre **`r unique(sample_size_scenarios$N_negatifs_requis[sample_size_scenarios$Specificite_cible==0.85 & sample_size_scenarios$Largeur_IC==0.099])` négatifs** pour une spécificité de 0,85 avec la même exigence de précision.
+En pratique, le recalcul retrouve les ordres de grandeur de l’image: il faut environ **`r unique(sample_size_scenarios$N_negatifs_requis[sample_size_scenarios$Specificite_cible==0.90 & sample_size_scenarios$Largeur_IC==0.099])` sujets négatifs** pour viser une spécificité de `0,90` avec une marge `ω` proche de `0,10`, contre **`r unique(sample_size_scenarios$N_negatifs_requis[sample_size_scenarios$Specificite_cible==0.85 & sample_size_scenarios$Largeur_IC==0.099])` sujets négatifs** pour une spécificité de `0,85` avec la même exigence de précision.
 
 **À quoi sert concrètement cette justification d’effectif ?**
 - Elle sert à juger si l’étude est capable d’**estimer la spécificité avec une précision acceptable**, et pas seulement à produire une valeur ponctuelle.
@@ -549,6 +559,31 @@ Cette seconde approche ne remplace pas le calcul issu de l’image; elle le comp
 diag_primary_round
 ```
 
+::: {.callout-tip icon=false title="L'œil du clinicien : Analyse des tests isolés"}
+**En français :**
+Les tests **U1 (Nerf Médian)** et **U2b (Nerf Radial)** sont les plus performants pour le dépistage. 
+- **U1 est le meilleur test isolé pour diminuer la probabilité de NCB** : avec une sensibilité de **83,3%** et un LR- de **0,35**, un test U1 négatif rend le diagnostic moins probable, sans toutefois suffire à l'exclure à lui seul.
+- **U3 (Nerf Ulnaire) est le maillon faible** : Sa sensibilité n'est que de **36,1%**, ce qui est significativement inférieur à U1 (p < 0,001). Ses rapports de vraisemblance sont proches de 1, ce qui signifie qu'il n'aide quasiment pas au diagnostic dans cette cohorte.
+:::
+
+### Comparaison exploratoire U1 versus U3 sur la sensibilité (McNemar)
+
+Cette sous-section illustre une **comparaison ponctuelle** entre deux tests très contrastés, `U1` et `U3`, chez les sujets classés positifs par le gold standard. Elle ne constitue pas une comparaison exhaustive de toutes les sensibilités et spécificités du rapport.
+
+```{r}
+# Fonction pour McNemar sur les positifs (Sensibilité)
+compare_se <- function(t1, t2, gold) {
+  pos <- which(gold == "Positif")
+  tab <- table(factor(t1[pos], levels=c("Positif","Negatif")), 
+               factor(t2[pos], levels=c("Positif","Negatif")))
+  mcnemar.test(tab)
+}
+
+mcn_u1_u3 <- compare_se(df$U1_E1, df$U3_E1, df$Gold_Standard_main)
+```
+
+La différence de sensibilité entre **U1 (83%)** et **U3 (36%)** est statistiquement significative (p = `r format.pval(mcn_u1_u3$p.value, 3)`), ce qui soutient l'idée que `U1` est plus utile que `U3` pour le repérage initial des NCB dans cette cohorte.
+
 ### Tableaux de contingence
 
 ```{r}
@@ -567,7 +602,6 @@ ggplot(contingency_long, aes(Test, Effectif, fill = Cellule)) +
 
 Ces tableaux 2x2 sont la base de toute l’analyse diagnostique. Ils montrent immédiatement que:
 - `U1` et `U2b` ont le meilleur équilibre entre vrais positifs et faux positifs.
-- `Scratch` n’a **aucun faux positif** dans l’analyse principale, d’où sa spécificité de 100%, mais il ne détecte que `r contingency_tab$TP[contingency_tab$Test=="Scratch"]` vrais positifs sur `r contingency_tab$TP[contingency_tab$Test=="Scratch"] + contingency_tab$FN[contingency_tab$Test=="Scratch"]`.
 - `U3` produit peu de vrais positifs au regard du nombre de faux négatifs, ce qui explique sa faible sensibilité.
 
 ### IC95% et précision des estimations
@@ -602,7 +636,6 @@ ggplot(diag_ci_plot, aes(Test, est, color = Mesure)) +
 **Interprétation de la précision.**
 - Les estimations de **sensibilité** sont globalement plus stables que celles de **spécificité**, car la cohorte contient davantage de cas positifs que négatifs.
 - Les IC de spécificité restent larges, ce qui impose de la prudence avant de hiérarchiser trop finement les tests sur ce seul critère.
-- Le cas de `Scratch` est typique: une spécificité observée à 100% est impressionnante, mais sa précision réelle est limitée par le petit nombre de négatifs et l’absence de faux positifs observés.
 
 ### Analyse de sensibilité sur les cas douteux
 
@@ -624,16 +657,8 @@ Le tableau du haut correspond à l’analyse principale retenue dans le rapport:
 - Les conclusions qualitatives changent peu entre les deux stratégies: `U1` et `U2b` restent les tests les plus utiles, et `U3` reste faible.
 - Le fait que les résultats restent globalement cohérents renforce la robustesse du message principal, tout en montrant que le choix de traiter les `Douteux` comme négatifs doit être dit clairement au lecteur.
 
-**Interprétation détaillée des résultats principaux.**
-- `U1` est le test le plus sensible parmi les tests isolés: Se `r fmt_num(diag_primary$Se[diag_primary$Test=="U1"]*100,1)`% [`r fmt_num(diag_primary$Se_low[diag_primary$Test=="U1"]*100,1)` ; `r fmt_num(diag_primary$Se_high[diag_primary$Test=="U1"]*100,1)`], avec un LR− à `r fmt_num(diag_primary$LRn[diag_primary$Test=="U1"],2)`. Il est donc le plus utile des tests isolés pour diminuer la probabilité de NCB quand il est négatif, sans être assez fort pour exclure à lui seul.
-- `U2a` reste proche de `U1`, mais avec un compromis légèrement moins bon: Se `r fmt_num(diag_primary$Se[diag_primary$Test=="U2a"]*100,1)`%, Sp `r fmt_num(diag_primary$Sp[diag_primary$Test=="U2a"]*100,1)`%, Youden `r fmt_num(diag_primary$Youden[diag_primary$Test=="U2a"],3)`.
-- `U2b` est le meilleur compromis global en analyse isolée: Sp `r fmt_num(diag_primary$Sp[diag_primary$Test=="U2b"]*100,1)`%, LR+ `r fmt_num(diag_primary$LRp[diag_primary$Test=="U2b"],2)`, Youden `r fmt_num(diag_primary$Youden[diag_primary$Test=="U2b"],3)`, AUC `r fmt_num(diag_primary$AUC[diag_primary$Test=="U2b"],3)`. C’est donc l’ULNT le plus équilibré dans cet échantillon.
-- `U3` est clairement le moins performant: Se `r fmt_num(diag_primary$Se[diag_primary$Test=="U3"]*100,1)`%, LR− `r fmt_num(diag_primary$LRn[diag_primary$Test=="U3"],2)`, Youden `r fmt_num(diag_primary$Youden[diag_primary$Test=="U3"],3)`. Sa faible sensibilité le rend peu utile pour le dépistage et son LR+ n’est pas assez élevé pour une confirmation robuste.
-- `Scratch` est extrêmement spécifique dans l’analyse principale: Sp `r fmt_num(diag_primary$Sp[diag_primary$Test=="Scratch"]*100,1)`% et VPP `r fmt_num(diag_primary$VPP[diag_primary$Test=="Scratch"]*100,1)`%. En revanche sa sensibilité n’est que de `r fmt_num(diag_primary$Se[diag_primary$Test=="Scratch"]*100,1)`%. Cliniquement, un Scratch positif est compatible avec une forte augmentation de probabilité de NCB, mais un Scratch négatif n’écarte pas la pathologie. Son LR+ est théoriquement très élevé, mais son intervalle de confiance reste très large car aucun faux positif n’est observé.
-
 **Lecture synthétique.**
 Le test le plus sensible est **`r best_sens$Test`** (Se `r fmt_num(best_sens$Se*100,1)`%, LR− `r fmt_num(best_sens$LRn,2)`).  
-Le test le plus spécifique est **`r best_spec$Test`** (Sp `r fmt_num(best_spec$Sp*100,1)`%, LR+ `r ifelse(is.infinite(best_spec$LRp), "Inf", fmt_num(best_spec$LRp,2))`).  
 Le meilleur compromis global (Youden maximal) est **`r best_youden$Test`** (Youden `r fmt_num(best_youden$Youden,3)`).
 
 **Validation des conclusions.**
@@ -646,26 +671,68 @@ perf_long <- diag_primary %>%
 ggplot(perf_long, aes(Test, Valeur, fill = Mesure)) + geom_col(position = "dodge") + theme_minimal() + labs(title = "Performances diagnostiques principales")
 ```
 
-## Combinaisons de tests positifs ULNT
+## Score Clinique ULNT (Somme des tests positifs)
+
+On crée un score allant de 0 à 4, correspondant au nombre total de tests ULNT positifs chez un même patient.
 
 ```{r}
-combo_round
+# Calcul des performances pour chaque seuil (déjà fait dans combo_primary)
+# On ajoute le Diagnostic Odds Ratio (DOR)
+score_summary <- combo_primary %>%
+  mutate(
+    DOR = (TP * TN) / (FP * FN),
+    Seuil = Test
+  ) %>%
+  select(Seuil, Se, Sp, LRp, LRn, DOR)
+
+knitr::kable(score_summary, digits = 3, caption = "Performances diagnostiques par seuil de score")
 ```
 
-Quand on combine les ULNT, le meilleur seuil pour le **dépistage** est **`r best_combo_screen$Test`**: Se `r fmt_num(best_combo_screen$Se*100,1)`%, LR− `r fmt_num(best_combo_screen$LRn,2)`, Youden `r fmt_num(best_combo_screen$Youden,3)`.  
-Le meilleur seuil pour le **compromis global** est **`r best_combo_balance$Test`**: Se `r fmt_num(best_combo_balance$Se*100,1)`%, Sp `r fmt_num(best_combo_balance$Sp*100,1)`%, Youden `r fmt_num(best_combo_balance$Youden,3)`.
+### Probabilités NCB par score exact
 
-**Interprétation clinique.**
-- Le seuil `>=1 positif` maximise la sensibilité (`r fmt_num(combo_primary$Se[combo_primary$Test==">=1 positifs"]*100,1)`%) et donne le meilleur LR− (`r fmt_num(combo_primary$LRn[combo_primary$Test==">=1 positifs"],2)`), ce qui en fait la meilleure règle d’exclusion parmi les combinaisons.
-- Le seuil `>=2 positifs` garde une sensibilité élevée (`r fmt_num(combo_primary$Se[combo_primary$Test==">=2 positifs"]*100,1)`%) avec une spécificité un peu meilleure (`r fmt_num(combo_primary$Sp[combo_primary$Test==">=2 positifs"]*100,1)`%); c’est le compromis le plus réaliste si l’on veut éviter un excès de faux positifs.
-- Les seuils `>=3` et surtout `4/4` perdent trop de sensibilité pour un gain limité en spécificité dans cette cohorte.
+Ce tableau est le plus utile pour le clinicien : quelle est la probabilité que mon patient ait une NCB s'il a exactement X tests positifs ?
 
 ```{r}
-combo_long <- combo_primary %>%
-  select(Test, Se, Sp) %>%
-  pivot_longer(cols = c(Se, Sp), names_to = "Mesure", values_to = "Valeur")
-ggplot(combo_long, aes(Test, Valeur, fill = Mesure)) + geom_col(position = "dodge") + ylim(0, 1) + theme_minimal() + labs(title = "Sensibilité et spécificité des combinaisons ULNT")
+exact_score_perf <- df %>%
+  filter(!is.na(Gold_Standard_main) & !is.na(n_pos)) %>%
+  group_by(n_pos) %>%
+  summarise(
+    N = n(),
+    NCB_count = sum(Gold_Standard_main == "Positif"),
+    Probabilite_NCB = NCB_count / N,
+    IC95_low = binom.test(NCB_count, N)$conf.int[1],
+    IC95_high = binom.test(NCB_count, N)$conf.int[2],
+    .groups = "drop"
+  )
+
+knitr::kable(
+  exact_score_perf %>%
+    mutate(`Probabilité de NCB [IC95%]` = paste0(round(Probabilite_NCB, 3), " [", round(IC95_low, 3), "; ", round(IC95_high, 3), "]")) %>%
+    select(n_pos, N, NCB_count, `Probabilité de NCB [IC95%]`),
+  digits = 3,
+  col.names = c("Nombre de tests positifs", "Effectif (N)", "Nombre de NCB", "Probabilité de NCB [IC95%]")
+)
 ```
+
+::: {.callout-tip icon=false title="L'œil du clinicien : Comment interpréter le score ?"}
+**En français :**
+- **Score 0/4 :** La probabilité observée de NCB est la plus basse du tableau, autour de **22%**, mais elle n'est pas nulle.
+- **Scores 1/4, 2/4 et 3/4 :** Les probabilités observées sont élevées, mais les effectifs restent modestes et les intervalles de confiance sont larges.
+- **Score 4/4 :** Il n'apparaît pas comme le niveau le plus informatif dans cette cohorte; sa probabilité observée est inférieure à celle de `2/4` ou `3/4`, ce qui rappelle que cette lecture doit rester **strictement descriptive**.
+:::
+
+### Courbe ROC du Score Global
+
+On évalue ici la capacité globale du score (0 à 4) à classer les patients.
+
+```{r}
+roc_score <- roc(df$Gold_Standard_main, df$n_pos, quiet = TRUE)
+plot(roc_score, main = "Courbe ROC du Score ULNT Global (0-4)", col = "firebrick", lwd = 3)
+text(0.4, 0.2, paste0("AUC = ", round(auc(roc_score), 3)))
+```
+
+L'aire sous la courbe (AUC) du score global est de **`r round(auc(roc_score), 3)`**. Dans cette cohorte, cette AUC reste **inférieure** à celle de `U1` et de `U2b`; le score global ne montre donc **pas** de supériorité claire sur les meilleurs tests isolés. Il peut rester utile comme résumé clinique simple, mais son apport discriminant supplémentaire n’est pas démontré ici. Aucune comparaison formelle d’AUC n’a été recherchée dans cette version, de sorte que cette lecture doit rester strictement descriptive.
+
 
 ## Taux de positivité selon niveau métamérique
 
@@ -679,7 +746,7 @@ Cette section est **strictement descriptive**. Les données par niveau métamér
 - `C8` n’a que `r sum(niv_valid$N[niv_valid$Niveau=="C8" & niv_valid$Test=="U1_E1"])` dossiers exploitables pour `U1`.
 - `r niveau_counts["<NA>"]` dossiers n’ont **aucun niveau renseigné**.
 
-La seule lecture raisonnable est exploratoire: au niveau `C6`, `U1` et `U2a` paraissent les plus souvent positifs (`r fmt_num(niv_valid$Taux[niv_valid$Niveau=="C6" & niv_valid$Test=="U1_E1"]*100,1)`% et `r fmt_num(niv_valid$Taux[niv_valid$Niveau=="C6" & niv_valid$Test=="U2a_E1"]*100,1)`%), tandis que `Scratch` reste peu souvent positif (`r fmt_num(niv_valid$Taux[niv_valid$Niveau=="C6" & niv_valid$Test=="Sc_E1"]*100,1)`%). Mais ces chiffres ne doivent pas être surinterprétés.
+La seule lecture raisonnable est exploratoire: au niveau `C6`, `U1` et `U2a` paraissent les plus souvent positifs (`r fmt_num(niv_valid$Taux[niv_valid$Niveau=="C6" & niv_valid$Test=="U1_E1"]*100,1)`% et `r fmt_num(niv_valid$Taux[niv_valid$Niveau=="C6" & niv_valid$Test=="U2a_E1"]*100,1)`%). Mais ces chiffres ne doivent pas être surinterprétés.
 
 ```{r}
 ggplot(niv_valid, aes(Niveau, Taux, fill = Test)) + geom_col(position = "dodge") + ylim(0, 1) + theme_minimal() + labs(title = "Taux de positivité par niveau métamérique")
@@ -695,10 +762,10 @@ kappa_round
 **Interprétation détaillée.**
 - `U1` présente la meilleure reproductibilité: kappa `r fmt_num(kappa_tab$Kappa[kappa_tab$Test=="U1"],3)` [`r fmt_num(kappa_tab$Kappa_low[kappa_tab$Test=="U1"],3)` ; `r fmt_num(kappa_tab$Kappa_high[kappa_tab$Test=="U1"],3)`], accord brut `r fmt_num(kappa_tab$Accord[kappa_tab$Test=="U1"]*100,1)`%.
 - `U2a` et `U2b` ont une reproductibilité **modérée**, avec des kappas autour de 0,5.
-- `U3` revient à un niveau **substantiel** (`r fmt_num(kappa_tab$Kappa[kappa_tab$Test=="U3"],3)`), meilleur qu’attendu au regard de sa faible performance diagnostique: un test peut être reproductible sans être très discriminant.
-- `Scratch` a la reproductibilité la plus faible du groupe (`r fmt_num(kappa_tab$Kappa[kappa_tab$Test=="Scratch"],3)`), tout en restant dans une zone modérée.
+- `U3` revient à un niveau **substantiel** (`r fmt_num(kappa_tab$Kappa[kappa_tab$Test=="U3"],3)`), meilleur qu’attendu au regard de sa faible performance diagnostique.
 
-En pratique, les manœuvres semblent donc **globalement reproductibles**, mais la solidité n’est pas homogène entre tests. La reproductibilité n’est pas le principal facteur limitant ici; c’est plutôt la performance diagnostique elle-même.
+En pratique, les manœuvres semblent donc **globalement reproductibles**, mais la solidité n’est pas homogène entre tests. 
+
 
 ```{r}
 ggplot(kappa_tab, aes(Test, Kappa, fill = Test)) + geom_col() + theme_minimal() + labs(title = "Kappa inter-observateur")
@@ -725,18 +792,17 @@ plot(roc_objects$U1, col = "#1b9e77", main = "ROC superposées", legacy.axes = T
 plot(roc_objects$U2a, col = "#d95f02", add = TRUE)
 plot(roc_objects$U2b, col = "#7570b3", add = TRUE)
 plot(roc_objects$U3, col = "#e7298a", add = TRUE)
-plot(roc_objects$Scratch, col = "#66a61e", add = TRUE)
 abline(0, 1, lty = 2)
 legend("bottomright", legend = c(
   paste0("U1 AUC=", fmt_num(diag_primary$AUC[diag_primary$Test=="U1"], 3)),
   paste0("U2a AUC=", fmt_num(diag_primary$AUC[diag_primary$Test=="U2a"], 3)),
   paste0("U2b AUC=", fmt_num(diag_primary$AUC[diag_primary$Test=="U2b"], 3)),
-  paste0("U3 AUC=", fmt_num(diag_primary$AUC[diag_primary$Test=="U3"], 3)),
-  paste0("Scratch AUC=", fmt_num(diag_primary$AUC[diag_primary$Test=="Scratch"], 3))
-), col = c("#1b9e77", "#d95f02", "#7570b3", "#e7298a", "#66a61e"), lwd = 2)
+  paste0("U3 AUC=", fmt_num(diag_primary$AUC[diag_primary$Test=="U3"], 3))
+), col = c("#1b9e77", "#d95f02", "#7570b3", "#e7298a"), lwd = 2)
 ```
 
 ## Corrélation entre tests
+
 
 ```{r}
 round(cor_mat, 3)
@@ -771,6 +837,33 @@ Les probabilités post-test ci-dessus sont directement interprétables:
 - si le test est négatif, la probabilité résiduelle de NCB vaut `1 - VPN`.
 
 En particulier, après un test négatif, la probabilité résiduelle de NCB reste de `r fmt_num((1 - diag_primary$VPN[diag_primary$Test=="U1"]) * 100, 1)`% pour `U1` et de `r fmt_num((1 - diag_primary$VPN[diag_primary$Test=="U2b"]) * 100, 1)`% pour `U2b`: cela montre qu’aucun test isolé négatif n’exclut complètement la maladie dans cette cohorte.
+
+## Aide à la décision clinique : Gain Diagnostique
+
+Le tableau ci-dessous montre comment la probabilité de NCB change après avoir effectué un test, selon que l'on suspecte fortement la maladie (75%) ou modérément (25%).
+
+```{r}
+fagan_logic <- function(pretest, lr) {
+  pre_odds <- pretest / (1 - pretest)
+  post_odds <- pre_odds * lr
+  post_test <- post_odds / (1 + post_odds)
+  return(post_test)
+}
+
+gains_diag <- diag_primary %>%
+  mutate(
+    `Post-test si suspicion 25% (test +)` = fagan_logic(0.25, LRp),
+    `Post-test si suspicion 75% (test -)` = fagan_logic(0.75, LRn)
+  ) %>%
+  select(Test, `Post-test si suspicion 25% (test +)`, `Post-test si suspicion 75% (test -)`)
+
+knitr::kable(gains_diag, digits = 3)
+```
+
+::: {.callout-tip icon=false title="L'œil du clinicien : Comment utiliser ces chiffres ?"}
+**En français :**
+- **Gain en exclusion :** Si vous avez une forte suspicion (75% de risque) mais que le **test U1** est négatif, le risque de NCB tombe à **51%**. C'est une baisse importante, mais cela montre qu'un seul test négatif ne suffit pas à "éliminer" totalement le diagnostic si les signes cliniques par ailleurs sont très forts.
+:::
 
 ## NNT exploratoire: définition, calcul, limites
 
@@ -843,17 +936,19 @@ validity_tab
 - L’analyse de sensibilité par exclusion des `Douteux` montre toutefois que le signal principal (`U1`/`U2b` utiles, `U3` faible) reste globalement stable.
 - La section par niveau métamérique est **incomplète et trop sparse** pour soutenir autre chose qu’une description.
 - Les AUC sont **acceptables comme résumé**, mais secondaires par rapport aux indices diagnostiques classiques, car les tests sont binaires.
-- Le “NNT” ne doit **pas** faire partie de la conclusion scientifique d’une étude diagnostique; il a donc été remplacé par des probabilités post-test.
-- Les conclusions cliniques restent **fragiles en spécificité**, car il n’y a que 14 négatifs dans l’analyse principale; cela élargit fortement les IC des spécificités et des LR, surtout pour `Scratch`.
+- Le “NNT” reste **strictement exploratoire** dans ce rapport et ne doit pas être confondu avec un indicateur standard de validité diagnostique.
+- Les conclusions cliniques restent **fragiles en spécificité**, car il n’y a que 17 négatifs dans l’analyse principale; cela élargit fortement les IC des spécificités et des LR.
 
 ## Conclusion intégrée
 
-Dans cette cohorte, **`U1` et `U2b` sont les tests isolés les plus utiles**. `U1` est le plus sensible et `U2b` offre le meilleur compromis global. **`Scratch` est surtout un test de confirmation quand il est positif**, mais sa faible sensibilité l’empêche d’être un bon test d’exclusion. **`U3` apparaît peu performant**.
+::: {.callout-important title="Synthèse des résultats pour la pratique clinique"}
+**En français simplifié :**
 
-Pour les combinaisons, **au moins un ULNT positif** est la meilleure stratégie de dépistage et **au moins deux ULNT positifs** offre le meilleur équilibre pratique. En revanche, les conclusions par niveau métamérique sont trop peu robustes pour être retenues analytiquement.
+1.  **Dépistage (réduire le risque de manquer une NCB) :** Le test **U1** et la règle **"au moins 1 ULNT positif"** sont les stratégies les plus sensibles. En revanche, un résultat négatif ne suffit pas à exclure complètement la NCB: pour la règle `>=1 positif`, la probabilité résiduelle observée reste d’environ **22%**.
+2.  **Confirmation (Affirmer la NCB) :** Ne vous basez pas sur les ULNT seuls pour affirmer avec certitude, car ils produisent des faux positifs (Spécificité limitée autour de 50-60%).
+3.  **Le maillon faible :** Le test **U3** n'apporte que très peu d'information utile dans cette cohorte et peut être considéré comme secondaire.
+4.  **Limites :** Ces conclusions reposent sur un petit nombre de sujets classés négatifs par le gold standard (`n = 17` après reclassement des `Douteux`), ce qui limite la précision des spécificités et des rapports de vraisemblance.
+:::
 
-Sur le plan méthodologique, le document est désormais plus valide statistiquement parce qu’il:
-- sépare analyse principale et analyse de sensibilité pour les `Douteux`;
-- rapporte les résultats extraits et leurs intervalles de confiance;
-- cadre le NNT comme indicateur exploratoire distinct du noyau principal;
-- explicite les limites dues aux effectifs, aux données manquantes et à la nature binaire des tests.
+**Bilan méthodologique :**
+Le document est désormais enrichi d'une comparaison exploratoire ciblée (McNemar), d'un score clinique descriptif et d'un outil d'aide à la décision clinique. L'interprétation se concentre exclusivement sur les tests ULNT.
