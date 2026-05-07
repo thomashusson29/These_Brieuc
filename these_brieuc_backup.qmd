@@ -1,0 +1,4357 @@
+---
+title: "Stats Thèse Brieuc"
+author: "Thomas Husson"
+bibliography: biblio.bib
+prefer-pdf: true
+format:
+    html:
+        toc: true
+        toc-depth: 5
+        toc-title: "Table des matières"
+        toc-location: left
+        toc-sticky: true
+        number-sections: true
+        theme: default
+        code-fold: true
+        code-summary: "Afficher le code"
+
+    docx:
+        toc: true
+        toc-depth: 5
+
+    pdf:
+        toc: true
+        toc-depth: 2
+        toc-title: "Table des matières"
+        pdf-engine: xelatex
+        cite-method: natbib
+        biblio-style: unsrturl
+        natbiboptions: "super,sort,compress"
+        pdf-engine-opts:
+        - -interaction=nonstopmode
+        - -halt-on-error
+        number-sections: true
+        code-block-bg: false
+        header-includes: |
+            % Force la police Computer Modern pour le titre principal
+            \usepackage{fontspec}
+            \makeatletter
+            \renewcommand{\maketitle}{
+            \begin{center}
+                {\Large\bfseries\rmfamily \@title \par}
+                \vskip 1.5em
+                {\large\rmfamily \@author \par}
+                \vskip 1em
+            \end{center}
+            }
+            \makeatother
+            % Titres KOMA-Script en police roman par défaut
+            \setkomafont{disposition}{\rmfamily}
+            \definecolor{sectionblue}{HTML}{1D4E89}
+            \definecolor{subsectionblue}{HTML}{8B1E3F}
+            \definecolor{subsubsectiongreen}{HTML}{1F6B4F}
+            \definecolor{paragraphslate}{HTML}{5A2E8A}
+            \definecolor{subparagraphgray}{HTML}{2F2F2F}
+            \definecolor{linkblue}{HTML}{163A63}
+            \setkomafont{section}{\rmfamily\color{sectionblue}\bfseries}
+            \setkomafont{subsection}{\rmfamily\color{subsectionblue}\bfseries}
+            \setkomafont{subsubsection}{\rmfamily\color{subsubsectiongreen}\bfseries}
+            \setkomafont{paragraph}{\rmfamily\color{paragraphslate}\bfseries}
+            \setkomafont{subparagraph}{\rmfamily\color{subparagraphgray}\bfseries\itshape}
+            \RedeclareSectionCommand[runin=false,afterskip=0.4\baselineskip]{paragraph}
+            \RedeclareSectionCommand[runin=false,afterskip=0.3\baselineskip]{subparagraph}
+            % Hyphenation française
+            \usepackage[french]{babel}
+            % Style des commentaires dans les blocs de code
+            \usepackage{xcolor}
+            \definecolor{commentgray}{HTML}{7A7A7A}
+            \providecommand{\CommentTok}[1]{#1}
+            \AtBeginDocument{
+            \renewcommand{\CommentTok}[1]{\textcolor{commentgray}{\textit{#1}}}
+            }
+            % Police "universelle" pour le code (XeLaTeX)
+            \usepackage{fontspec}
+            \IfFontExistsTF{Ubuntu Mono}{
+            \setmonofont{Ubuntu Mono}[Scale=MatchLowercase]
+            }{
+            \IfFontExistsTF{DejaVu Sans Mono}{
+                \setmonofont{DejaVu Sans Mono}[Scale=MatchLowercase]
+            }{
+                % fallback macOS (souvent dispo)
+                \IfFontExistsTF{Menlo}{
+                \setmonofont{Menlo}[Scale=MatchLowercase]
+                }{
+                \IfFontExistsTF{Monaco}{
+                    \setmonofont{Monaco}[Scale=MatchLowercase]
+                }{
+                    % sinon on garde la police mono par défaut
+                }
+                }
+            }
+            }
+            % Bloc de code R pour l'annexe (évite Shaded trop grand)
+            \usepackage{listings}
+            \lstset{
+            language=R,
+            basicstyle=\ttfamily\footnotesize\linespread{0.6}\selectfont\color{black},
+            commentstyle=\itshape\color{commentgray},
+            keywordstyle=\color{blue!60!black},
+            stringstyle=\color{brown!60!black},
+            showstringspaces=false,
+            showspaces=false,
+            showtabs=false,
+            breaklines=true,
+            breakatwhitespace=false,
+            columns=fullflexible,
+            xleftmargin=0.5em,
+            xrightmargin=0.5em
+            }
+
+            \usepackage{etoolbox}
+            \renewcommand{\contentsname}{}
+            \AtBeginDocument{
+                \addtocontents{toc}{\protect\smallskip}
+                \let\oldtableofcontents\tableofcontents
+                \renewcommand{\tableofcontents}{
+                \begingroup
+                    \footnotesize
+                    \setlength{\parskip}{2pt}
+                    \oldtableofcontents
+                \endgroup
+                }
+            }
+            \setcounter{tocdepth}{5}
+            \makeatletter
+            \renewcommand{\@tocrmarg}{0pt}
+            \makeatother
+
+            \usepackage{fvextra}
+            \usepackage[section]{placeins}
+            \AtBeginDocument{
+                \urlstyle{same}
+                \renewcommand{\UrlFont}{\rmfamily}
+                \DeclareRobustCommand{\path}[1]{{\rmfamily\detokenize{#1}}}
+                \let\oldhref\href
+                \renewcommand{\href}[2]{\oldhref{#1}{{\rmfamily #2}}}
+                \hypersetup{
+                    colorlinks=true,
+                    linkcolor=linkblue,
+                    citecolor=linkblue,
+                    urlcolor=linkblue
+                }
+            }
+
+            % Gestion des chunks de code
+            \DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,commandchars=\\\{\}}
+
+            \usepackage{needspace}
+            \usepackage{float}
+            \floatplacement{figure}{H}
+            \floatplacement{table}{H}
+            % \usepackage{rotating} % (désactivé)
+
+            \newcommand{\sectionbreak}{\needspace{5\baselineskip}}
+            \setlength{\parindent}{0pt}
+            \setlength{\parskip}{3pt}
+            \hfuzz=100pt
+            \vfuzz=100pt
+            \hbadness=10000
+            \usepackage{enumitem}
+            \setlist[itemize]{itemsep=3pt, parsep=3pt, topsep=3pt}
+            \setlist[enumerate]{itemsep=3pt, parsep=3pt, topsep=3pt}
+            \setlist[description]{itemsep=3pt, parsep=3pt, topsep=3pt}
+
+            \usepackage[most]{tcolorbox}
+            \usepackage{color}
+            \definecolor{lightgray}{gray}{0.95}
+            \newtcolorbox{graybox}{colback=gray!10!white,colframe=black,boxrule=0.6pt,arc=1mm,left=6pt,right=6pt,top=4pt,bottom=4pt}
+            \newtcolorbox{codebox}{breakable,colback=blue!5!white,colframe=blue!50!black,boxrule=0.5pt,arc=1mm,left=4pt,right=4pt,top=3pt,bottom=3pt}
+            \DefineVerbatimEnvironment{CodeBoxContent}{Verbatim}{fontsize=\small,breaklines,breakanywhere}
+
+            \renewcommand{\thesection}{\arabic{section}}
+            \renewcommand{\thesubsection}{\thesection.\Alph{subsection}}
+            \renewcommand{\thesubsubsection}{\thesubsection.\arabic{subsubsection}}
+
+geometry: margin=2.5cm
+---
+
+```{r}
+#| label: setup
+#| include: true
+#| echo: !expr "(!knitr::is_latex_output())"
+#| message: false
+#| warning: false
+library(forecast)
+library(cobalt)
+library(plotrix)
+library(randomForest)
+library(dplyr)
+library(tidyr)
+library(epiR)
+library(viridisLite)
+library(ggplot2)
+library(binom)
+library(survminer)
+library(MatchThem)
+library(pROC)
+library(treemap)
+library(psy)
+library(MASS)
+library(rpart)
+library(rpart.plot)
+library(plotly)
+library(dplyr)
+library(ggplot2)
+library(psych)
+library(knitr)
+library(kableExtra)
+library(nord)
+library(lmerTest)
+library(psych)
+library(lme4)
+library(prettyR)
+library(zoo)
+library(kableExtra)
+library(gtsummary)
+library(lattice)
+library(survey)
+library(corrplot)
+library(mice)
+library(paletteer)
+library(skimr)
+library(nord)
+library(wesanderson)
+library(lubridate)
+library(qgraph)
+library(readxl)
+library(nlme)
+library(pwr)
+library(nord)
+library(ape)
+library(survival)
+library(gmodels)
+library(httpgd)
+library(e1071)
+library(psy)
+library(reshape2)
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+if (knitr::is_latex_output()) {
+    knitr::opts_chunk$set(dev = "pdf", fig.path = "these_brieuc_files/figure-pdf/")
+}
+```
+
+\newpage
+::: {.callout-note title="Origine de ce document"}
+-   Ce document est au format Quarto Markdown (.qmd) : il contient du code R et est généré directement pour obtenir un rapport en PDF ou HTML. 
+
+-   Il est donc à la fois un document de travail pour moi, et à la fois un document de présentation des analyses. Je laisse donc volontairement les sections de code pour transparence et reproductibilité des analyses.
+
+-   La préparation des données a été faite sur R plutôt que sur Excel pour éviter les erreurs et tracer les étapes. La première partie du document est donc consacrée à la préparation des données, avec des sections de code pour chaque variable (vous pouvez donc sauter les sections de code si vous ne souhaitez pas les détails de la préparation des données).
+
+-   Je suis interne en chirurgie digestive à Paris et actuellement un master 2 en biostatistiques ("Méthodologie et Statistiques en Recherche biomédicale", Université Paris Saclay). Et accessoirement, ami de Brieuc !
+
+-   Le rapport est disponible en format HTML hébergé sur Github Pages, et aussi téléchargeable en PDF, DOCX et Quarto (.qmd), contenant le code R utilisé pour les analyses.
+:::
+
+\newpage
+# Import de la base et préparation des données
+
+```{r}
+#| label: import
+#| echo: !expr "(!knitr::is_latex_output())"
+#| include: true
+#| results: "hide"
+# import principal depuis le nouveau recueil CSV, puis complément ciblé
+# depuis l'ancien recueil pour les variables historiques non présentes.
+normalize_names <- function(x) {
+    x <- trimws(x)
+    map <- c(
+        "Prénom" = "prenom",
+        "Coté" = "Cote",
+        "Date de recueil" = "Date_de_recueil",
+        "Examen Clinique" = "Examen_Clinique",
+        "Resultat Inf" = "Resultat_Inf",
+        "Gold Standard" = "Gold_Standard",
+        "U1 E1" = "U1_E1",
+        "U2a E1" = "U2a_E1",
+        "U2b E1" = "U2b_E1",
+        "U3 E1" = "U3_E1",
+        "U1 E2" = "U1_E2",
+        "U2a E2" = "U2a_E2",
+        "U2b E2" = "U2b_E2",
+        "U3 E2" = "U3_E2"
+    )
+    x[x %in% names(map)] <- unname(map[x[x %in% names(map)]])
+    x
+}
+
+parse_excel_date <- function(x) {
+    x_chr <- trimws(as.character(x))
+    x_chr[x_chr %in% c("", "NA", "N/A")] <- NA
+    x_num <- suppressWarnings(as.numeric(x_chr))
+    out <- as.Date(rep(NA_character_, length(x_chr)))
+    is_excel_num <- !is.na(x_num)
+    out[is_excel_num] <- as.Date(x_num[is_excel_num], origin = "1899-12-30")
+    out[!is_excel_num & !is.na(x_chr)] <- as.Date(x_chr[!is_excel_num & !is.na(x_chr)])
+    out
+}
+
+df <- read.csv("recueil_bon_avec_sexe.csv", check.names = FALSE, stringsAsFactors = FALSE)
+names(df) <- normalize_names(names(df))
+
+# Supprime les lignes visuellement vides conservées lors de l'export CSV.
+df <- df |>
+    mutate(
+        Nom = trimws(as.character(Nom)),
+        prenom = trimws(as.character(prenom)),
+        DDN = trimws(as.character(DDN)),
+        Cote = trimws(as.character(Cote)),
+        Date_de_recueil = trimws(as.character(Date_de_recueil))
+    ) |>
+    filter(!(Nom == "" & prenom == "" & DDN == ""))
+
+# harmonisation minimale des libellés textuels pour éviter les divergences de casse / espaces
+norm_result <- function(x) {
+    x <- trimws(as.character(x))
+    x[x %in% c("", "NA", "N/A", "NT")] <- NA
+    x[x %in% c("Pos", "Positive", "positif", "Positif ")] <- "Positif"
+    x[x %in% c("Neg", "Negative", "negatif", "négatif", "Negatif ")] <- "Negatif"
+    x
+}
+
+for (v in c("Gold_Standard", "U1_E1", "U2a_E1", "U2b_E1", "U3_E1", "U1_E2", "U2a_E2", "U2b_E2", "U3_E2")) {
+    df[[v]] <- norm_result(df[[v]])
+}
+```
+
+```{r}
+#| label: dates au format date
+#| echo: !expr "(!knitr::is_latex_output())"
+#| include: true
+#| results: "hide"
+# Convertir les colonnes de dates au format Date
+df$DDN <- parse_excel_date(df$DDN)
+df$Date_de_recueil <- parse_excel_date(df$Date_de_recueil)
+```
+
+```{r}
+#| label: variables numériques
+#| echo: !expr "(!knitr::is_latex_output())"
+#| include: true
+#| results: "hide"
+# Convertir les variables numériques
+df$Age <- as.numeric(df$Age)
+df$BMI <- as.numeric(df$BMI)
+class(df$Age)
+```
+
+```{r}
+#| label: sexe
+#| echo: !expr "(!knitr::is_latex_output())"
+#| include: true
+#| results: "hide"
+# Convertir la variable "Sexe" en facteur
+df$Sexe <- factor(c(M = "Masculin", F = "Féminin")[df$Sexe], levels = c("Masculin", "Féminin"))
+table(df$Sexe, useNA = "ifany")
+```
+
+```{r}
+#| label: côté
+#| echo: !expr "(!knitr::is_latex_output())"
+#| include: true
+#| results: "hide"
+# Convertir la variable "Côté" en facteur
+df$Cote <- factor(
+    c(G = "Gauche", D = "Droite")[df$Cote],
+    levels = c("Gauche", "Droite")
+)
+table(df$Cote, useNA = "ifany")
+```
+
+```{r}
+#| label: niveau
+#| echo: !expr "(!knitr::is_latex_output())"
+#| include: true
+#| results: "hide"
+# Convertir la variable "Niveau" en facteur ordonné
+df$Niveau
+df$Niveau <- factor(
+    df$Niveau,
+    levels = c("C4", "C5", "C6", "C7", "C8"),
+    ordered = TRUE
+)
+table(df$Niveau, useNA = "ifany")
+```
+
+```{r}
+#| label: bmi
+#| echo: !expr "(!knitr::is_latex_output())"
+#| include: true
+#| results: "hide"
+summary(df$BMI)
+class(df$BMI)
+table(is.na(df$BMI), useNA = "ifany")
+```
+
+```{r}
+#| label: tabac
+#| echo: !expr "(!knitr::is_latex_output())"
+#| include: true
+#| results: "hide"
+df$Tabac <- trimws(as.character(df$Tabac))
+df$Tabac[df$Tabac %in% c("", "NA", "N/A")] <- NA
+df$Tabac[df$Tabac == "oui"] <- "Oui"
+df$Tabac[df$Tabac == "non"] <- "Non"
+df$Tabac <- factor(df$Tabac, levels = c("Non", "Oui"))
+table(df$Tabac, useNA = "ifany")
+```
+
+```{r}
+#| label: examen clinique
+#| echo: !expr "(!knitr::is_latex_output())"
+#| include: true
+#| results: "hide"
+str(df$Examen_Clinique)
+class(df$Examen_Clinique)
+unique(df$Examen_Clinique)
+#création d'une variable binaire "Examen_Clinique_Binaire" (1 = Positif, 0 = Negatif ou Douteux)
+df$Examen_Clinique_Positif_YN <- ifelse(df$Examen_Clinique == "Positif", 1, 0)
+table(df$Examen_Clinique_Positif_YN, useNA = "ifany")
+#création d'une variable binaire "Examen_Clinique_Douteux_YN" (1 = Douteux, 0 = Positif ou Negatif)
+df$Examen_Clinique_Douteux_YN <- ifelse(df$Examen_Clinique == "Douteux", 1, 0)
+table(df$Examen_Clinique_Douteux_YN, useNA = "ifany")
+```
+
+```{r}
+#| label: irm
+#| echo: !expr "(!knitr::is_latex_output())"
+#| include: true
+#| results: "hide"
+str(df$IRM)
+class(df$IRM)
+unique(df$IRM)
+#création d'une variable binaire "IRM_Positif_YN" (1 = Positif, 0 = Negatif ou Douteux)
+df$IRM_Positif_YN <- ifelse(df$IRM == "Positif", 1, 0)
+table(df$IRM_Positif_YN, useNA = "ifany")
+#création d'une variable binaire "IRM_Douteux_YN" (1 = Douteux, 0 = Positif ou Negatif)
+df$IRM_Douteux_YN <- ifelse(df$IRM == "Douteux", 1, 0)
+table(df$IRM_Douteux_YN, useNA = "ifany")
+```
+
+```{r}
+#| label: infiltrations
+#| echo: !expr "(!knitr::is_latex_output())"
+#| include: true
+#| results: "hide"
+str(df$Infiltrations)
+class(df$Infiltrations)
+unique(df$Infiltrations)
+# harmonisation simple du statut d'infiltration
+df$Infiltrations <- trimws(as.character(df$Infiltrations))
+df$Infiltrations[df$Infiltrations %in% c("", "NA", "N/A")] <- NA
+df$Infiltrations[df$Infiltrations %in% c("oui", "Positif")] <- "Oui"
+df$Infiltrations[df$Infiltrations %in% c("non", "Negatif")] <- "Non"
+df$Infiltrations <- factor(df$Infiltrations, levels = c("Non", "Oui"))
+table(df$Infiltrations, useNA = "ifany")
+```
+
+```{r}
+#| label: resultat infiltrations
+#| echo: !expr "(!knitr::is_latex_output())"
+#| include: true
+#| results: "hide"
+str(df$Resultat_Inf)
+class(df$Resultat_Inf)
+unique(df$Resultat_Inf)
+# harmonisation simple du résultat des infiltrations
+df$Resultat_Inf <- trimws(as.character(df$Resultat_Inf))
+df$Resultat_Inf[df$Resultat_Inf %in% c("", "NA", "N/A")] <- NA
+df$Resultat_Inf[df$Resultat_Inf == "Positif"] <- "Positif"
+df$Resultat_Inf[df$Resultat_Inf == "Negatif"] <- "Negatif"
+df$Resultat_Inf <- factor(df$Resultat_Inf, levels = c("Negatif", "Positif"))
+table(df$Resultat_Inf, useNA = "ifany")
+```
+
+```{r}
+#| label: gold standard
+#| echo: !expr "(!knitr::is_latex_output())"
+#| include: true
+#| results: "hide"
+#création d'une variable binaire "Gold_Standard_Positif_YN" (1 = Positif, 0 = Negatif ou Douteux ou NA)
+df$Gold_Standard_Positif_YN <- ifelse(df$Gold_Standard == "Positif", 1,
+    ifelse(df$Gold_Standard %in% c("Negatif", "Douteux"), 0, NA)
+)
+table(df$Gold_Standard_Positif_YN, useNA = "ifany")
+
+#création d'une variable binaire "Gold_Standard_Douteux_YN" (1 = Douteux, 0 = Positif ou Negatif ou NA)
+df$Gold_Standard_Douteux_YN <- ifelse(df$Gold_Standard == "Douteux", 1,
+    ifelse(df$Gold_Standard %in% c("Positif", "Negatif"), 0, NA)
+)
+table(df$Gold_Standard_Douteux_YN, useNA = "ifany")
+```
+
+```{r}
+#| label: ulnt1
+#| echo: !expr "(!knitr::is_latex_output())"
+#| include: true
+#| results: "hide"
+str(df$U1_E1)
+class(df$U1_E1)
+table(df$U1_E1, useNA = "ifany")
+#création d'une variable binaire "U1_E1_Positif_YN" (1 = Positif, 0 = Negatif ou NA) 
+df$U1_E1_positif <- as.numeric(df$U1_E1 == "Positif")
+table(df$U1_E1_positif, useNA = "ifany")
+```
+
+```{r}
+#| label: ulnt2a
+#| echo: !expr "(!knitr::is_latex_output())"
+#| include: true
+#| results: "hide"
+str(df$U2a_E1)
+class(df$U2a_E1)
+table(df$U2a_E1, useNA = "ifany")
+#création d'une variable binaire "U2a_E1_Positif_YN" (1 = Positif, 0 = Negatif ou NA) 
+df$U2a_E1_positif <- as.numeric(df$U2a_E1 == "Positif")
+table(df$U2a_E1_positif, useNA = "ifany")
+```
+
+```{r}
+#| label: ulnt2b
+#| echo: !expr "(!knitr::is_latex_output())"
+#| include: true
+#| results: "hide"
+str(df$U2b_E1)
+class(df$U2b_E1)
+table(df$U2b_E1, useNA = "ifany")
+#création d'une variable binaire "U2b_E1_Positif_YN" (1 = Positif, 0 = Negatif ou NA) 
+df$U2b_E1_positif <- as.numeric(df$U2b_E1 == "Positif")
+table(df$U2b_E1_positif, useNA = "ifany")
+```
+
+```{r}
+#| label: ulnt3
+#| echo: !expr "(!knitr::is_latex_output())"
+#| include: true
+#| results: "hide"
+str(df$U3_E1)
+class(df$U3_E1)
+table(df$U3_E1, useNA = "ifany")
+#création d'une variable binaire "U3_E1_Positif_YN" (1 = Positif, 0 = Negatif ou NA) 
+df$U3_E1_positif <- as.numeric(df$U3_E1 == "Positif")
+table(df$U3_E1_positif, useNA = "ifany")
+```
+
+```{r}
+#| label: ulnt1e2
+#| echo: !expr "(!knitr::is_latex_output())"
+#| include: true
+#| results: "hide"
+str(df$U1_E2)
+class(df$U1_E2)
+table(df$U1_E2, useNA = "ifany")
+#transformation NT en NA 
+df$U1_E2 <- ifelse(df$U1_E2 == "NT", NA, df$U1_E2)
+table(df$U1_E2, useNA = "ifany")
+#création d'une variable binaire "U1_E2_Positif_YN" (1 = Positif, 0 = Negatif ou NA) 
+df$U1_E2_positif <- as.numeric(df$U1_E2 == "Positif")
+table(df$U1_E2_positif, useNA = "ifany")
+```
+
+```{r}
+#| label: ulnt2ae2
+#| echo: !expr "(!knitr::is_latex_output())"
+#| include: true
+#| results: "hide"
+str(df$U2a_E2)
+class(df$U2a_E2)
+table(df$U2a_E2, useNA = "ifany")
+#transformation NT en NA 
+df$U2a_E2 <- ifelse(df$U2a_E2 == "NT", NA, df$U2a_E2)
+table(df$U2a_E2, useNA = "ifany")
+#création d'une variable binaire "U2a_E2_Positif_YN" (1 = Positif, 0 = Negatif ou NA) 
+df$U2a_E2_positif <- as.numeric(df$U2a_E2 == "Positif")
+table(df$U2a_E2_positif, useNA = "ifany")
+```
+
+```{r}
+#| label: ulnt2be2
+#| echo: !expr "(!knitr::is_latex_output())"
+#| include: true
+#| results: "hide"
+str(df$U2b_E2)
+class(df$U2b_E2)
+table(df$U2b_E2, useNA = "ifany")
+#transformation NT en NA
+df$U2b_E2 <- ifelse(df$U2b_E2 == "NT", NA, df$U2b_E2)
+table(df$U2b_E2, useNA = "ifany")
+#création d'une variable binaire "U2b_E2_Positif_YN" (1 = Positif, 0 = Negatif ou NA) 
+df$U2b_E2_positif <- as.numeric(df$U2b_E2 == "Positif")
+table(df$U2b_E2_positif, useNA = "ifany")
+```
+
+```{r}
+#| label: ulnt3e2
+#| echo: !expr "(!knitr::is_latex_output())"
+#| include: true
+#| results: "hide"
+str(df$U3_E2)
+class(df$U3_E2)
+table(df$U3_E2, useNA = "ifany")
+#transformation NT en NA
+df$U3_E2 <- ifelse(df$U3_E2 == "NT", NA, df$U3_E2)
+table(df$U3_E2, useNA = "ifany")
+#création d'une variable binaire "U3_E2_Positif_YN" (1 = Positif, 0 = Negatif ou NA) 
+df$U3_E2_positif <- as.numeric(df$U3_E2 == "Positif")
+table(df$U3_E2_positif, useNA = "ifany")
+```
+
+```{r}
+#| label: objets-effectif
+#| echo: !expr "(!knitr::is_latex_output())"
+#| include: true
+#| results: "hide"
+#| message: false
+#| warning: false
+# Objets section effectif
+sample_size_scenarios_input <- data.frame(
+S = paste0("S", 1:11),
+Scenario_num = 1:11,
+Sp_cible = c(
+    0.90, 0.90, 0.90, 0.90, 0.90, 0.90,
+    0.85, 0.85, 0.85, 0.85, 0.85
+),
+p = c(
+    0.75, 0.50, 0.75, 0.50, 0.60, 0.60,
+    0.75, 0.50, 0.75, 0.60, 0.50
+),
+Largeur_IC = c(
+    0.099, 0.099, 0.149, 0.149, 0.099, 0.149,
+    0.099, 0.099, 0.149, 0.099, 0.149
+)
+)
+
+sample_size_scenarios <- sample_size_scenarios_input %>%
+crossing(N_negatifs_testes = 2:5000) %>%
+mutate(
+    Borne_inferieure = qbeta(
+        0.05,
+        N_negatifs_testes * Sp_cible,
+        N_negatifs_testes * (1 - Sp_cible) + 1
+    ),
+    Largeur_calculee = Sp_cible - Borne_inferieure,
+    Largeur_calculee_arrondie = round(Largeur_calculee, 3)
+) %>%
+filter(Largeur_calculee_arrondie <= Largeur_IC) %>%
+group_by(Scenario_num) %>%
+slice(1) %>%
+ungroup() %>%
+arrange(Scenario_num) %>%
+transmute(
+    S,
+    Sp_cible,
+    p,
+    Largeur_IC,
+    N_neg_requis = N_negatifs_testes,
+    N_tot_requis = ceiling(N_negatifs_testes / (1 - p)),
+    Borne_inferieure,
+    Largeur_calculee
+)
+
+sample_size_table <- sample_size_scenarios %>%
+mutate(
+    Sp_cible = sprintf("%.2f", Sp_cible),
+    p = sprintf("%.2f", p),
+    Largeur_IC = sprintf("%.3f", Largeur_IC),
+    Borne_inferieure = sprintf("%.3f", Borne_inferieure),
+    Largeur_calculee = sprintf("%.3f", Largeur_calculee)
+) %>%
+kable(
+    format = if (knitr::is_latex_output()) {
+        "latex"
+    } else if (knitr::is_html_output()) {
+        "html"
+    } else {
+        "pipe"
+    },
+    booktabs = TRUE,
+    align = "c",
+    col.names = c(
+        "Scenario",
+        "Target Sp",
+        "Prevalence",
+        "CI width",
+        "Required negatives",
+        "Required total N",
+        "Lower bound",
+        "Computed width"
+    )
+)
+
+if (knitr::is_latex_output()) {
+    sample_size_table <- sample_size_table %>%
+        kable_styling(
+            latex_options = c("hold_position", "scale_down"),
+            full_width = FALSE,
+            font_size = 8
+        )
+} else if (knitr::is_html_output()) {
+    sample_size_table <- sample_size_table %>%
+        kable_styling(
+            full_width = FALSE,
+            position = "center"
+        )
+}
+
+gold_standard_main_effectif <- ifelse(df$Gold_Standard == "Douteux", "Negatif", df$Gold_Standard)
+effectif_n_total_main <- sum(gold_standard_main_effectif %in% c("Positif", "Negatif"), na.rm = TRUE)
+effectif_n_pos_main <- sum(gold_standard_main_effectif == "Positif", na.rm = TRUE)
+effectif_n_neg_main <- sum(gold_standard_main_effectif == "Negatif", na.rm = TRUE)
+effectif_prev_main <- effectif_n_pos_main / effectif_n_total_main
+
+sample_size_closest_scenario <- sample_size_scenarios %>%
+    filter(Sp_cible == 0.90, p == 0.60, Largeur_IC == 0.149)
+
+effectif_lb_sp90_observed <- qbeta(
+    0.05,
+    effectif_n_neg_main * 0.90,
+    effectif_n_neg_main * (1 - 0.90) + 1
+)
+effectif_width_sp90_observed <- 0.90 - effectif_lb_sp90_observed
+
+sample_size_posthoc_round <- data.frame(
+    Cadre = c(
+        "Cohorte finale analysee",
+        "Scenario le plus proche du protocole",
+        paste0("Precision observee avec ", effectif_n_neg_main, " negatifs")
+    ),
+    `Sp cible` = c(
+        "",
+        sprintf("%.2f", sample_size_closest_scenario$Sp_cible),
+        "0.90"
+    ),
+    `Prevalence` = c(
+        paste0(sprintf("%.1f", effectif_prev_main * 100), " %"),
+        paste0(sprintf("%.0f", sample_size_closest_scenario$p * 100), " %"),
+        ""
+    ),
+    `N negatifs` = c(
+        as.character(effectif_n_neg_main),
+        as.character(sample_size_closest_scenario$N_neg_requis),
+        as.character(effectif_n_neg_main)
+    ),
+    `N total` = c(
+        as.character(effectif_n_total_main),
+        as.character(sample_size_closest_scenario$N_tot_requis),
+        as.character(effectif_n_total_main)
+    ),
+    `Borne inferieure IC95%` = c(
+        "",
+        sprintf("%.3f", sample_size_closest_scenario$Borne_inferieure),
+        sprintf("%.3f", effectif_lb_sp90_observed)
+    ),
+    `Largeur` = c(
+        "",
+        sprintf("%.3f", sample_size_closest_scenario$Largeur_IC),
+        sprintf("%.3f", effectif_width_sp90_observed)
+    ),
+    check.names = FALSE
+)
+
+sample_size_posthoc_table <- sample_size_posthoc_round %>%
+    kable(
+        format = if (knitr::is_latex_output()) {
+            "latex"
+        } else if (knitr::is_html_output()) {
+            "html"
+        } else {
+            "pipe"
+        },
+        booktabs = TRUE,
+        align = "c"
+    )
+
+if (knitr::is_latex_output()) {
+    sample_size_posthoc_table <- sample_size_posthoc_table %>%
+        kable_styling(
+            latex_options = c("hold_position", "scale_down"),
+            full_width = FALSE,
+            font_size = 8
+        )
+} else if (knitr::is_html_output()) {
+    sample_size_posthoc_table <- sample_size_posthoc_table %>%
+        kable_styling(
+            full_width = FALSE,
+            position = "center"
+        )
+}
+
+```
+
+```{r}
+#| label: objets-caracteristiques-initiales
+#| echo: !expr "(!knitr::is_latex_output())"
+#| include: true
+#| results: "hide"
+#| message: false
+#| warning: false
+# Objets section caractéristiques initiales
+age_median <- median(df$Age, na.rm = TRUE)
+df$Age <- ifelse(df$Age == 125, age_median, df$Age)
+
+resume_age <- data.frame(as.list(summary(df$Age)), check.names = FALSE)
+resume_age_kable <- kable(
+    resume_age,
+    format = if (knitr::is_latex_output()) {
+        "latex"
+    } else if (knitr::is_html_output()) {
+        "html"
+    } else {
+        "pipe"
+    },
+    caption = "variable âge"
+)
+
+if (knitr::is_latex_output() || knitr::is_html_output()) {
+    resume_age_table <- resume_age_kable %>%
+        kable_styling(full_width = FALSE, position = "center")
+} else {
+    resume_age_table <- resume_age_kable
+}
+
+resume_bmi <- data.frame(as.list(summary(df$BMI)), check.names = FALSE)
+resume_bmi_kable <- kable(
+    resume_bmi,
+    format = if (knitr::is_latex_output()) {
+        "latex"
+    } else if (knitr::is_html_output()) {
+        "html"
+    } else {
+        "pipe"
+    },
+    caption = "Variable BMI"
+)
+
+if (knitr::is_latex_output() || knitr::is_html_output()) {
+    resume_bmi_table <- resume_bmi_kable %>%
+        kable_styling(full_width = FALSE, position = "center")
+} else {
+    resume_bmi_table <- resume_bmi_kable
+}
+
+n_total_patients <- nrow(df)
+gold_standard_n_pos <- sum(df$Gold_Standard == "Positif", na.rm = TRUE)
+gold_standard_pct_pos <- round(100 * mean(df$Gold_Standard == "Positif", na.rm = TRUE), 1)
+gold_standard_n_doubtful <- sum(df$Gold_Standard == "Douteux", na.rm = TRUE)
+gold_standard_pct_doubtful <- round(100 * mean(df$Gold_Standard == "Douteux", na.rm = TRUE), 1)
+gold_standard_n_neg <- sum(df$Gold_Standard == "Negatif", na.rm = TRUE)
+gold_standard_pct_neg <- round(100 * mean(df$Gold_Standard == "Negatif", na.rm = TRUE), 1)
+gold_standard_n_missing <- sum(is.na(df$Gold_Standard) | df$Gold_Standard %in% c("NT", ""))
+gold_standard_pct_missing <- round(100 * mean(is.na(df$Gold_Standard) | df$Gold_Standard %in% c("NT", "")), 1)
+# transformation des variables catégorielles en binaires 1 / 0 numériques
+df_baseline <- df
+df_baseline <- df_baseline %>%
+    mutate(
+        Tabac = ifelse(Tabac == "Oui", 1, ifelse(Tabac == "Non", 0, NA)),
+        Infiltrations = ifelse(Infiltrations == "Oui", 1, ifelse(Infiltrations == "Non", 0, NA)),
+        Resultat_Inf = ifelse(Resultat_Inf == "Positif", 1, ifelse(Resultat_Inf == "Negatif", 0, NA)),
+        Gold_Standard = ifelse(Gold_Standard == "Positif", 1,
+            ifelse(Gold_Standard %in% c("Negatif", "Douteux"), 0, NA)
+        ),
+        U1_E1 = ifelse(U1_E1 == "Positif", 1, ifelse(U1_E1 == "Negatif", 0, NA)),
+        U2a_E1 = ifelse(U2a_E1 == "Positif", 1, ifelse(U2a_E1 == "Negatif", 0, NA)),
+        U2b_E1 = ifelse(U2b_E1 == "Positif", 1, ifelse(U2b_E1 == "Negatif", 0, NA)),
+        U3_E1 = ifelse(U3_E1 == "Positif", 1, ifelse(U3_E1 == "Negatif", 0, NA))
+    ) %>%
+    mutate(
+        Tabac = factor(Tabac, levels = c(0, 1), labels = c("Non", "Oui")),
+        Infiltrations = factor(Infiltrations, levels = c(0, 1), labels = c("Non", "Oui")),
+        Resultat_Inf = factor(Resultat_Inf, levels = c(0, 1), labels = c("Negatif", "Positif")),
+        Gold_Standard = factor(Gold_Standard, levels = c(0, 1), labels = c("Negatif/Douteux", "Positif")),
+        U1_E1 = factor(U1_E1, levels = c(0, 1), labels = c("Negatif", "Positif")),
+        U2a_E1 = factor(U2a_E1, levels = c(0, 1), labels = c("Negatif", "Positif")),
+        U2b_E1 = factor(U2b_E1, levels = c(0, 1), labels = c("Negatif", "Positif")),
+        U3_E1 = factor(U3_E1, levels = c(0, 1), labels = c("Negatif", "Positif"))
+    )
+
+baseline_tbl <- df_baseline %>%
+    select(Age, BMI, Sexe, Cote, Niveau, Tabac, Infiltrations, Resultat_Inf, Gold_Standard, U1_E1, U2a_E1, U2b_E1, U3_E1) %>%
+    tbl_summary(
+        missing = "no",
+        label = list(
+            Age = "Âge (années)",
+            BMI = "BMI (kg/m²)",
+            Sexe = "Sexe",
+            Cote = "Côté",
+            Niveau = "Niveau",
+            Tabac = "Tabac actif",
+            Infiltrations = "Infiltrations",
+            Resultat_Inf = "Résultat des infiltrations",
+            Gold_Standard = "Gold Standard positif",
+            U1_E1 = "ULNT1 E1",
+            U2a_E1 = "ULNT2a E1",
+            U2b_E1 = "ULNT2b E1",
+            U3_E1 = "ULNT3 E1"
+        )
+    ) %>%
+    modify_header(label = "**Caractéristiques**")
+
+sexe_table <- table(df$Sexe)
+sexe_pct <- round(100 * prop.table(sexe_table), 1)
+sexe_labels <- dimnames(sexe_table)[[1]]
+sexe_colors <- c(
+    Masculin = nord("frost")[2],
+    Féminin = nord("lumina")[1]
+)
+
+cote_table <- table(df$Cote)
+cote_pct <- round(100 * prop.table(cote_table), 1)
+cote_labels <- dimnames(cote_table)[[1]]
+cote_colors <- c(
+    Gauche = nord("aurora")[1],
+    Droite = nord("aurora")[4]
+)
+
+niveau_table <- table(factor(df$Niveau, levels = c("C4", "C5", "C6", "C7", "C8")))
+niveau_pct <- round(100 * prop.table(niveau_table), 1)
+niveau_labels <- dimnames(niveau_table)[[1]]
+niveau_colors <- c(
+    C4 = nord("lumina")[1],
+    C5 = nord("lumina")[2],
+    C6 = nord("lumina")[3],
+    C7 = nord("lumina")[4],
+    C8 = nord("lumina")[5]
+)
+niveau_table <- rev(niveau_table)
+niveau_pct <- rev(niveau_pct)
+niveau_labels <- rev(niveau_labels)
+
+tabac_non_n <- sum(df$Tabac == "Non", na.rm = TRUE)
+tabac_oui_n <- sum(df$Tabac == "Oui", na.rm = TRUE)
+tabac_na_n <- sum(is.na(df$Tabac))
+tabac_renseigne_n <- tabac_non_n + tabac_oui_n
+tabac_non_pct <- round(100 * tabac_non_n / tabac_renseigne_n, 1)
+tabac_oui_pct <- round(100 * tabac_oui_n / tabac_renseigne_n, 1)
+tabac_summary <- data.frame(
+    Modalite = c("Non", "Oui"),
+    Effectif = c(tabac_non_n, tabac_oui_n),
+    Pourcentage = c(tabac_non_pct, tabac_oui_pct)
+)
+
+infiltration_non_n <- sum(df$Infiltrations == "Non", na.rm = TRUE)
+infiltration_oui_n <- sum(df$Infiltrations == "Oui", na.rm = TRUE)
+infiltration_na_n <- sum(is.na(df$Infiltrations))
+infiltration_renseigne_n <- infiltration_non_n + infiltration_oui_n
+infiltration_non_pct <- round(100 * infiltration_non_n / infiltration_renseigne_n, 1)
+infiltration_oui_pct <- round(100 * infiltration_oui_n / infiltration_renseigne_n, 1)
+infiltration_summary <- data.frame(
+    Modalite = c("Non", "Oui"),
+    Effectif = c(infiltration_non_n, infiltration_oui_n),
+    Pourcentage = c(infiltration_non_pct, infiltration_oui_pct)
+)
+
+resultat_inf_neg_n <- sum(df$Infiltrations == "Oui" & df$Resultat_Inf == "Negatif", na.rm = TRUE)
+resultat_inf_pos_n <- sum(df$Infiltrations == "Oui" & df$Resultat_Inf == "Positif", na.rm = TRUE)
+resultat_inf_renseigne_n <- resultat_inf_neg_n + resultat_inf_pos_n
+resultat_inf_non_renseigne_n <- infiltration_oui_n - resultat_inf_renseigne_n
+resultat_inf_neg_pct <- round(100 * resultat_inf_neg_n / resultat_inf_renseigne_n, 1)
+resultat_inf_pos_pct <- round(100 * resultat_inf_pos_n / resultat_inf_renseigne_n, 1)
+resultat_inf_summary <- data.frame(
+    Modalite = c("Negatif", "Positif"),
+    Effectif = c(resultat_inf_neg_n, resultat_inf_pos_n),
+    Pourcentage = c(resultat_inf_neg_pct, resultat_inf_pos_pct)
+)
+
+plot_age_distribution <- function() {
+    op <- par(no.readonly = TRUE)
+    on.exit(par(op))
+    par(mfrow = c(1, 2))
+    hist(
+        df$Age,
+        breaks = 10,
+        prob = TRUE,
+        main = "Distribution de l'âge",
+        xlab = "Âge",
+        ylab = "Densité",
+        col = "lightblue"
+    )
+    lines(density(df$Age, na.rm = TRUE), col = "red", lwd = 2)
+    qqnorm(df$Age, main = "Q-Q plot de l'âge")
+    qqline(df$Age, col = "red", lwd = 2)
+}
+
+plot_sexe_distribution <- function() {
+    op <- par(no.readonly = TRUE)
+    on.exit(par(op))
+    par(mfrow = c(1, 2))
+    bar_pos <- barplot(
+        sexe_table,
+        main = "Répartition du sexe",
+        col = sexe_colors[sexe_labels],
+        ylab = "Nombre de patients",
+        ylim = c(0, max(sexe_table) * 1.18)
+    )
+    text(
+        x = bar_pos,
+        y = sexe_table + max(sexe_table) * 0.05,
+        labels = paste0(sexe_pct, " %"),
+        cex = 0.9
+    )
+    pie(
+        sexe_table,
+        labels = paste0(names(sexe_table), "\n", sexe_pct, " %"),
+        main = "Répartition du sexe",
+        col = sexe_colors[names(sexe_table)]
+    )
+}
+
+plot_cote_distribution <- function() {
+    op <- par(no.readonly = TRUE)
+    on.exit(par(op))
+    par(mfrow = c(1, 2))
+    bar_pos <- barplot(
+        cote_table,
+        main = "Répartition du côté",
+        col = cote_colors[cote_labels],
+        ylab = "Nombre de patients",
+        ylim = c(0, max(cote_table) * 1.18)
+    )
+    text(
+        x = bar_pos,
+        y = cote_table + max(cote_table) * 0.05,
+        labels = paste0(cote_pct, " %"),
+        cex = 0.9
+    )
+    pie(
+        cote_table,
+        labels = paste0(names(cote_table), "\n", cote_pct, " %"),
+        main = "Répartition du côté",
+        col = cote_colors[names(cote_table)]
+    )
+}
+
+plot_niveau_distribution <- function() {
+    op <- par(no.readonly = TRUE)
+    on.exit(par(op))
+    par(mfrow = c(1, 1))
+    bar_pos <- barplot(
+        niveau_table,
+        main = "Répartition du niveau",
+        col = niveau_colors[niveau_labels],
+        xlab = "Nombre de patients",
+        horiz = TRUE,
+        xlim = c(0, max(niveau_table) * 1.18)
+    )
+    text(
+        y = bar_pos,
+        x = niveau_table + max(niveau_table) * 0.05,
+        labels = paste0(niveau_pct, " %"),
+        cex = 0.9
+    )
+}
+
+```
+
+```{r}
+#| label: objets-ulnt1
+#| echo: !expr "(!knitr::is_latex_output())"
+#| include: true
+#| results: "hide"
+#| message: false
+#| warning: false
+# Objets ULNT1
+df$Gold_Standard_main <- ifelse(df$Gold_Standard == "Douteux", "Negatif", df$Gold_Standard)
+
+u1_data <- df %>%
+    filter(
+        Gold_Standard_main %in% c("Positif", "Negatif"),
+        !is.na(U1_E1)
+    )
+
+u1_VP <- sum(u1_data$U1_E1 == "Positif" & u1_data$Gold_Standard_main == "Positif")
+u1_FN <- sum(u1_data$U1_E1 == "Negatif" & u1_data$Gold_Standard_main == "Positif")
+u1_FP <- sum(u1_data$U1_E1 == "Positif" & u1_data$Gold_Standard_main == "Negatif")
+u1_VN <- sum(u1_data$U1_E1 == "Negatif" & u1_data$Gold_Standard_main == "Negatif")
+u1_N <- u1_VP + u1_FN + u1_FP + u1_VN
+u1_Se <- u1_VP / (u1_VP + u1_FN)
+u1_Se_IC <- binom.test(u1_VP, u1_VP + u1_FN)$conf.int
+u1_Sp <- u1_VN / (u1_VN + u1_FP)
+u1_Sp_IC <- binom.test(u1_VN, u1_VN + u1_FP)$conf.int
+u1_VPP <- u1_VP / (u1_VP + u1_FP)
+u1_VPP_IC <- binom.test(u1_VP, u1_VP + u1_FP)$conf.int
+u1_VPN <- u1_VN / (u1_VN + u1_FN)
+u1_VPN_IC <- binom.test(u1_VN, u1_VN + u1_FN)$conf.int
+u1_LR_pos <- u1_Se / (1 - u1_Sp)
+u1_LR_neg <- (1 - u1_Se) / u1_Sp
+u1_Youden <- u1_Se + u1_Sp - 1
+roc_u1 <- roc(
+    response = as.numeric(u1_data$Gold_Standard_main == "Positif"),
+    predictor = as.numeric(u1_data$U1_E1 == "Positif"),
+    quiet = TRUE
+)
+u1_AUC <- as.numeric(auc(roc_u1))
+u1_AUC_IC <- ci.auc(roc_u1)
+u1_Fisher_p <- fisher.test(table(u1_data$U1_E1, u1_data$Gold_Standard_main))$p.value
+
+u1_effectifs <- data.frame(
+    Test = "U1",
+    N = u1_N,
+    VP = u1_VP,
+    FN = u1_FN,
+    FP = u1_FP,
+    VN = u1_VN,
+    check.names = FALSE
+)
+
+u1_performance <- data.frame(
+    Test = "U1",
+    N = u1_N,
+    VP = u1_VP,
+    FN = u1_FN,
+    FP = u1_FP,
+    VN = u1_VN,
+    Se = round(u1_Se, 3),
+    Se_IC95 = paste0("[", round(u1_Se_IC[1], 3), " ; ", round(u1_Se_IC[2], 3), "]"),
+    Sp = round(u1_Sp, 3),
+    Sp_IC95 = paste0("[", round(u1_Sp_IC[1], 3), " ; ", round(u1_Sp_IC[2], 3), "]"),
+    VPP = round(u1_VPP, 3),
+    VPP_IC95 = paste0("[", round(u1_VPP_IC[1], 3), " ; ", round(u1_VPP_IC[2], 3), "]"),
+    VPN = round(u1_VPN, 3),
+    VPN_IC95 = paste0("[", round(u1_VPN_IC[1], 3), " ; ", round(u1_VPN_IC[2], 3), "]"),
+    LR_pos = round(u1_LR_pos, 2),
+    LR_neg = round(u1_LR_neg, 2),
+    Youden = round(u1_Youden, 3),
+    AUC = round(u1_AUC, 3),
+    AUC_IC95 = paste0("[", round(u1_AUC_IC[1], 3), " ; ", round(u1_AUC_IC[3], 3), "]"),
+    Fisher_p = signif(u1_Fisher_p, 3)
+)
+
+u1_performance_table <- kable(
+    u1_performance,
+    format = if (knitr::is_latex_output()) {
+        "latex"
+    } else if (knitr::is_html_output()) {
+        "html"
+    } else {
+        "pipe"
+    },
+    booktabs = TRUE,
+    align = "c",
+    caption = "Diagnostic performance of U1 compared with the reference standard",
+    col.names = c(
+        "Test", "N", "VP", "FN", "FP", "VN", "Se", "Se 95% CI", "Sp", "Sp 95% CI",
+        "PPV", "PPV 95% CI", "NPV", "NPV 95% CI", "LR+", "LR-", "Youden", "AUC", "AUC 95% CI", "Fisher p"
+    )
+)
+if (knitr::is_latex_output()) {
+    u1_performance_table <- u1_performance_table %>%
+        kable_styling(latex_options = c("hold_position", "scale_down"), full_width = FALSE, font_size = 7)
+} else if (knitr::is_html_output()) {
+    u1_performance_table <- u1_performance_table %>%
+        kable_styling(full_width = FALSE, position = "center")
+}
+
+u1_descriptive <- data.frame(
+    Test = "U1",
+    Positif = paste0(sum(df$U1_E1 == "Positif", na.rm = TRUE), " (", round(100 * mean(df$U1_E1 == "Positif", na.rm = TRUE), 1), "%)"),
+    Negatif = paste0(sum(df$U1_E1 == "Negatif", na.rm = TRUE), " (", round(100 * mean(df$U1_E1 == "Negatif", na.rm = TRUE), 1), "%)"),
+    Manquant = paste0(sum(is.na(df$U1_E1)), " (", round(100 * mean(is.na(df$U1_E1)), 1), "%)"),
+    stringsAsFactors = FALSE
+)
+u1_descriptive_table <- kable(
+    u1_descriptive,
+    format = if (knitr::is_latex_output()) {
+        "latex"
+    } else if (knitr::is_html_output()) {
+        "html"
+    } else {
+        "pipe"
+    },
+    caption = "Tableau descriptif des résultats de U1 (évaluateur 1)",
+    align = "c",
+    col.names = c("Test", "Positif n (%)", "Négatif n (%)", "Manquant n (%)")
+)
+if (knitr::is_latex_output()) {
+    u1_descriptive_table <- u1_descriptive_table %>%
+        kable_styling(
+            latex_options = c("hold_position", "scale_down"),
+            full_width = FALSE,
+            font_size = 8
+        )
+} else if (knitr::is_html_output()) {
+    u1_descriptive_table <- u1_descriptive_table %>%
+        kable_styling(full_width = FALSE, position = "center")
+}
+
+u1_tab <- table(
+    factor(df$U1_E1[!is.na(df$U1_E1) & df$Gold_Standard_main %in% c("Positif", "Negatif")], levels = c("Positif", "Negatif")),
+    factor(df$Gold_Standard_main[!is.na(df$U1_E1) & df$Gold_Standard_main %in% c("Positif", "Negatif")], levels = c("Positif", "Negatif"))
+)
+u1_contingency <- data.frame(
+    U1 = c("T+", "T-", "Total"),
+    `G+` = c(
+        paste0(u1_tab["Positif", "Positif"], " (", round(100 * u1_tab["Positif", "Positif"] / u1_N, 1), "%)"),
+        paste0(u1_tab["Negatif", "Positif"], " (", round(100 * u1_tab["Negatif", "Positif"] / u1_N, 1), "%)"),
+        paste0(sum(u1_tab[, "Positif"]), " (", round(100 * sum(u1_tab[, "Positif"]) / u1_N, 1), "%)")
+    ),
+    `G-` = c(
+        paste0(u1_tab["Positif", "Negatif"], " (", round(100 * u1_tab["Positif", "Negatif"] / u1_N, 1), "%)"),
+        paste0(u1_tab["Negatif", "Negatif"], " (", round(100 * u1_tab["Negatif", "Negatif"] / u1_N, 1), "%)"),
+        paste0(sum(u1_tab[, "Negatif"]), " (", round(100 * sum(u1_tab[, "Negatif"]) / u1_N, 1), "%)")
+    ),
+    Total = c(
+        paste0(sum(u1_tab["Positif", ]), " (", round(100 * sum(u1_tab["Positif", ]) / u1_N, 1), "%)"),
+        paste0(sum(u1_tab["Negatif", ]), " (", round(100 * sum(u1_tab["Negatif", ]) / u1_N, 1), "%)"),
+        paste0(sum(u1_tab), " (", round(100 * sum(u1_tab) / u1_N, 1), "%)")
+    ),
+    check.names = FALSE,
+    stringsAsFactors = FALSE
+)
+u1_contingency_table <- kable(
+    u1_contingency,
+    format = if (knitr::is_latex_output()) {
+        "latex"
+    } else if (knitr::is_html_output()) {
+        "html"
+    } else {
+        "pipe"
+    },
+    caption = "Tableau de contingence de U1 par rapport au gold standard, avec effectifs et pourcentages sur l'ensemble des patients analysés",
+    align = "c"
+)
+if (knitr::is_latex_output()) {
+    u1_contingency_table <- u1_contingency_table %>%
+        kable_styling(
+            latex_options = c("hold_position", "scale_down"),
+            full_width = FALSE,
+            font_size = 8
+        )
+} else if (knitr::is_html_output()) {
+    u1_contingency_table <- u1_contingency_table %>%
+        kable_styling(full_width = FALSE, position = "center")
+}
+
+u1_performance_summary_table <- kable(
+    u1_performance_summary,
+    format = if (knitr::is_latex_output()) {
+        "latex"
+    } else if (knitr::is_html_output()) {
+        "html"
+    } else {
+        "pipe"
+    },
+    caption = "Performances diagnostiques de U1 par rapport au gold standard",
+    align = "c",
+    col.names = c("Test", "Se [IC95]", "Sp [IC95]", "VPP [IC95]", "VPN [IC95]", "LR+", "LR-", "Youden", "AUC [IC95]")
+) %>%
+    kable_styling(
+        latex_options = c("hold_position", "scale_down"),
+        full_width = FALSE,
+        font_size = 7
+    )
+
+u1_descriptive_table
+u1_contingency_table
+u1_performance_summary_table
+```
+
+```{r}
+#| label: ulnt1-setup
+#| echo: !expr "(!knitr::is_latex_output())"
+#| include: true
+#| results: "hide"
+#| message: false
+#| warning: false
+# Objets ULNT1
+df$Gold_Standard_main <- ifelse(df$Gold_Standard == "Douteux", "Negatif", df$Gold_Standard)
+
+u1_data <- df %>%
+    filter(
+        Gold_Standard_main %in% c("Positif", "Negatif"),
+        !is.na(U1_E1)
+    )
+
+u1_VP <- sum(u1_data$U1_E1 == "Positif" & u1_data$Gold_Standard_main == "Positif")
+u1_FN <- sum(u1_data$U1_E1 == "Negatif" & u1_data$Gold_Standard_main == "Positif")
+u1_FP <- sum(u1_data$U1_E1 == "Positif" & u1_data$Gold_Standard_main == "Negatif")
+u1_VN <- sum(u1_data$U1_E1 == "Negatif" & u1_data$Gold_Standard_main == "Negatif")
+u1_N <- u1_VP + u1_FN + u1_FP + u1_VN
+u1_Se <- u1_VP / (u1_VP + u1_FN)
+u1_Se_IC <- binom.test(u1_VP, u1_VP + u1_FN)$conf.int
+u1_Sp <- u1_VN / (u1_VN + u1_FP)
+u1_Sp_IC <- binom.test(u1_VN, u1_VN + u1_FP)$conf.int
+u1_VPP <- u1_VP / (u1_VP + u1_FP)
+u1_VPP_IC <- binom.test(u1_VP, u1_VP + u1_FP)$conf.int
+u1_VPN <- u1_VN / (u1_VN + u1_FN)
+u1_VPN_IC <- binom.test(u1_VN, u1_VN + u1_FN)$conf.int
+u1_LR_pos <- u1_Se / (1 - u1_Sp)
+u1_LR_neg <- (1 - u1_Se) / u1_Sp
+u1_Youden <- u1_Se + u1_Sp - 1
+roc_u1 <- roc(
+    response = as.numeric(u1_data$Gold_Standard_main == "Positif"),
+    predictor = as.numeric(u1_data$U1_E1 == "Positif"),
+    quiet = TRUE
+)
+u1_AUC <- as.numeric(auc(roc_u1))
+u1_AUC_IC <- ci.auc(roc_u1)
+u1_Fisher_p <- fisher.test(table(u1_data$U1_E1, u1_data$Gold_Standard_main))$p.value
+
+u1_effectifs <- data.frame(
+    Test = "U1",
+    N = u1_N,
+    VP = u1_VP,
+    FN = u1_FN,
+    FP = u1_FP,
+    VN = u1_VN,
+    check.names = FALSE
+)
+
+u1_performance <- data.frame(
+    Test = "U1",
+    N = u1_N,
+    VP = u1_VP,
+    FN = u1_FN,
+    FP = u1_FP,
+    VN = u1_VN,
+    Se = round(u1_Se, 3),
+    Se_IC95 = paste0("[", round(u1_Se_IC[1], 3), " ; ", round(u1_Se_IC[2], 3), "]"),
+    Sp = round(u1_Sp, 3),
+    Sp_IC95 = paste0("[", round(u1_Sp_IC[1], 3), " ; ", round(u1_Sp_IC[2], 3), "]"),
+    VPP = round(u1_VPP, 3),
+    VPP_IC95 = paste0("[", round(u1_VPP_IC[1], 3), " ; ", round(u1_VPP_IC[2], 3), "]"),
+    VPN = round(u1_VPN, 3),
+    VPN_IC95 = paste0("[", round(u1_VPN_IC[1], 3), " ; ", round(u1_VPN_IC[2], 3), "]"),
+    LR_pos = round(u1_LR_pos, 2),
+    LR_neg = round(u1_LR_neg, 2),
+    Youden = round(u1_Youden, 3),
+    AUC = round(u1_AUC, 3),
+    AUC_IC95 = paste0("[", round(u1_AUC_IC[1], 3), " ; ", round(u1_AUC_IC[3], 3), "]"),
+    Fisher_p = signif(u1_Fisher_p, 3)
+)
+
+u1_performance_table <- kable(
+    u1_performance,
+    format = if (knitr::is_latex_output()) {
+        "latex"
+    } else if (knitr::is_html_output()) {
+        "html"
+    } else {
+        "pipe"
+    },
+    booktabs = TRUE,
+    align = "c",
+    caption = "Diagnostic performance of U1 compared with the reference standard",
+    col.names = c(
+        "Test", "N", "VP", "FN", "FP", "VN", "Se", "Se 95% CI", "Sp", "Sp 95% CI",
+        "PPV", "PPV 95% CI", "NPV", "NPV 95% CI", "LR+", "LR-", "Youden", "AUC", "AUC 95% CI", "Fisher p"
+    )
+)
+if (knitr::is_latex_output()) {
+    u1_performance_table <- u1_performance_table %>%
+        kable_styling(latex_options = c("hold_position", "scale_down"), full_width = FALSE, font_size = 7)
+} else if (knitr::is_html_output()) {
+    u1_performance_table <- u1_performance_table %>%
+        kable_styling(full_width = FALSE, position = "center")
+}
+
+u1_descriptive <- data.frame(
+    Test = "U1",
+    Positif = paste0(sum(df$U1_E1 == "Positif", na.rm = TRUE), " (", round(100 * mean(df$U1_E1 == "Positif", na.rm = TRUE), 1), "%)"),
+    Negatif = paste0(sum(df$U1_E1 == "Negatif", na.rm = TRUE), " (", round(100 * mean(df$U1_E1 == "Negatif", na.rm = TRUE), 1), "%)"),
+    Manquant = paste0(sum(is.na(df$U1_E1)), " (", round(100 * mean(is.na(df$U1_E1)), 1), "%)"),
+    stringsAsFactors = FALSE
+)
+u1_descriptive_table <- kable(
+    u1_descriptive,
+    format = if (knitr::is_latex_output()) {
+        "latex"
+    } else if (knitr::is_html_output()) {
+        "html"
+    } else {
+        "pipe"
+    },
+    caption = "Tableau descriptif des résultats de U1 (évaluateur 1)",
+    align = "c",
+    col.names = c("Test", "Positif n (%)", "Négatif n (%)", "Manquant n (%)")
+)
+if (knitr::is_latex_output()) {
+    u1_descriptive_table <- u1_descriptive_table %>%
+        kable_styling(
+            latex_options = c("hold_position", "scale_down"),
+            full_width = FALSE,
+            font_size = 8
+        )
+} else if (knitr::is_html_output()) {
+    u1_descriptive_table <- u1_descriptive_table %>%
+        kable_styling(full_width = FALSE, position = "center")
+}
+
+u1_tab <- table(
+    factor(df$U1_E1[!is.na(df$U1_E1) & df$Gold_Standard_main %in% c("Positif", "Negatif")], levels = c("Positif", "Negatif")),
+    factor(df$Gold_Standard_main[!is.na(df$U1_E1) & df$Gold_Standard_main %in% c("Positif", "Negatif")], levels = c("Positif", "Negatif"))
+)
+u1_contingency <- data.frame(
+    U1 = c("T+", "T-", "Total"),
+    `G+` = c(
+        paste0(u1_tab["Positif", "Positif"], " (", round(100 * u1_tab["Positif", "Positif"] / u1_N, 1), "%)"),
+        paste0(u1_tab["Negatif", "Positif"], " (", round(100 * u1_tab["Negatif", "Positif"] / u1_N, 1), "%)"),
+        paste0(sum(u1_tab[, "Positif"]), " (", round(100 * sum(u1_tab[, "Positif"]) / u1_N, 1), "%)")
+    ),
+    `G-` = c(
+        paste0(u1_tab["Positif", "Negatif"], " (", round(100 * u1_tab["Positif", "Negatif"] / u1_N, 1), "%)"),
+        paste0(u1_tab["Negatif", "Negatif"], " (", round(100 * u1_tab["Negatif", "Negatif"] / u1_N, 1), "%)"),
+        paste0(sum(u1_tab[, "Negatif"]), " (", round(100 * sum(u1_tab[, "Negatif"]) / u1_N, 1), "%)")
+    ),
+    Total = c(
+        paste0(sum(u1_tab["Positif", ]), " (", round(100 * sum(u1_tab["Positif", ]) / u1_N, 1), "%)"),
+        paste0(sum(u1_tab["Negatif", ]), " (", round(100 * sum(u1_tab["Negatif", ]) / u1_N, 1), "%)"),
+        paste0(sum(u1_tab), " (", round(100 * sum(u1_tab) / u1_N, 1), "%)")
+    ),
+    check.names = FALSE,
+    stringsAsFactors = FALSE
+)
+u1_contingency_table <- kable(
+    u1_contingency,
+    format = if (knitr::is_latex_output()) {
+        "latex"
+    } else if (knitr::is_html_output()) {
+        "html"
+    } else {
+        "pipe"
+    },
+    caption = "Tableau de contingence de U1 par rapport au gold standard, avec effectifs et pourcentages sur l'ensemble des patients analysés",
+    align = "c"
+)
+if (knitr::is_latex_output()) {
+    u1_contingency_table <- u1_contingency_table %>%
+        kable_styling(
+            latex_options = c("hold_position", "scale_down"),
+            full_width = FALSE,
+            font_size = 8
+        )
+} else if (knitr::is_html_output()) {
+    u1_contingency_table <- u1_contingency_table %>%
+        kable_styling(full_width = FALSE, position = "center")
+}
+
+u1_performance_summary_table <- kable(
+    u1_performance_summary,
+    format = if (knitr::is_latex_output()) {
+        "latex"
+    } else if (knitr::is_html_output()) {
+        "html"
+    } else {
+        "pipe"
+    },
+    caption = "Performances diagnostiques de U1 par rapport au gold standard",
+    align = "c",
+    col.names = c("Test", "Se [IC95]", "Sp [IC95]", "VPP [IC95]", "VPN [IC95]", "LR+", "LR-", "Youden", "AUC [IC95]")
+) %>%
+    kable_styling(
+        latex_options = c("hold_position", "scale_down"),
+        full_width = FALSE,
+        font_size = 7
+    )
+
+u1_descriptive_table
+u1_contingency_table
+u1_performance_summary_table
+```
+
+```{r}
+#| label: ulnt1-setup
+#| echo: !expr "(!knitr::is_latex_output())"
+#| include: true
+#| results: "hide"
+#| message: false
+#| warning: false
+# Objets ULNT1
+df$Gold_Standard_main <- ifelse(df$Gold_Standard == "Douteux", "Negatif", df$Gold_Standard)
+
+u1_data <- df %>%
+    filter(
+        Gold_Standard_main %in% c("Positif", "Negatif"),
+        !is.na(U1_E1)
+    )
+
+u1_VP <- sum(u1_data$U1_E1 == "Positif" & u1_data$Gold_Standard_main == "Positif")
+u1_FN <- sum(u1_data$U1_E1 == "Negatif" & u1_data$Gold_Standard_main == "Positif")
+u1_FP <- sum(u1_data$U1_E1 == "Positif" & u1_data$Gold_Standard_main == "Negatif")
+u1_VN <- sum(u1_data$U1_E1 == "Negatif" & u1_data$Gold_Standard_main == "Negatif")
+u1_N <- u1_VP + u1_FN + u1_FP + u1_VN
+u1_Se <- u1_VP / (u1_VP + u1_FN)
+u1_Se_IC <- binom.test(u1_VP, u1_VP + u1_FN)$conf.int
+u1_Sp <- u1_VN / (u1_VN + u1_FP)
+u1_Sp_IC <- binom.test(u1_VN, u1_VN + u1_FP)$conf.int
+u1_VPP <- u1_VP / (u1_VP + u1_FP)
+u1_VPP_IC <- binom.test(u1_VP, u1_VP + u1_FP)$conf.int
+u1_VPN <- u1_VN / (u1_VN + u1_FN)
+u1_VPN_IC <- binom.test(u1_VN, u1_VN + u1_FN)$conf.int
+u1_LR_pos <- u1_Se / (1 - u1_Sp)
+u1_LR_neg <- (1 - u1_Se) / u1_Sp
+u1_Youden <- u1_Se + u1_Sp - 1
+roc_u1 <- roc(
+    response = as.numeric(u1_data$Gold_Standard_main == "Positif"),
+    predictor = as.numeric(u1_data$U1_E1 == "Positif"),
+    quiet = TRUE
+)
+u1_AUC <- as.numeric(auc(roc_u1))
+u1_AUC_IC <- ci.auc(roc_u1)
+u1_Fisher_p <- fisher.test(table(u1_data$U1_E1, u1_data$Gold_Standard_main))$p.value
+
+u1_effectifs <- data.frame(
+    Test = "U1",
+    N = u1_N,
+    VP = u1_VP,
+    FN = u1_FN,
+    FP = u1_FP,
+    VN = u1_VN,
+    check.names = FALSE
+)
+
+u1_performance <- data.frame(
+    Test = "U1",
+    N = u1_N,
+    VP = u1_VP,
+    FN = u1_FN,
+    FP = u1_FP,
+    VN = u1_VN,
+    Se = round(u1_Se, 3),
+    Se_IC95 = paste0("[", round(u1_Se_IC[1], 3), " ; ", round(u1_Se_IC[2], 3), "]"),
+    Sp = round(u1_Sp, 3),
+    Sp_IC95 = paste0("[", round(u1_Sp_IC[1], 3), " ; ", round(u1_Sp_IC[2], 3), "]"),
+    VPP = round(u1_VPP, 3),
+    VPP_IC95 = paste0("[", round(u1_VPP_IC[1], 3), " ; ", round(u1_VPP_IC[2], 3), "]"),
+    VPN = round(u1_VPN, 3),
+    VPN_IC95 = paste0("[", round(u1_VPN_IC[1], 3), " ; ", round(u1_VPN_IC[2], 3), "]"),
+    LR_pos = round(u1_LR_pos, 2),
+    LR_neg = round(u1_LR_neg, 2),
+    Youden = round(u1_Youden, 3),
+    AUC = round(u1_AUC, 3),
+    AUC_IC95 = paste0("[", round(u1_AUC_IC[1], 3), " ; ", round(u1_AUC_IC[3], 3), "]"),
+    Fisher_p = signif(u1_Fisher_p, 3)
+)
+
+u1_performance_table <- kable(
+    u1_performance,
+    format = if (knitr::is_latex_output()) {
+        "latex"
+    } else if (knitr::is_html_output()) {
+        "html"
+    } else {
+        "pipe"
+    },
+    booktabs = TRUE,
+    align = "c",
+    caption = "Diagnostic performance of U1 compared with the reference standard",
+    col.names = c(
+        "Test", "N", "VP", "FN", "FP", "VN", "Se", "Se 95% CI", "Sp", "Sp 95% CI",
+        "PPV", "PPV 95% CI", "NPV", "NPV 95% CI", "LR+", "LR-", "Youden", "AUC", "AUC 95% CI", "Fisher p"
+    )
+)
+if (knitr::is_latex_output()) {
+    u1_performance_table <- u1_performance_table %>%
+        kable_styling(latex_options = c("hold_position", "scale_down"), full_width = FALSE, font_size = 7)
+} else if (knitr::is_html_output()) {
+    u1_performance_table <- u1_performance_table %>%
+        kable_styling(full_width = FALSE, position = "center")
+}
+
+u1_descriptive <- data.frame(
+    Test = "U1",
+    Positif = paste0(sum(df$U1_E1 == "Positif", na.rm = TRUE), " (", round(100 * mean(df$U1_E1 == "Positif", na.rm = TRUE), 1), "%)"),
+    Negatif = paste0(sum(df$U1_E1 == "Negatif", na.rm = TRUE), " (", round(100 * mean(df$U1_E1 == "Negatif", na.rm = TRUE), 1), "%)"),
+    Manquant = paste0(sum(is.na(df$U1_E1)), " (", round(100 * mean(is.na(df$U1_E1)), 1), "%)"),
+    stringsAsFactors = FALSE
+)
+u1_descriptive_table <- kable(
+    u1_descriptive,
+    format = if (knitr::is_latex_output()) {
+        "latex"
+    } else if (knitr::is_html_output()) {
+        "html"
+    } else {
+        "pipe"
+    },
+    caption = "Tableau descriptif des résultats de U1 (évaluateur 1)",
+    align = "c",
+    col.names = c("Test", "Positif n (%)", "Négatif n (%)", "Manquant n (%)")
+)
+if (knitr::is_latex_output()) {
+    u1_descriptive_table <- u1_descriptive_table %>%
+        kable_styling(
+            latex_options = c("hold_position", "scale_down"),
+            full_width = FALSE,
+            font_size = 8
+        )
+} else if (knitr::is_html_output()) {
+    u1_descriptive_table <- u1_descriptive_table %>%
+        kable_styling(full_width = FALSE, position = "center")
+}
+
+u1_tab <- table(
+    factor(df$U1_E1[!is.na(df$U1_E1) & df$Gold_Standard_main %in% c("Positif", "Negatif")], levels = c("Positif", "Negatif")),
+    factor(df$Gold_Standard_main[!is.na(df$U1_E1) & df$Gold_Standard_main %in% c("Positif", "Negatif")], levels = c("Positif", "Negatif"))
+)
+u1_contingency <- data.frame(
+    U1 = c("T+", "T-", "Total"),
+    `G+` = c(
+        paste0(u1_tab["Positif", "Positif"], " (", round(100 * u1_tab["Positif", "Positif"] / u1_N, 1), "%)"),
+        paste0(u1_tab["Negatif", "Positif"], " (", round(100 * u1_tab["Negatif", "Positif"] / u1_N, 1), "%)"),
+        paste0(sum(u1_tab[, "Positif"]), " (", round(100 * sum(u1_tab[, "Positif"]) / u1_N, 1), "%)")
+    ),
+    `G-` = c(
+        paste0(u1_tab["Positif", "Negatif"], " (", round(100 * u1_tab["Positif", "Negatif"] / u1_N, 1), "%)"),
+        paste0(u1_tab["Negatif", "Negatif"], " (", round(100 * u1_tab["Negatif", "Negatif"] / u1_N, 1), "%)"),
+        paste0(sum(u1_tab[, "Negatif"]), " (", round(100 * sum(u1_tab[, "Negatif"]) / u1_N, 1), "%)")
+    ),
+    Total = c(
+        paste0(sum(u1_tab["Positif", ]), " (", round(100 * sum(u1_tab["Positif", ]) / u1_N, 1), "%)"),
+        paste0(sum(u1_tab["Negatif", ]), " (", round(100 * sum(u1_tab["Negatif", ]) / u1_N, 1), "%)"),
+        paste0(sum(u1_tab), " (", round(100 * sum(u1_tab) / u1_N, 1), "%)")
+    ),
+    check.names = FALSE,
+    stringsAsFactors = FALSE
+)
+u1_contingency_table <- kable(
+    u1_contingency,
+    format = if (knitr::is_latex_output()) {
+        "latex"
+    } else if (knitr::is_html_output()) {
+        "html"
+    } else {
+        "pipe"
+    },
+    caption = "Tableau de contingence de U1 par rapport au gold standard, avec effectifs et pourcentages sur l'ensemble des patients analysés",
+    align = "c"
+)
+if (knitr::is_latex_output()) {
+    u1_contingency_table <- u1_contingency_table %>%
+        kable_styling(
+            latex_options = c("hold_position", "scale_down"),
+            full_width = FALSE,
+            font_size = 8
+        )
+} else if (knitr::is_html_output()) {
+    u1_contingency_table <- u1_contingency_table %>%
+        kable_styling(full_width = FALSE, position = "center")
+}
+
+u1_performance_summary_table <- kable(
+    u1_performance_summary,
+    format = if (knitr::is_latex_output()) {
+        "latex"
+    } else if (knitr::is_html_output()) {
+        "html"
+    } else {
+        "pipe"
+    },
+    caption = "Performances diagnostiques de U1 par rapport au gold standard",
+    align = "c",
+    col.names = c("Test", "Se [IC95]", "Sp [IC95]", "VPP [IC95]", "VPN [IC95]", "LR+", "LR-", "Youden", "AUC [IC95]")
+) %>%
+    kable_styling(
+        latex_options = c("hold_position", "scale_down"),
+        full_width = FALSE,
+        font_size = 7
+    )
+
+u1_descriptive_table
+u1_contingency_table
+u1_performance_summary_table
+```
+
+```{r}
+#| label: ulnt2a-setup
+#| echo: !expr "(!knitr::is_latex_output())"
+#| include: true
+#| results: "hide"
+#| message: false
+#| warning: false
+# Objets ULNT2a
+u2a_data <- df %>%
+    filter(
+        Gold_Standard_main %in% c("Positif", "Negatif"),
+        !is.na(U2a_E1)
+    )
+
+u2a_VP <- sum(u2a_data$U2a_E1 == "Positif" & u2a_data$Gold_Standard_main == "Positif")
+u2a_FN <- sum(u2a_data$U2a_E1 == "Negatif" & u2a_data$Gold_Standard_main == "Positif")
+u2a_FP <- sum(u2a_data$U2a_E1 == "Positif" & u2a_data$Gold_Standard_main == "Negatif")
+u2a_VN <- sum(u2a_data$U2a_E1 == "Negatif" & u2a_data$Gold_Standard_main == "Negatif")
+u2a_N <- u2a_VP + u2a_FN + u2a_FP + u2a_VN
+u2a_Se <- u2a_VP / (u2a_VP + u2a_FN)
+u2a_Se_IC <- binom.test(u2a_VP, u2a_VP + u2a_FN)$conf.int
+u2a_Sp <- u2a_VN / (u2a_VN + u2a_FP)
+u2a_Sp_IC <- binom.test(u2a_VN, u2a_VN + u2a_FP)$conf.int
+u2a_VPP <- u2a_VP / (u2a_VP + u2a_FP)
+u2a_VPP_IC <- binom.test(u2a_VP, u2a_VP + u2a_FP)$conf.int
+u2a_VPN <- u2a_VN / (u2a_VN + u2a_FN)
+u2a_VPN_IC <- binom.test(u2a_VN, u2a_VN + u2a_FN)$conf.int
+u2a_LR_pos <- u2a_Se / (1 - u2a_Sp)
+u2a_LR_neg <- (1 - u2a_Se) / u2a_Sp
+u2a_Youden <- u2a_Se + u2a_Sp - 1
+roc_u2a <- roc(
+    response = as.numeric(u2a_data$Gold_Standard_main == "Positif"),
+    predictor = as.numeric(u2a_data$U2a_E1 == "Positif"),
+    quiet = TRUE
+)
+u2a_AUC <- as.numeric(auc(roc_u2a))
+u2a_AUC_IC <- ci.auc(roc_u2a)
+u2a_Fisher_p <- fisher.test(table(u2a_data$U2a_E1, u2a_data$Gold_Standard_main))$p.value
+
+u2a_effectifs <- data.frame(
+    Test = "U2a",
+    N = u2a_N,
+    VP = u2a_VP,
+    FN = u2a_FN,
+    FP = u2a_FP,
+    VN = u2a_VN,
+    check.names = FALSE
+)
+
+u2a_performance <- data.frame(
+    Test = "U2a",
+    N = u2a_N,
+    VP = u2a_VP,
+    FN = u2a_FN,
+    FP = u2a_FP,
+    VN = u2a_VN,
+    Se = round(u2a_Se, 3),
+    Se_IC95 = paste0("[", round(u2a_Se_IC[1], 3), " ; ", round(u2a_Se_IC[2], 3), "]"),
+    Sp = round(u2a_Sp, 3),
+    Sp_IC95 = paste0("[", round(u2a_Sp_IC[1], 3), " ; ", round(u2a_Sp_IC[2], 3), "]"),
+    VPP = round(u2a_VPP, 3),
+    VPP_IC95 = paste0("[", round(u2a_VPP_IC[1], 3), " ; ", round(u2a_VPP_IC[2], 3), "]"),
+    VPN = round(u2a_VPN, 3),
+    VPN_IC95 = paste0("[", round(u2a_VPN_IC[1], 3), " ; ", round(u2a_VPN_IC[2], 3), "]"),
+    LR_pos = round(u2a_LR_pos, 2),
+    LR_neg = round(u2a_LR_neg, 2),
+    Youden = round(u2a_Youden, 3),
+    AUC = round(u2a_AUC, 3),
+    AUC_IC95 = paste0("[", round(u2a_AUC_IC[1], 3), " ; ", round(u2a_AUC_IC[3], 3), "]"),
+    Fisher_p = signif(u2a_Fisher_p, 3)
+)
+
+u2a_performance_table <- kable(
+    u2a_performance,
+    format = if (knitr::is_latex_output()) {
+        "latex"
+    } else if (knitr::is_html_output()) {
+        "html"
+    } else {
+        "pipe"
+    },
+    booktabs = TRUE,
+    align = "c",
+    caption = "Diagnostic performance of U2a compared with the reference standard",
+    col.names = c(
+        "Test", "N", "VP", "FN", "FP", "VN", "Se", "Se 95% CI", "Sp", "Sp 95% CI",
+        "PPV", "PPV 95% CI", "NPV", "NPV 95% CI", "LR+", "LR-", "Youden", "AUC", "AUC 95% CI", "Fisher p"
+    )
+)
+if (knitr::is_latex_output()) {
+    u2a_performance_table <- u2a_performance_table %>%
+        kable_styling(latex_options = c("hold_position", "scale_down"), full_width = FALSE, font_size = 7)
+} else if (knitr::is_html_output()) {
+    u2a_performance_table <- u2a_performance_table %>%
+        kable_styling(full_width = FALSE, position = "center")
+}
+
+u2a_descriptive <- data.frame(
+    Test = "U2a",
+    Positif_n = sum(df$U2a_E1 == "Positif", na.rm = TRUE),
+    Positif_pct = round(100 * mean(df$U2a_E1 == "Positif", na.rm = TRUE), 1),
+    Negatif_n = sum(df$U2a_E1 == "Negatif", na.rm = TRUE),
+    Negatif_pct = round(100 * mean(df$U2a_E1 == "Negatif", na.rm = TRUE), 1),
+    Manquant_n = sum(is.na(df$U2a_E1)),
+    Manquant_pct = round(100 * mean(is.na(df$U2a_E1)), 1),
+    stringsAsFactors = FALSE
+)
+u2a_descriptive_table <- kable(
+    u2a_descriptive,
+    format = if (knitr::is_latex_output()) {
+        "latex"
+    } else if (knitr::is_html_output()) {
+        "html"
+    } else {
+        "pipe"
+    },
+    caption = "Tableau descriptif des résultats de U2a (évaluateur 1)",
+    align = "c",
+    col.names = c("Test", "Positifs n", "Positifs %", "Négatifs n", "Négatifs %", "Manquants n", "Manquants %")
+)
+if (knitr::is_latex_output()) {
+    u2a_descriptive_table <- u2a_descriptive_table %>%
+        kable_styling(
+            latex_options = c("hold_position", "scale_down"),
+            full_width = FALSE,
+            font_size = 8
+        )
+} else if (knitr::is_html_output()) {
+    u2a_descriptive_table <- u2a_descriptive_table %>%
+        kable_styling(full_width = FALSE, position = "center")
+}
+
+u2a_tab <- table(
+    factor(df$U2a_E1[!is.na(df$U2a_E1) & df$Gold_Standard_main %in% c("Positif", "Negatif")], levels = c("Positif", "Negatif")),
+    factor(df$Gold_Standard_main[!is.na(df$U2a_E1) & df$Gold_Standard_main %in% c("Positif", "Negatif")], levels = c("Positif", "Negatif"))
+)
+u2a_contingency <- data.frame(
+    U2a = c("T+", "T-", "Total"),
+    `G+` = c(
+        paste0(u2a_tab["Positif", "Positif"], " (", round(100 * u2a_tab["Positif", "Positif"] / u2a_N, 1), "%)"),
+        paste0(u2a_tab["Negatif", "Positif"], " (", round(100 * u2a_tab["Negatif", "Positif"] / u2a_N, 1), "%)"),
+        paste0(sum(u2a_tab[, "Positif"]), " (", round(100 * sum(u2a_tab[, "Positif"]) / u2a_N, 1), "%)")
+    ),
+    `G-` = c(
+        paste0(u2a_tab["Positif", "Negatif"], " (", round(100 * u2a_tab["Positif", "Negatif"] / u2a_N, 1), "%)"),
+        paste0(u2a_tab["Negatif", "Negatif"], " (", round(100 * u2a_tab["Negatif", "Negatif"] / u2a_N, 1), "%)"),
+        paste0(sum(u2a_tab[, "Negatif"]), " (", round(100 * sum(u2a_tab[, "Negatif"]) / u2a_N, 1), "%)")
+    ),
+    Total = c(
+        paste0(sum(u2a_tab["Positif", ]), " (", round(100 * sum(u2a_tab["Positif", ]) / u2a_N, 1), "%)"),
+        paste0(sum(u2a_tab["Negatif", ]), " (", round(100 * sum(u2a_tab["Negatif", ]) / u2a_N, 1), "%)"),
+        paste0(sum(u2a_tab), " (", round(100 * sum(u2a_tab) / u2a_N, 1), "%)")
+    ),
+    check.names = FALSE,
+    stringsAsFactors = FALSE
+)
+u2a_contingency_table <- kable(
+    u2a_contingency,
+    format = if (knitr::is_latex_output()) {
+        "latex"
+    } else if (knitr::is_html_output()) {
+        "html"
+    } else {
+        "pipe"
+    },
+    caption = "Tableau de contingence de U2a par rapport au gold standard, avec effectifs et pourcentages sur l'ensemble des patients analysés",
+    align = "c"
+)
+if (knitr::is_latex_output()) {
+    u2a_contingency_table <- u2a_contingency_table %>%
+        kable_styling(
+            latex_options = c("hold_position", "scale_down"),
+            full_width = FALSE,
+            font_size = 8
+        )
+} else if (knitr::is_html_output()) {
+    u2a_contingency_table <- u2a_contingency_table %>%
+        kable_styling(full_width = FALSE, position = "center")
+}
+
+u2a_performance_summary_table <- kable(
+    u2a_performance_summary,
+    format = if (knitr::is_latex_output()) {
+        "latex"
+    } else if (knitr::is_html_output()) {
+        "html"
+    } else {
+        "pipe"
+    },
+    caption = "Performances diagnostiques de U2a par rapport au gold standard",
+    align = "c",
+    col.names = c("Test", "Se [IC95]", "Sp [IC95]", "VPP [IC95]", "VPN [IC95]", "LR+", "LR-", "Youden", "AUC [IC95]")
+) %>%
+    kable_styling(
+        latex_options = c("hold_position", "scale_down"),
+        full_width = FALSE,
+        font_size = 7
+    )
+
+u2a_descriptive_table
+u2a_contingency_table
+u2a_performance_summary_table
+```
+
+```{r}
+#| label: ulnt2b-setup
+#| echo: !expr "(!knitr::is_latex_output())"
+#| include: true
+#| results: "hide"
+#| message: false
+#| warning: false
+# Objets ULNT2b
+u2b_data <- df %>%
+    filter(
+        Gold_Standard_main %in% c("Positif", "Negatif"),
+        !is.na(U2b_E1)
+    )
+
+u2b_VP <- sum(u2b_data$U2b_E1 == "Positif" & u2b_data$Gold_Standard_main == "Positif")
+u2b_FN <- sum(u2b_data$U2b_E1 == "Negatif" & u2b_data$Gold_Standard_main == "Positif")
+u2b_FP <- sum(u2b_data$U2b_E1 == "Positif" & u2b_data$Gold_Standard_main == "Negatif")
+u2b_VN <- sum(u2b_data$U2b_E1 == "Negatif" & u2b_data$Gold_Standard_main == "Negatif")
+u2b_N <- u2b_VP + u2b_FN + u2b_FP + u2b_VN
+u2b_Se <- u2b_VP / (u2b_VP + u2b_FN)
+u2b_Se_IC <- binom.test(u2b_VP, u2b_VP + u2b_FN)$conf.int
+u2b_Sp <- u2b_VN / (u2b_VN + u2b_FP)
+u2b_Sp_IC <- binom.test(u2b_VN, u2b_VN + u2b_FP)$conf.int
+u2b_VPP <- u2b_VP / (u2b_VP + u2b_FP)
+u2b_VPP_IC <- binom.test(u2b_VP, u2b_VP + u2b_FP)$conf.int
+u2b_VPN <- u2b_VN / (u2b_VN + u2b_FN)
+u2b_VPN_IC <- binom.test(u2b_VN, u2b_VN + u2b_FN)$conf.int
+u2b_LR_pos <- u2b_Se / (1 - u2b_Sp)
+u2b_LR_neg <- (1 - u2b_Se) / u2b_Sp
+u2b_Youden <- u2b_Se + u2b_Sp - 1
+roc_u2b <- roc(
+    response = as.numeric(u2b_data$Gold_Standard_main == "Positif"),
+    predictor = as.numeric(u2b_data$U2b_E1 == "Positif"),
+    quiet = TRUE
+)
+u2b_AUC <- as.numeric(auc(roc_u2b))
+u2b_AUC_IC <- ci.auc(roc_u2b)
+u2b_Fisher_p <- fisher.test(table(u2b_data$U2b_E1, u2b_data$Gold_Standard_main))$p.value
+
+u2b_effectifs <- data.frame(
+    Test = "U2b",
+    N = u2b_N,
+    VP = u2b_VP,
+    FN = u2b_FN,
+    FP = u2b_FP,
+    VN = u2b_VN,
+    check.names = FALSE
+)
+
+u2b_performance <- data.frame(
+    Test = "U2b",
+    N = u2b_N,
+    VP = u2b_VP,
+    FN = u2b_FN,
+    FP = u2b_FP,
+    VN = u2b_VN,
+    Se = round(u2b_Se, 3),
+    Se_IC95 = paste0("[", round(u2b_Se_IC[1], 3), " ; ", round(u2b_Se_IC[2], 3), "]"),
+    Sp = round(u2b_Sp, 3),
+    Sp_IC95 = paste0("[", round(u2b_Sp_IC[1], 3), " ; ", round(u2b_Sp_IC[2], 3), "]"),
+    VPP = round(u2b_VPP, 3),
+    VPP_IC95 = paste0("[", round(u2b_VPP_IC[1], 3), " ; ", round(u2b_VPP_IC[2], 3), "]"),
+    VPN = round(u2b_VPN, 3),
+    VPN_IC95 = paste0("[", round(u2b_VPN_IC[1], 3), " ; ", round(u2b_VPN_IC[2], 3), "]"),
+    LR_pos = round(u2b_LR_pos, 2),
+    LR_neg = round(u2b_LR_neg, 2),
+    Youden = round(u2b_Youden, 3),
+    AUC = round(u2b_AUC, 3),
+    AUC_IC95 = paste0("[", round(u2b_AUC_IC[1], 3), " ; ", round(u2b_AUC_IC[3], 3), "]"),
+    Fisher_p = signif(u2b_Fisher_p, 3)
+)
+
+u2b_performance_table <- kable(
+    u2b_performance,
+    format = if (knitr::is_latex_output()) {
+        "latex"
+    } else if (knitr::is_html_output()) {
+        "html"
+    } else {
+        "pipe"
+    },
+    booktabs = TRUE,
+    align = "c",
+    caption = "Diagnostic performance of U2b compared with the reference standard",
+    col.names = c(
+        "Test", "N", "VP", "FN", "FP", "VN", "Se", "Se 95% CI", "Sp", "Sp 95% CI",
+        "PPV", "PPV 95% CI", "NPV", "NPV 95% CI", "LR+", "LR-", "Youden", "AUC", "AUC 95% CI", "Fisher p"
+    )
+)
+if (knitr::is_latex_output()) {
+    u2b_performance_table <- u2b_performance_table %>%
+        kable_styling(latex_options = c("hold_position", "scale_down"), full_width = FALSE, font_size = 7)
+} else if (knitr::is_html_output()) {
+    u2b_performance_table <- u2b_performance_table %>%
+        kable_styling(full_width = FALSE, position = "center")
+}
+
+u2b_descriptive <- data.frame(
+    Test = "U2b",
+    Positif_n = sum(df$U2b_E1 == "Positif", na.rm = TRUE),
+    Positif_pct = round(100 * mean(df$U2b_E1 == "Positif", na.rm = TRUE), 1),
+    Negatif_n = sum(df$U2b_E1 == "Negatif", na.rm = TRUE),
+    Negatif_pct = round(100 * mean(df$U2b_E1 == "Negatif", na.rm = TRUE), 1),
+    Manquant_n = sum(is.na(df$U2b_E1)),
+    Manquant_pct = round(100 * mean(is.na(df$U2b_E1)), 1),
+    stringsAsFactors = FALSE
+)
+u2b_descriptive_table <- kable(
+    u2b_descriptive,
+    format = if (knitr::is_latex_output()) {
+        "latex"
+    } else if (knitr::is_html_output()) {
+        "html"
+    } else {
+        "pipe"
+    },
+    caption = "Tableau descriptif des résultats de U2b (évaluateur 1)",
+    align = "c",
+    col.names = c("Test", "Positifs n", "Positifs %", "Négatifs n", "Négatifs %", "Manquants n", "Manquants %")
+)
+if (knitr::is_latex_output()) {
+    u2b_descriptive_table <- u2b_descriptive_table %>%
+        kable_styling(
+            latex_options = c("hold_position", "scale_down"),
+            full_width = FALSE,
+            font_size = 8
+        )
+} else if (knitr::is_html_output()) {
+    u2b_descriptive_table <- u2b_descriptive_table %>%
+        kable_styling(full_width = FALSE, position = "center")
+}
+
+u2b_tab <- table(
+    factor(df$U2b_E1[!is.na(df$U2b_E1) & df$Gold_Standard_main %in% c("Positif", "Negatif")], levels = c("Positif", "Negatif")),
+    factor(df$Gold_Standard_main[!is.na(df$U2b_E1) & df$Gold_Standard_main %in% c("Positif", "Negatif")], levels = c("Positif", "Negatif"))
+)
+u2b_contingency <- data.frame(
+    U2b = c("T+", "T-", "Total"),
+    `G+` = c(
+        )
+}
+
+if (u3_LR_pos < 1) {
+    u3_lr_pos_text <- "un test positif ne renforce pas l'hypothèse diagnostique et peut même orienter légèrement dans le sens inverse."
+} else if (u3_LR_pos < 2) {
+    u3_lr_pos_text <- "un test positif renforce très peu l'hypothèse diagnostique."
+} else if (u3_LR_pos < 5) {
+    u3_lr_pos_text <- "un test positif apporte un argument diagnostique modéré en faveur de la maladie."
+} else {
+    u3_lr_pos_text <- "un test positif apporte un argument fort pour confirmer la maladie."
+}
+
+if (u3_LR_neg > 1) {
+    u3_lr_neg_text <- "un test négatif n'aide pas à exclure la maladie et peut même aller légèrement dans le sens inverse."
+} else if (u3_LR_neg > 0.5) {
+    u3_lr_neg_text <- "un test négatif apporte très peu d'information pour écarter la maladie."
+} else if (u3_LR_neg > 0.2) {
+    u3_lr_neg_text <- "un test négatif réduit modérément la probabilité de maladie, sans suffire à l'exclure à lui seul."
+} else {
+    u3_lr_neg_text <- "un test négatif constitue un bon argument pour exclure la maladie."
+}
+
+if (u3_Youden < 0) {
+    u3_youden_text <- "cela traduit un test globalement non informatif dans cet échantillon."
+} else if (u3_Youden < 0.2) {
+    u3_youden_text <- "cela correspond à une performance diagnostique globale faible."
+} else if (u3_Youden < 0.4) {
+    u3_youden_text <- "cela correspond à une performance diagnostique globale modeste."
+} else {
+    u3_youden_text <- "cela correspond à une performance diagnostique globale au moins modérée."
+}
+
+if (u3_AUC < 0.5) {
+    u3_auc_text <- "cela signifie que le test discrimine moins bien que le hasard dans cette cohorte."
+} else if (u3_AUC < 0.6) {
+    u3_auc_text <- "cela correspond à une discrimination faible et proche du hasard."
+} else if (u3_AUC < 0.7) {
+    u3_auc_text <- "cela correspond à une discrimination faible à modérée."
+} else if (u3_AUC < 0.8) {
+    u3_auc_text <- "cela correspond à une discrimination modérée."
+} else {
+    u3_auc_text <- "cela correspond à une bonne discrimination."
+}
+
+if (u3_Fisher_p < 0.05) {
+    u3_fisher_text <- "la p-value est inférieure à 0,05, ce qui suggère une association statistiquement significative entre U3 et le gold standard."
+} else {
+    u3_fisher_text <- "la p-value n'est pas inférieure à 0,05, ce qui ne permet pas de conclure à une association statistiquement significative entre U3 et le gold standard."
+}
+
+plot_roc_u3 <- function() {
+    plot(roc_u3, main = "Courbe ROC de U3 par rapport au gold standard", col = "blue", lwd = 2)
+}
+
+```
+
+```{r}
+#| label: objets-resultats-globaux
+#| echo: !expr "(!knitr::is_latex_output())"
+#| include: true
+#| results: "hide"
+#| message: false
+#| warning: false
+# Objets résultats globaux
+contingency_tab <- data.frame(
+    Test = c("U1", "U2a", "U2b", "U3"),
+    VP = c(u1_VP, u2a_VP, u2b_VP, u3_VP),
+    FN = c(u1_FN, u2a_FN, u2b_FN, u3_FN),
+    FP = c(u1_FP, u2a_FP, u2b_FP, u3_FP),
+    VN = c(u1_VN, u2a_VN, u2b_VN, u3_VN)
+)
+contingency_tab$N <- contingency_tab$VP + contingency_tab$FN + contingency_tab$FP + contingency_tab$VN
+contingency_tab_kable <- kable(
+    contingency_tab,
+    format = if (knitr::is_latex_output()) {
+        "latex"
+    } else if (knitr::is_html_output()) {
+        "html"
+    } else {
+        "pipe"
+    },
+    caption = "Tableau global de contingence des ULNT par rapport au gold standard",
+    align = "c"
+)
+if (knitr::is_latex_output()) {
+    contingency_tab_kable <- contingency_tab_kable %>%
+        kable_styling(
+            latex_options = c("hold_position", "scale_down"),
+            full_width = FALSE,
+            font_size = 8
+        )
+} else if (knitr::is_html_output()) {
+    contingency_tab_kable <- contingency_tab_kable %>%
+        kable_styling(
+            full_width = FALSE,
+            position = "center"
+        )
+}
+
+diag_primary_round <- data.frame(
+    Test = c("U1", "U2a", "U2b", "U3"),
+    Se = c(
+        paste0(round(u1_Se, 3), " [", round(u1_Se_IC[1], 3), " ; ", round(u1_Se_IC[2], 3), "]"),
+        paste0(round(u2a_Se, 3), " [", round(u2a_Se_IC[1], 3), " ; ", round(u2a_Se_IC[2], 3), "]"),
+        paste0(round(u2b_Se, 3), " [", round(u2b_Se_IC[1], 3), " ; ", round(u2b_Se_IC[2], 3), "]"),
+        paste0(round(u3_Se, 3), " [", round(u3_Se_IC[1], 3), " ; ", round(u3_Se_IC[2], 3), "]")
+    ),
+    Sp = c(
+        paste0(round(u1_Sp, 3), " [", round(u1_Sp_IC[1], 3), " ; ", round(u1_Sp_IC[2], 3), "]"),
+        paste0(round(u2a_Sp, 3), " [", round(u2a_Sp_IC[1], 3), " ; ", round(u2a_Sp_IC[2], 3), "]"),
+        paste0(round(u2b_Sp, 3), " [", round(u2b_Sp_IC[1], 3), " ; ", round(u2b_Sp_IC[2], 3), "]"),
+        paste0(round(u3_Sp, 3), " [", round(u3_Sp_IC[1], 3), " ; ", round(u3_Sp_IC[2], 3), "]")
+    ),
+    VPP = c(
+        paste0(round(u1_VPP, 3), " [", round(u1_VPP_IC[1], 3), " ; ", round(u1_VPP_IC[2], 3), "]"),
+        paste0(round(u2a_VPP, 3), " [", round(u2a_VPP_IC[1], 3), " ; ", round(u2a_VPP_IC[2], 3), "]"),
+        paste0(round(u2b_VPP, 3), " [", round(u2b_VPP_IC[1], 3), " ; ", round(u2b_VPP_IC[2], 3), "]"),
+        paste0(round(u3_VPP, 3), " [", round(u3_VPP_IC[1], 3), " ; ", round(u3_VPP_IC[2], 3), "]")
+    ),
+    VPN = c(
+        paste0(round(u1_VPN, 3), " [", round(u1_VPN_IC[1], 3), " ; ", round(u1_VPN_IC[2], 3), "]"),
+        paste0(round(u2a_VPN, 3), " [", round(u2a_VPN_IC[1], 3), " ; ", round(u2a_VPN_IC[2], 3), "]"),
+        paste0(round(u2b_VPN, 3), " [", round(u2b_VPN_IC[1], 3), " ; ", round(u2b_VPN_IC[2], 3), "]"),
+        paste0(round(u3_VPN, 3), " [", round(u3_VPN_IC[1], 3), " ; ", round(u3_VPN_IC[2], 3), "]")
+    ),
+    `LR+` = c(round(u1_LR_pos, 2), round(u2a_LR_pos, 2), round(u2b_LR_pos, 2), round(u3_LR_pos, 2)),
+    `LR-` = c(round(u1_LR_neg, 2), round(u2a_LR_neg, 2), round(u2b_LR_neg, 2), round(u3_LR_neg, 2)),
+    Youden = c(round(u1_Youden, 3), round(u2a_Youden, 3), round(u2b_Youden, 3), round(u3_Youden, 3)),
+    AUC = c(
+        paste0(round(u1_AUC, 3), " [", round(u1_AUC_IC[1], 3), " ; ", round(u1_AUC_IC[3], 3), "]"),
+        paste0(round(u2a_AUC, 3), " [", round(u2a_AUC_IC[1], 3), " ; ", round(u2a_AUC_IC[3], 3), "]"),
+        paste0(round(u2b_AUC, 3), " [", round(u2b_AUC_IC[1], 3), " ; ", round(u2b_AUC_IC[3], 3), "]"),
+        paste0(round(u3_AUC, 3), " [", round(u3_AUC_IC[1], 3), " ; ", round(u3_AUC_IC[3], 3), "]")
+    ),
+    check.names = FALSE
+)
+diag_primary_round_kable <- kable(
+    diag_primary_round,
+    format = if (knitr::is_latex_output()) {
+        "latex"
+    } else if (knitr::is_html_output()) {
+        "html"
+    } else {
+        "pipe"
+    },
+    caption = "Tableau global des performances diagnostiques des ULNT",
+    align = "c"
+)
+if (knitr::is_latex_output()) {
+    diag_primary_round_kable <- diag_primary_round_kable %>%
+        kable_styling(
+            latex_options = c("hold_position", "scale_down"),
+            full_width = FALSE,
+            font_size = 8
+        )
+} else if (knitr::is_html_output()) {
+    diag_primary_round_kable <- diag_primary_round_kable %>%
+        kable_styling(
+            full_width = FALSE,
+            position = "center"
+        )
+}
+
+diag_primary_numeric <- data.frame(
+    Test = c("U1", "U2a", "U2b", "U3"),
+    Se = c(u1_Se, u2a_Se, u2b_Se, u3_Se),
+    Se_low = c(u1_Se_IC[1], u2a_Se_IC[1], u2b_Se_IC[1], u3_Se_IC[1]),
+    Se_high = c(u1_Se_IC[2], u2a_Se_IC[2], u2b_Se_IC[2], u3_Se_IC[2]),
+    Sp = c(u1_Sp, u2a_Sp, u2b_Sp, u3_Sp),
+    Sp_low = c(u1_Sp_IC[1], u2a_Sp_IC[1], u2b_Sp_IC[1], u3_Sp_IC[1]),
+    Sp_high = c(u1_Sp_IC[2], u2a_Sp_IC[2], u2b_Sp_IC[2], u3_Sp_IC[2]),
+    LR_pos = c(u1_LR_pos, u2a_LR_pos, u2b_LR_pos, u3_LR_pos),
+    LR_neg = c(u1_LR_neg, u2a_LR_neg, u2b_LR_neg, u3_LR_neg),
+    Youden = c(u1_Youden, u2a_Youden, u2b_Youden, u3_Youden),
+    AUC = c(u1_AUC, u2a_AUC, u2b_AUC, u3_AUC),
+    Fisher_p = c(u1_Fisher_p, u2a_Fisher_p, u2b_Fisher_p, u3_Fisher_p)
+)
+
+best_test_row <- diag_primary_numeric %>%
+    slice_max(Youden, n = 1, with_ties = FALSE)
+best_test_label <- best_test_row$Test
+best_test_se <- best_test_row$Se
+best_test_sp <- best_test_row$Sp
+best_test_lr_pos <- best_test_row$LR_pos
+best_test_lr_neg <- best_test_row$LR_neg
+best_test_youden <- best_test_row$Youden
+best_test_auc <- best_test_row$AUC
+
+u1_row <- diag_primary_numeric %>% filter(Test == "U1")
+u3_row <- diag_primary_numeric %>% filter(Test == "U3")
+
+diag_key_long <- bind_rows(
+    diag_primary_numeric %>%
+        transmute(Test, Mesure = "Sensibilité", Estimate = Se, Low = Se_low, High = Se_high),
+    diag_primary_numeric %>%
+        transmute(Test, Mesure = "Spécificité", Estimate = Sp, Low = Sp_low, High = Sp_high)
+)
+
+diag_key_plot <- ggplot(diag_key_long, aes(x = Test, y = Estimate, color = Mesure)) +
+    geom_pointrange(aes(ymin = Low, ymax = High), position = position_dodge(width = 0.35), linewidth = 0.5) +
+    scale_color_manual(values = c("Sensibilité" = nord("aurora")[4], "Spécificité" = nord("frost")[4])) +
+    scale_y_continuous(limits = c(0, 1), breaks = seq(0, 1, 0.2)) +
+    theme_minimal() +
+    labs(
+        title = "Sensibilité et spécificité des ULNT",
+        x = "Test",
+        y = "Estimation [IC95%]",
+        color = NULL
+    )
+
+test_labels <- c(U1_E1 = "U1", U2a_E1 = "U2a", U2b_E1 = "U2b", U3_E1 = "U3")
+
+paired_test_data <- df %>%
+    filter(Gold_Standard_main %in% c("Positif", "Negatif"))
+
+compute_paired_metric_comparison <- function(test_1, test_2, label_1, label_2, gold_target = c("Positif", "Negatif")) {
+    gold_target <- match.arg(gold_target)
+    data_tmp <- paired_test_data %>%
+        filter(
+            Gold_Standard_main == gold_target,
+            !is.na(.data[[test_1]]),
+            !is.na(.data[[test_2]])
+        )
+
+    if (gold_target == "Positif") {
+        ok_1 <- data_tmp[[test_1]] == "Positif"
+        ok_2 <- data_tmp[[test_2]] == "Positif"
+    } else {
+        ok_1 <- data_tmp[[test_1]] == "Negatif"
+        ok_2 <- data_tmp[[test_2]] == "Negatif"
+    }
+
+    both_ok <- sum(ok_1 & ok_2)
+    test_1_only <- sum(ok_1 & !ok_2)
+    test_2_only <- sum(!ok_1 & ok_2)
+    both_not_ok <- sum(!ok_1 & !ok_2)
+    p_value <- if ((test_1_only + test_2_only) > 0) {
+        mcnemar.test(
+            matrix(c(both_ok, test_1_only, test_2_only, both_not_ok), nrow = 2, byrow = TRUE),
+            correct = TRUE
+        )$p.value
+    } else {
+        NA_real_
+    }
+
+    data.frame(
+        Comparaison = paste0(label_1, " vs ", label_2),
+        N = nrow(data_tmp),
+        Est_1 = mean(ok_1),
+        Est_2 = mean(ok_2),
+        Diff = mean(ok_1) - mean(ok_2),
+        Discordant_1 = test_1_only,
+        Discordant_2 = test_2_only,
+        P_McNemar = p_value,
+        stringsAsFactors = FALSE
+    )
+}
+
+pairwise_test_pairs <- combn(names(test_labels), 2, simplify = FALSE)
+
+pairwise_comparison_raw <- bind_rows(lapply(pairwise_test_pairs, function(test_pair) {
+    test_1 <- test_pair[1]
+    test_2 <- test_pair[2]
+    label_1 <- test_labels[[test_1]]
+    label_2 <- test_labels[[test_2]]
+
+    sens_cmp <- compute_paired_metric_comparison(test_1, test_2, label_1, label_2, "Positif")
+    spec_cmp <- compute_paired_metric_comparison(test_1, test_2, label_1, label_2, "Negatif")
+
+    data.frame(
+        Comparaison = sens_cmp$Comparaison,
+        N_pos = sens_cmp$N,
+        Se_1 = sens_cmp$Est_1,
+        Se_2 = sens_cmp$Est_2,
+        Diff_Se = sens_cmp$Diff,
+        Discordance_Se = paste0(sens_cmp$Discordant_1, " / ", sens_cmp$Discordant_2),
+        P_Se = sens_cmp$P_McNemar,
+        N_neg = spec_cmp$N,
+        Sp_1 = spec_cmp$Est_1,
+        Sp_2 = spec_cmp$Est_2,
+        Diff_Sp = spec_cmp$Diff,
+        Discordance_Sp = paste0(spec_cmp$Discordant_1, " / ", spec_cmp$Discordant_2),
+        P_Sp = spec_cmp$P_McNemar,
+        stringsAsFactors = FALSE
+    )
+}))
+
+format_pairwise_p <- function(p) {
+    ifelse(
+        is.na(p),
+        NA_character_,
+        vapply(
+            p,
+            function(x) format.pval(x, digits = 3, eps = 0.001),
+            character(1)
+        )
+    )
+}
+
+pairwise_comparison_round <- pairwise_comparison_raw %>%
+    transmute(
+        Comparaison,
+        `N G+` = N_pos,
+        `Se test 1` = round(Se_1, 3),
+        `Se test 2` = round(Se_2, 3),
+        `Diff Se` = round(Diff_Se, 3),
+        `Discordance G+ (test1 seul / test2 seul)` = Discordance_Se,
+        `p McNemar Se` = format_pairwise_p(P_Se),
+        `N G-` = N_neg,
+        `Sp test 1` = round(Sp_1, 3),
+        `Sp test 2` = round(Sp_2, 3),
+        `Diff Sp` = round(Diff_Sp, 3),
+        `Discordance G- (test1 seul / test2 seul)` = Discordance_Sp,
+        `p McNemar Sp` = format_pairwise_p(P_Sp)
+    )
+
+pairwise_sensitivity_sig <- pairwise_comparison_raw %>%
+    filter(!is.na(P_Se), P_Se < 0.05) %>%
+    pull(Comparaison)
+
+pairwise_specificity_sig <- pairwise_comparison_raw %>%
+    filter(!is.na(P_Sp), P_Sp < 0.05) %>%
+    pull(Comparaison)
+
+pairwise_sensitivity_sig_text <- if (length(pairwise_sensitivity_sig) > 0) {
+    paste(pairwise_sensitivity_sig, collapse = ", ")
+} else {
+    "aucune paire"
+}
+
+pairwise_specificity_sig_text <- if (length(pairwise_specificity_sig) > 0) {
+    paste(pairwise_specificity_sig, collapse = ", ")
+} else {
+    "aucune paire"
+}
+
+compute_recode_metrics <- function(test_col, doubtful_target = c("Negatif", "Positif")) {
+    doubtful_target <- match.arg(doubtful_target)
+    gold_tmp <- ifelse(df$Gold_Standard == "Douteux", doubtful_target, df$Gold_Standard)
+    keep <- !is.na(df[[test_col]]) & gold_tmp %in% c("Positif", "Negatif")
+    test_tmp <- df[[test_col]][keep]
+    gold_tmp <- gold_tmp[keep]
+    tp <- sum(test_tmp == "Positif" & gold_tmp == "Positif")
+    fn <- sum(test_tmp == "Negatif" & gold_tmp == "Positif")
+    fp <- sum(test_tmp == "Positif" & gold_tmp == "Negatif")
+    tn <- sum(test_tmp == "Negatif" & gold_tmp == "Negatif")
+    data.frame(
+        N = tp + fn + fp + tn,
+        Se = tp / (tp + fn),
+        Sp = tn / (tn + fp),
+        stringsAsFactors = FALSE
+    )
+}
+doubtful_recode_round <- bind_rows(lapply(names(test_labels), function(test_col) {
+    recode_neg <- compute_recode_metrics(test_col, "Negatif")
+    recode_pos <- compute_recode_metrics(test_col, "Positif")
+    data.frame(
+        Test = test_labels[[test_col]],
+        N = recode_neg$N,
+        `Se (Douteux->Negatif)` = round(recode_neg$Se, 3),
+        `Sp (Douteux->Negatif)` = round(recode_neg$Sp, 3),
+        `Se (Douteux->Positif)` = round(recode_pos$Se, 3),
+        `Sp (Douteux->Positif)` = round(recode_pos$Sp, 3),
+        check.names = FALSE
+    )
+}))
+
+df$n_pos <- df$U1_E1_positif + df$U2a_E1_positif + df$U2b_E1_positif + df$U3_E1_positif
+
+contingency_long <- contingency_tab %>%
+    pivot_longer(cols = c(VP, FN, FP, VN), names_to = "Cellule", values_to = "Effectif") %>%
+    mutate(Cellule = factor(Cellule, levels = c("VP", "FN", "FP", "VN")))
+
+contingency_plot <- ggplot(contingency_long, aes(Test, Effectif, fill = Cellule)) +
+    geom_col(position = "stack", width = 0.7, color = "white", linewidth = 0.2) +
+    scale_fill_manual(
+        values = c(VP = nord("aurora")[4], FN = nord("aurora")[1], FP = nord("aurora")[2], VN = nord("frost")[4]),
+        labels = c(VP = "Vrai positif", FN = "Faux négatif", FP = "Faux positif", VN = "Vrai négatif"),
+        name = "Cellule"
+    ) +
+    theme_minimal() +
+    labs(
+        title = "Composition des tableaux 2x2 par test",
+        x = "Test",
+        y = "Effectif"
+    )
+
+```
+
+```{r}
+#| label: objets-resultats-par-niveau
+#| echo: !expr "(!knitr::is_latex_output())"
+#| include: true
+#| results: "hide"
+#| message: false
+#| warning: false
+# Objets résultats par niveau
+level_levels <- levels(df$Niveau)
+
+level_analysis_data <- df %>%
+    filter(Gold_Standard_main %in% c("Positif", "Negatif"), !is.na(Niveau)) %>%
+    mutate(
+        gs = as.integer(Gold_Standard_main == "Positif"),
+        Niveau_num = as.numeric(Niveau)
+    )
+
+level_total_counts <- df %>%
+    filter(!is.na(Niveau)) %>%
+    count(Niveau, name = "Effectif_total_niveau") %>%
+    complete(
+        Niveau = factor(level_levels, levels = level_levels, ordered = TRUE),
+        fill = list(Effectif_total_niveau = 0)
+    )
+
+level_summary <- level_analysis_data %>%
+    group_by(Niveau) %>%
+    summarise(
+        N_analyse = n(),
+        NCB_pos = sum(gs),
+        NCB_neg = sum(gs == 0),
+        n_pos_q1 = quantile(n_pos, 0.25, na.rm = TRUE),
+        n_pos_median = median(n_pos, na.rm = TRUE),
+        n_pos_q3 = quantile(n_pos, 0.75, na.rm = TRUE),
+        .groups = "drop"
+    ) %>%
+    complete(
+        Niveau = factor(level_levels, levels = level_levels, ordered = TRUE),
+        fill = list(
+            N_analyse = 0,
+            NCB_pos = 0,
+            NCB_neg = 0,
+            n_pos_q1 = NA_real_,
+            n_pos_median = NA_real_,
+            n_pos_q3 = NA_real_
+        )
+    ) %>%
+    left_join(level_total_counts, by = "Niveau")
+
+level_status_long <- level_analysis_data %>%
+    mutate(
+        Statut_NCB = factor(
+            Gold_Standard_main,
+            levels = c("Negatif", "Positif"),
+            labels = c("NCB negatif", "NCB positif")
+        )
+    ) %>%
+    count(Niveau, Statut_NCB, name = "Effectif") %>%
+    complete(
+        Niveau = factor(level_levels, levels = level_levels, ordered = TRUE),
+        Statut_NCB = factor(c("NCB negatif", "NCB positif"), levels = c("NCB negatif", "NCB positif")),
+        fill = list(Effectif = 0)
+    )
+
+results_by_level_status_plot <- ggplot(level_status_long, aes(x = Niveau, y = Effectif, fill = Statut_NCB)) +
+    geom_col(width = 0.7, color = "white", linewidth = 0.2) +
+    geom_text(
+        data = level_summary,
+        aes(x = Niveau, y = N_analyse, label = sprintf("N = %d", N_analyse)),
+        inherit.aes = FALSE,
+        vjust = -0.35,
+        size = 3
+    ) +
+    scale_fill_manual(
+        values = c("NCB negatif" = nord("frost")[2], "NCB positif" = nord("aurora")[4]),
+        name = "Gold standard"
+    ) +
+    scale_y_continuous(expand = expansion(mult = c(0, 0.08))) +
+    theme_minimal() +
+    labs(
+        title = "Effectifs de NCB selon le niveau metamerique",
+        x = "Niveau metamerique",
+        y = "Effectif"
+    )
+
+level_score_long <- level_analysis_data %>%
+    mutate(Score_ULNT = factor(n_pos, levels = 0:4, ordered = TRUE)) %>%
+    count(Niveau, Score_ULNT, name = "Effectif") %>%
+    complete(
+        Niveau = factor(level_levels, levels = level_levels, ordered = TRUE),
+        Score_ULNT = factor(0:4, levels = 0:4, ordered = TRUE),
+        fill = list(Effectif = 0)
+    )
+
+results_by_level_score_plot <- ggplot(level_score_long, aes(x = Niveau, y = Effectif, fill = Score_ULNT)) +
+    geom_col(width = 0.7, color = "white", linewidth = 0.2) +
+    geom_text(
+        data = level_summary,
+        aes(x = Niveau, y = N_analyse, label = sprintf("N = %d", N_analyse)),
+        inherit.aes = FALSE,
+        vjust = -0.35,
+        size = 3
+    ) +
+    scale_fill_manual(
+        values = c(
+            `0` = nord("frost")[1],
+            `1` = nord("frost")[2],
+            `2` = nord("frost")[3],
+            `3` = nord("aurora")[3],
+            `4` = nord("aurora")[4]
+        ),
+        name = "Score ULNT"
+    ) +
+    scale_y_continuous(expand = expansion(mult = c(0, 0.08))) +
+    theme_minimal() +
+    labs(
+        title = "Distribution du score ULNT selon le niveau metamerique",
+        x = "Niveau metamerique",
+        y = "Effectif"
+    )
+
+niveau_min_n <- min(level_summary$N_analyse[level_summary$N_analyse > 0])
+niveau_max_n <- max(level_summary$N_analyse)
+
+diagnostic_by_level_round <- level_summary %>%
+    transmute(
+        Niveau,
+        `N analyse` = N_analyse,
+        `NCB positif` = NCB_pos,
+        `NCB negatif` = NCB_neg,
+        `Effectif total du niveau` = Effectif_total_niveau,
+        `Mediane score ULNT [Q1 ; Q3]` = ifelse(
+            N_analyse > 0,
+            paste0(round(n_pos_median, 2), " [", round(n_pos_q1, 2), " ; ", round(n_pos_q3, 2), "]"),
+            NA_character_
+        )
+    )
+
+format_prop_ci <- function(est, low, high) {
+    ifelse(
+        is.na(est),
+        NA_character_,
+        paste0(round(est, 3), " [", round(low, 3), " ; ", round(high, 3), "]")
+    )
+}
+
+format_fisher_p <- function(p) {
+    out <- rep(NA_character_, length(p))
+    out[!is.na(p)] <- vapply(
+        p[!is.na(p)],
+        function(x) {
+            format.pval(x, digits = 3, eps = 0.001)
+        },
+        character(1)
+    )
+    out
+}
+
+level_test_labels <- c(U1_E1 = "U1", U2a_E1 = "U2a", U2b_E1 = "U2b", U3_E1 = "U3")
+
+compute_level_test_metrics <- function(level_value, test_col, test_label) {
+    data_tmp <- level_analysis_data %>%
+        filter(Niveau == level_value, !is.na(.data[[test_col]]))
+
+    tp <- sum(data_tmp[[test_col]] == "Positif" & data_tmp$Gold_Standard_main == "Positif")
+    fn <- sum(data_tmp[[test_col]] == "Negatif" & data_tmp$Gold_Standard_main == "Positif")
+    fp <- sum(data_tmp[[test_col]] == "Positif" & data_tmp$Gold_Standard_main == "Negatif")
+    tn <- sum(data_tmp[[test_col]] == "Negatif" & data_tmp$Gold_Standard_main == "Negatif")
+
+    se_den <- tp + fn
+    sp_den <- tn + fp
+    se <- if (se_den > 0) {
+        tp / se_den
+    } else {
+        NA_real_
+    }
+    sp <- if (sp_den > 0) {
+        tn / sp_den
+    } else {
+        NA_real_
+    }
+    se_ci <- if (se_den > 0) {
+        binom.test(tp, se_den)$conf.int
+    } else {
+        c(NA_real_, NA_real_)
+    }
+    sp_ci <- if (sp_den > 0) {
+        binom.test(tn, sp_den)$conf.int
+    } else {
+        c(NA_real_, NA_real_)
+    }
+    fisher_p <- if ((tp + fn) > 0 && (fp + tn) > 0 && (tp + fp) > 0 && (fn + tn) > 0) {
+        fisher.test(matrix(c(tp, fn, fp, tn), nrow = 2, byrow = TRUE))$p.value
+    } else {
+        NA_real_
+    }
+
+    data.frame(
+        Niveau = as.character(level_value),
+        Test = test_label,
+        N_analyse = tp + fn + fp + tn,
+        TP = tp,
+        FP = fp,
+        TN = tn,
+        FN = fn,
+        Se = se,
+        Se_low = se_ci[1],
+        Se_high = se_ci[2],
+        Sp = sp,
+        Sp_low = sp_ci[1],
+        Sp_high = sp_ci[2],
+        Fisher_p = fisher_p,
+        stringsAsFactors = FALSE
+    )
+}
+
+diagnostic_by_level_detail_raw <- bind_rows(lapply(level_levels, function(level_value) {
+    bind_rows(lapply(names(level_test_labels), function(test_col) {
+        compute_level_test_metrics(level_value, test_col, level_test_labels[[test_col]])
+    }))
+})) %>%
+    mutate(
+        Niveau = factor(Niveau, levels = level_levels, ordered = TRUE),
+        Test = factor(Test, levels = unname(level_test_labels))
+    ) %>%
+    arrange(Niveau, Test)
+
+diagnostic_by_level_detail_round <- diagnostic_by_level_detail_raw %>%
+    transmute(
+        Niveau,
+        Test,
+        `N analyse` = N_analyse,
+        TP,
+        FP,
+        TN,
+        FN,
+        `Se [IC95% exact]` = format_prop_ci(Se, Se_low, Se_high),
+        `Sp [IC95% exact]` = format_prop_ci(Sp, Sp_low, Sp_high),
+        `p Fisher` = format_fisher_p(Fisher_p)
+    )
+
+level_test_metric_plot_data <- diagnostic_by_level_detail_raw %>%
+    select(Niveau, Test, N_analyse, Se, Se_low, Se_high, Sp, Sp_low, Sp_high) %>%
+    pivot_longer(
+        cols = c(Se, Sp),
+        names_to = "Metric",
+        values_to = "Estimate"
+    ) %>%
+    mutate(
+        Lower = ifelse(Metric == "Se", Se_low, Sp_low),
+        Upper = ifelse(Metric == "Se", Se_high, Sp_high),
+        Metric = factor(Metric, levels = c("Se", "Sp"), labels = c("Sensibilite", "Specificite"))
+    )
+
+results_by_level_test_metric_plot <- ggplot(level_test_metric_plot_data, aes(x = Niveau, y = Estimate, color = Metric, group = Metric)) +
+    geom_line(linewidth = 0.4, na.rm = TRUE) +
+    geom_point(size = 2, na.rm = TRUE) +
+    geom_errorbar(aes(ymin = Lower, ymax = Upper), width = 0.12, linewidth = 0.3, na.rm = TRUE) +
+    facet_wrap(~Test, ncol = 2) +
+    scale_color_manual(values = c(Sensibilite = nord("aurora")[4], Specificite = nord("frost")[4])) +
+    scale_y_continuous(limits = c(0, 1), breaks = seq(0, 1, 0.2)) +
+    theme_minimal() +
+    labs(
+        title = "Sensibilite et specificite selon le niveau metamerique pour chaque ULNT",
+        x = "Niveau metamerique",
+        y = "Estimation",
+        color = NULL
+    )
+
+make_test_level_round <- function(test_label) {
+    diagnostic_by_level_detail_raw %>%
+        filter(Test == test_label) %>%
+        transmute(
+            Niveau,
+            `N analyse` = N_analyse,
+            TP,
+            FP,
+            TN,
+            FN,
+            `Se [IC95% exact]` = format_prop_ci(Se, Se_low, Se_high),
+            `Sp [IC95% exact]` = format_prop_ci(Sp, Sp_low, Sp_high),
+            `p Fisher` = format_fisher_p(Fisher_p)
+        )
+}
+
+u1_level_round <- make_test_level_round("U1")
+u2a_level_round <- make_test_level_round("U2a")
+u2b_level_round <- make_test_level_round("U2b")
+u3_level_round <- make_test_level_round("U3")
+
+status_totals_check <- level_status_long %>%
+    group_by(Niveau) %>%
+    summarise(Effectif_plot = sum(Effectif), .groups = "drop")
+
+score_totals_check <- level_score_long %>%
+    group_by(Niveau) %>%
+    summarise(Effectif_plot = sum(Effectif), .groups = "drop")
+
+stopifnot(level_summary$N_analyse[level_summary$Niveau == "C4"] == 1)
+stopifnot(level_summary$NCB_pos[level_summary$Niveau == "C4"] == 1)
+stopifnot(level_summary$N_analyse[level_summary$Niveau == "C5"] == 10)
+stopifnot(level_summary$N_analyse[level_summary$Niveau == "C6"] == 27)
+stopifnot(level_summary$N_analyse[level_summary$Niveau == "C7"] == 21)
+stopifnot(level_summary$N_analyse[level_summary$Niveau == "C8"] == 10)
+stopifnot(level_score_long$Effectif[level_score_long$Niveau == "C4" & level_score_long$Score_ULNT == "0"] == 1)
+stopifnot(all(status_totals_check$Effectif_plot == level_summary$N_analyse))
+stopifnot(all(score_totals_check$Effectif_plot == level_summary$N_analyse))
+stopifnot(all(diagnostic_by_level_detail_raw$N_analyse == diagnostic_by_level_detail_raw$TP + diagnostic_by_level_detail_raw$FP + diagnostic_by_level_detail_raw$TN + diagnostic_by_level_detail_raw$FN))
+
+level_model <- glm(gs ~ Niveau_num, family = binomial, data = level_analysis_data)
+score_level_model <- glm(gs ~ n_pos + Niveau_num, family = binomial, data = level_analysis_data)
+
+level_model_round <- data.frame(
+    Analyse = c(
+        "Niveau seul (OR par palier métamérique)",
+        "Score ULNT (OR par test positif supplémentaire)",
+        "Niveau ajusté sur le score ULNT (OR par palier)"
+    ),
+    OR = c(
+        exp(coef(level_model)[["Niveau_num"]]),
+        exp(coef(score_level_model)[["n_pos"]]),
+        exp(coef(score_level_model)[["Niveau_num"]])
+    ),
+    IC95 = c(
+        paste0("[", round(exp(confint.default(level_model)["Niveau_num", 1]), 3), " ; ", round(exp(confint.default(level_model)["Niveau_num", 2]), 3), "]"),
+        paste0("[", round(exp(confint.default(score_level_model)["n_pos", 1]), 3), " ; ", round(exp(confint.default(score_level_model)["n_pos", 2]), 3), "]"),
+        paste0("[", round(exp(confint.default(score_level_model)["Niveau_num", 1]), 3), " ; ", round(exp(confint.default(score_level_model)["Niveau_num", 2]), 3), "]")
+    ),
+    `p` = signif(
+        c(
+            coef(summary(level_model))["Niveau_num", "Pr(>|z|)"],
+            coef(summary(score_level_model))["n_pos", "Pr(>|z|)"],
+            coef(summary(score_level_model))["Niveau_num", "Pr(>|z|)"]
+        ),
+        3
+    ),
+    check.names = FALSE
+)
+
+```
+
+```{r}
+#| label: objets-reproductibilite
+#| echo: !expr "(!knitr::is_latex_output())"
+#| include: true
+#| results: "hide"
+#| message: false
+#| warning: false
+# Objets reproductibilité
+u1_kappa_data <- df %>% filter(!is.na(U1_E1), !is.na(U1_E2))
+u2a_kappa_data <- df %>% filter(!is.na(U2a_E1), !is.na(U2a_E2))
+u2b_kappa_data <- df %>% filter(!is.na(U2b_E1), !is.na(U2b_E2))
+u3_kappa_data <- df %>% filter(!is.na(U3_E1), !is.na(U3_E2))
+
+kappa_U1 <- psych::cohen.kappa(cbind(u1_kappa_data$U1_E1, u1_kappa_data$U1_E2))
+kappa_U2a <- psych::cohen.kappa(cbind(u2a_kappa_data$U2a_E1, u2a_kappa_data$U2a_E2))
+kappa_U2b <- psych::cohen.kappa(cbind(u2b_kappa_data$U2b_E1, u2b_kappa_data$U2b_E2))
+kappa_U3 <- psych::cohen.kappa(cbind(u3_kappa_data$U3_E1, u3_kappa_data$U3_E2))
+
+accord_U1 <- mean(u1_kappa_data$U1_E1 == u1_kappa_data$U1_E2)
+accord_U2a <- mean(u2a_kappa_data$U2a_E1 == u2a_kappa_data$U2a_E2)
+accord_U2b <- mean(u2b_kappa_data$U2b_E1 == u2b_kappa_data$U2b_E2)
+accord_U3 <- mean(u3_kappa_data$U3_E1 == u3_kappa_data$U3_E2)
+
+kappa_tab <- data.frame(
+    Test = c("U1", "U2a", "U2b", "U3"),
+    N = c(nrow(u1_kappa_data), nrow(u2a_kappa_data), nrow(u2b_kappa_data), nrow(u3_kappa_data)),
+    Accord = c(accord_U1, accord_U2a, accord_U2b, accord_U3),
+    Kappa = c(kappa_U1$kappa, kappa_U2a$kappa, kappa_U2b$kappa, kappa_U3$kappa),
+    Kappa_low = c(
+        kappa_U1$confid["unweighted kappa", "lower"],
+        kappa_U2a$confid["unweighted kappa", "lower"],
+        kappa_U2b$confid["unweighted kappa", "lower"],
+        kappa_U3$confid["unweighted kappa", "lower"]
+    ),
+    Kappa_high = c(
+        kappa_U1$confid["unweighted kappa", "upper"],
+        kappa_U2a$confid["unweighted kappa", "upper"],
+        kappa_U2b$confid["unweighted kappa", "upper"],
+        kappa_U3$confid["unweighted kappa", "upper"]
+    )
+)
+
+kappa_tab$Interpretation <- cut(
+    kappa_tab$Kappa,
+    breaks = c(-Inf, 0.20, 0.40, 0.60, 0.80, Inf),
+    labels = c("faible", "passable", "moderee", "substantielle", "presque parfaite"),
+    right = FALSE
+)
+
+kappa_round <- data.frame(
+    Test = kappa_tab$Test,
+    N = kappa_tab$N,
+    Accord = round(kappa_tab$Accord, 3),
+    Kappa = round(kappa_tab$Kappa, 3),
+    `IC95% bas` = round(kappa_tab$Kappa_low, 3),
+    `IC95% haut` = round(kappa_tab$Kappa_high, 3),
+    Interpretation = kappa_tab$Interpretation,
+    check.names = FALSE
+)
+
+kappa_round_table <- kable(
+    kappa_round,
+    format = if (knitr::is_latex_output()) {
+        "latex"
+    } else if (knitr::is_html_output()) {
+        "html"
+    } else {
+        "pipe"
+    },
+    booktabs = TRUE,
+    align = "c",
+    caption = "Inter-observer agreement for each ultrasound test"
+)
+if (knitr::is_latex_output()) {
+    kappa_round_table <- kappa_round_table %>%
+        kable_styling(latex_options = c("hold_position", "scale_down"), full_width = FALSE, font_size = 8)
+} else if (knitr::is_html_output()) {
+    kappa_round_table <- kappa_round_table %>%
+        kable_styling(full_width = FALSE, position = "center")
+}
+
+kappa_plot <- ggplot(kappa_tab, aes(x = Test, y = Kappa, fill = Test)) +
+    geom_col() +
+    scale_fill_manual(values = c(U1 = nord("frost")[4], U2a = nord("aurora")[1], U2b = nord("aurora")[3], U3 = nord("aurora")[4])) +
+    theme_minimal() +
+    labs(
+        title = "Kappa inter-observateur",
+        x = "Test",
+        y = "Kappa de Cohen",
+        fill = "Test"
+    )
+
+```
+
+```{r}
+#| label: objets-score-combine
+#| echo: !expr "(!knitr::is_latex_output())"
+#| include: true
+#| results: "hide"
+#| message: false
+#| warning: false
+# Objets score combiné
+df$n_pos <- df$U1_E1_positif + df$U2a_E1_positif + df$U2b_E1_positif + df$U3_E1_positif
+
+exact_score_perf <- df %>%
+    filter(!is.na(Gold_Standard_main), !is.na(n_pos)) %>%
+    group_by(n_pos) %>%
+    summarise(
+        N = n(),
+        NCB_count = sum(Gold_Standard_main == "Positif"),
+        Probabilite_NCB = NCB_count / N,
+        IC95_low = binom.test(NCB_count, N)$conf.int[1],
+        IC95_high = binom.test(NCB_count, N)$conf.int[2],
+        .groups = "drop"
+    )
+
+exact_score_perf_table <- exact_score_perf %>%
+    mutate(
+        `Probabilité de NCB [IC95%]` = paste0(
+            round(Probabilite_NCB, 3),
+            " [",
+            round(IC95_low, 3),
+            "; ",
+            round(IC95_high, 3),
+            "]"
+        )
+    ) %>%
+    select(n_pos, N, NCB_count, `Probabilité de NCB [IC95%]`)
+
+exact_score_perf_kable <- kable(
+    exact_score_perf_table,
+    format = if (knitr::is_latex_output()) {
+        "latex"
+    } else if (knitr::is_html_output()) {
+        "html"
+    } else {
+        "pipe"
+    },
+    booktabs = TRUE,
+    align = "c",
+    digits = 3,
+    caption = "Probabilité observée de NCB selon le nombre exact de tests positifs",
+    col.names = c(
+        "Nombre de tests positifs",
+        "Effectif (N)",
+        "Nombre de NCB",
+        "Probabilité de NCB [IC95%]"
+    )
+)
+if (knitr::is_latex_output()) {
+    exact_score_perf_kable <- exact_score_perf_kable %>%
+        kable_styling(latex_options = c("hold_position", "scale_down"), full_width = FALSE, font_size = 8)
+} else if (knitr::is_html_output()) {
+    exact_score_perf_kable <- exact_score_perf_kable %>%
+        kable_styling(full_width = FALSE, position = "center")
+}
+
+score_probability_plot <- ggplot(exact_score_perf, aes(x = n_pos, y = Probabilite_NCB)) +
+    geom_line(data = exact_score_perf, aes(x = n_pos, y = Probabilite_NCB), linewidth = 0.3, color = nord("frost")[1]) +
+    geom_point(size = 3, color = nord("frost")[4]) +
+    geom_errorbar(aes(ymin = IC95_low, ymax = IC95_high), width = 0.2, color = nord("frost")[2]) +
+    scale_x_continuous(breaks = 0:4, labels = c("0", "1", "2", "3", "4")) +
+    scale_y_continuous(limits = c(0, 1), breaks = seq(0, 1, 0.2)) +
+    theme_minimal() +
+    labs(
+        title = "Probabilité observée de NCB selon le nombre de tests positifs",
+        x = "Nombre de tests positifs",
+        y = "Probabilité de NCB",
+        caption = "Points : probabilité observée de NCB pour chaque nombre de tests positifs. Barres d'erreur : IC95% de cette probabilité."
+    )
+
+score_data <- df %>%
+    filter(Gold_Standard_main %in% c("Positif", "Negatif"), !is.na(n_pos))
+
+score_model <- glm(I(Gold_Standard_main == "Positif") ~ n_pos, family = binomial, data = score_data)
+score_model_or <- exp(coef(score_model)[["n_pos"]])
+score_model_or_ci <- exp(confint.default(score_model)["n_pos", ])
+score_model_p <- coef(summary(score_model))["n_pos", "Pr(>|z|)"]
+score_auc <- as.numeric(auc(roc(response = as.numeric(score_data$Gold_Standard_main == "Positif"), predictor = score_data$n_pos, quiet = TRUE)))
+score_auc_ci <- ci.auc(roc(response = as.numeric(score_data$Gold_Standard_main == "Positif"), predictor = score_data$n_pos, quiet = TRUE))
+score_model_pred <- data.frame(n_pos = 0:4)
+score_model_pred$Probabilite_modele <- predict(score_model, newdata = score_model_pred, type = "response")
+
+score_probability_plot <- score_probability_plot +
+    geom_line(
+        data = score_model_pred,
+        aes(x = n_pos, y = Probabilite_modele),
+        inherit.aes = FALSE,
+        linewidth = 0.8,
+        color = nord("aurora")[4]
+    )
+
+TP_1 <- sum(score_data$n_pos >= 1 & score_data$Gold_Standard_main == "Positif")
+FN_1 <- sum(score_data$n_pos < 1 & score_data$Gold_Standard_main == "Positif")
+FP_1 <- sum(score_data$n_pos >= 1 & score_data$Gold_Standard_main == "Negatif")
+TN_1 <- sum(score_data$n_pos < 1 & score_data$Gold_Standard_main == "Negatif")
+TP_2 <- sum(score_data$n_pos >= 2 & score_data$Gold_Standard_main == "Positif")
+FN_2 <- sum(score_data$n_pos < 2 & score_data$Gold_Standard_main == "Positif")
+FP_2 <- sum(score_data$n_pos >= 2 & score_data$Gold_Standard_main == "Negatif")
+TN_2 <- sum(score_data$n_pos < 2 & score_data$Gold_Standard_main == "Negatif")
+TP_3 <- sum(score_data$n_pos >= 3 & score_data$Gold_Standard_main == "Positif")
+FN_3 <- sum(score_data$n_pos < 3 & score_data$Gold_Standard_main == "Positif")
+FP_3 <- sum(score_data$n_pos >= 3 & score_data$Gold_Standard_main == "Negatif")
+TN_3 <- sum(score_data$n_pos < 3 & score_data$Gold_Standard_main == "Negatif")
+TP_4 <- sum(score_data$n_pos >= 4 & score_data$Gold_Standard_main == "Positif")
+FN_4 <- sum(score_data$n_pos < 4 & score_data$Gold_Standard_main == "Positif")
+FP_4 <- sum(score_data$n_pos >= 4 & score_data$Gold_Standard_main == "Negatif")
+TN_4 <- sum(score_data$n_pos < 4 & score_data$Gold_Standard_main == "Negatif")
+
+score_summary <- data.frame(
+    Seuil = c(">=1 positif", ">=2 positifs", ">=3 positifs", ">=4 positifs"),
+    TP = c(TP_1, TP_2, TP_3, TP_4),
+    FN = c(FN_1, FN_2, FN_3, FN_4),
+    FP = c(FP_1, FP_2, FP_3, FP_4),
+    TN = c(TN_1, TN_2, TN_3, TN_4)
+)
+score_summary$Se <- score_summary$TP / (score_summary$TP + score_summary$FN)
+score_summary$Sp <- score_summary$TN / (score_summary$TN + score_summary$FP)
+score_summary$LRp <- score_summary$Se / (1 - score_summary$Sp)
+score_summary$LRn <- (1 - score_summary$Se) / score_summary$Sp
+score_summary$DOR <- (score_summary$TP * score_summary$TN) / (score_summary$FP * score_summary$FN)
+score_summary$Youden <- score_summary$Se + score_summary$Sp - 1
+score_summary$Se_low <- mapply(function(tp, fn) binom.test(tp, tp + fn)$conf.int[1], score_summary$TP, score_summary$FN)
+score_summary$Se_high <- mapply(function(tp, fn) binom.test(tp, tp + fn)$conf.int[2], score_summary$TP, score_summary$FN)
+score_summary$Sp_low <- mapply(function(tn, fp) binom.test(tn, tn + fp)$conf.int[1], score_summary$TN, score_summary$FP)
+score_summary$Sp_high <- mapply(function(tn, fp) binom.test(tn, tn + fp)$conf.int[2], score_summary$TN, score_summary$FP)
+
+score_best_row <- score_summary %>%
+    slice_max(Youden, n = 1, with_ties = FALSE)
+
+score_summary_table <- score_summary %>%
+    transmute(
+        Seuil,
+        `Se [IC95%]` = paste0(round(Se, 3), " [", round(Se_low, 3), " ; ", round(Se_high, 3), "]"),
+        `Sp [IC95%]` = paste0(round(Sp, 3), " [", round(Sp_low, 3), " ; ", round(Sp_high, 3), "]"),
+        `LR+` = round(LRp, 3),
+        `LR-` = round(LRn, 3),
+        Youden = round(Youden, 3),
+        DOR = round(DOR, 3)
+    )
+
+combination_tests <- unlist(
+    lapply(seq_along(test_labels), function(k) {
+        combn(names(test_labels), k, simplify = FALSE)
+    }),
+    recursive = FALSE
+)
+
+compute_combination_metrics <- function(test_cols) {
+    data_tmp <- df %>%
+        filter(
+            Gold_Standard_main %in% c("Positif", "Negatif"),
+            if_all(all_of(test_cols), ~ !is.na(.x))
+        )
+
+    test_positive <- if (length(test_cols) == 1) {
+        data_tmp[[test_cols]] == "Positif"
+    } else {
+        apply(sapply(test_cols, function(test_col) data_tmp[[test_col]] == "Positif"), 1, all)
+    }
+
+    tp <- sum(test_positive & data_tmp$Gold_Standard_main == "Positif")
+    fn <- sum(!test_positive & data_tmp$Gold_Standard_main == "Positif")
+    fp <- sum(test_positive & data_tmp$Gold_Standard_main == "Negatif")
+    tn <- sum(!test_positive & data_tmp$Gold_Standard_main == "Negatif")
+
+    se_den <- tp + fn
+    sp_den <- tn + fp
+    vpp_den <- tp + fp
+    vpn_den <- tn + fn
+
+    se <- tp / se_den
+    sp <- tn / sp_den
+    vpp <- tp / vpp_den
+    vpn <- tn / vpn_den
+    lr_pos <- if ((1 - sp) > 0) {
+        se / (1 - sp)
+    } else {
+        Inf
+    }
+    lr_neg <- if (sp > 0) {
+        (1 - se) / sp
+    } else {
+        Inf
+    }
+
+    data.frame(
+        Combinaison = paste(unname(test_labels[test_cols]), collapse = " + "),
+        N_tests = length(test_cols),
+        N = tp + fn + fp + tn,
+        TP = tp,
+        FN = fn,
+        FP = fp,
+        TN = tn,
+        Se = se,
+        Se_low = binom.test(tp, se_den)$conf.int[1],
+        Se_high = binom.test(tp, se_den)$conf.int[2],
+        Sp = sp,
+        Sp_low = binom.test(tn, sp_den)$conf.int[1],
+        Sp_high = binom.test(tn, sp_den)$conf.int[2],
+        VPP = vpp,
+        VPP_low = binom.test(tp, vpp_den)$conf.int[1],
+        VPP_high = binom.test(tp, vpp_den)$conf.int[2],
+        VPN = vpn,
+        VPN_low = binom.test(tn, vpn_den)$conf.int[1],
+        VPN_high = binom.test(tn, vpn_den)$conf.int[2],
+        LR_pos = lr_pos,
+        LR_neg = lr_neg,
+        Youden = se + sp - 1,
+        stringsAsFactors = FALSE
+    )
+}
+
+combination_all_raw <- bind_rows(lapply(combination_tests, compute_combination_metrics)) %>%
+    arrange(desc(Youden), desc(Sp), desc(Se), N_tests, Combinaison)
+
+combination_all_round <- combination_all_raw %>%
+    transmute(
+        Combinaison,
+        `Nombre de tests` = N_tests,
+        `N analyse` = N,
+        `Se [IC95%]` = paste0(round(Se, 3), " [", round(Se_low, 3), " ; ", round(Se_high, 3), "]"),
+        `Sp [IC95%]` = paste0(round(Sp, 3), " [", round(Sp_low, 3), " ; ", round(Sp_high, 3), "]"),
+        `VPP [IC95%]` = paste0(round(VPP, 3), " [", round(VPP_low, 3), " ; ", round(VPP_high, 3), "]"),
+        `VPN [IC95%]` = paste0(round(VPN, 3), " [", round(VPN_low, 3), " ; ", round(VPN_high, 3), "]"),
+        `LR+` = round(LR_pos, 2),
+        `LR-` = round(LR_neg, 2),
+        Youden = round(Youden, 3)
+    )
+
+combination_most_sensitive_row <- combination_all_raw %>%
+    arrange(desc(Se), desc(Sp), N_tests, Combinaison) %>%
+    slice(1)
+
+combination_most_specific_row <- combination_all_raw %>%
+    arrange(desc(Sp), desc(Se), N_tests, Combinaison) %>%
+    slice(1)
+
+combination_extremes_round <- data.frame(
+    Profil = c("Combinaison la plus sensible", "Combinaison la plus specifique"),
+    Combinaison = c(
+        combination_most_sensitive_row$Combinaison,
+        combination_most_specific_row$Combinaison
+    ),
+    `Nombre de tests` = c(
+        combination_most_sensitive_row$N_tests,
+        combination_most_specific_row$N_tests
+    ),
+    `Se [IC95%]` = c(
+        paste0(
+            round(combination_most_sensitive_row$Se, 3),
+            " [",
+            round(combination_most_sensitive_row$Se_low, 3),
+            " ; ",
+            round(combination_most_sensitive_row$Se_high, 3),
+            "]"
+        ),
+        paste0(
+            round(combination_most_specific_row$Se, 3),
+            " [",
+            round(combination_most_specific_row$Se_low, 3),
+            " ; ",
+            round(combination_most_specific_row$Se_high, 3),
+            "]"
+        )
+    ),
+    `Sp [IC95%]` = c(
+        paste0(
+            round(combination_most_sensitive_row$Sp, 3),
+            " [",
+            round(combination_most_sensitive_row$Sp_low, 3),
+            " ; ",
+            round(combination_most_sensitive_row$Sp_high, 3),
+            "]"
+        ),
+        paste0(
+            round(combination_most_specific_row$Sp, 3),
+            " [",
+            round(combination_most_specific_row$Sp_low, 3),
+            " ; ",
+            round(combination_most_specific_row$Sp_high, 3),
+            "]"
+        )
+    ),
+    `LR+` = c(
+        round(combination_most_sensitive_row$LR_pos, 2),
+        round(combination_most_specific_row$LR_pos, 2)
+    ),
+    `LR-` = c(
+        round(combination_most_sensitive_row$LR_neg, 2),
+        round(combination_most_specific_row$LR_neg, 2)
+    ),
+    check.names = FALSE
+)
+
+best_combination_row <- combination_all_raw %>%
+    slice_max(Youden, n = 1, with_ties = FALSE)
+
+score_summary_kable <- kable(
+    score_summary_table,
+    format = if (knitr::is_latex_output()) {
+        "latex"
+    } else if (knitr::is_html_output()) {
+        "html"
+    } else {
+        "pipe"
+    },
+    booktabs = TRUE,
+    align = "c",
+    digits = 3,
+    caption = "Performances diagnostiques selon le seuil du score"
+)
+if (knitr::is_latex_output()) {
+    score_summary_kable <- score_summary_kable %>%
+        kable_styling(latex_options = c("hold_position", "scale_down"), full_width = FALSE, font_size = 8)
+} else if (knitr::is_html_output()) {
+    score_summary_kable <- score_summary_kable %>%
+        kable_styling(full_width = FALSE, position = "center")
+}
+```
+
+```{r}
+#| label: objets-protocole
+#| echo: !expr "(!knitr::is_latex_output())"
+#| include: true
+#| results: "hide"
+#| message: false
+#| warning: false
+# Objets de conformite au protocole
+infiltration_interpretable_n <- sum(!is.na(df$Infiltrations))
+resultat_inf_renseigne_n <- sum(df$Infiltrations == "Oui" & !is.na(df$Resultat_Inf), na.rm = TRUE)
+gold_standard_main_n <- sum(df$Gold_Standard_main %in% c("Positif", "Negatif"), na.rm = TRUE)
+```
+
+# Introduction
+
+-   4 tests ULNT (Upper Limb Neurodynamic Tests) : ULNT1, ULNT2a, ULNT2b, ULNT3
+
+-   Évaluation de la performance diagnostique de ces tests pour le diagnostic des névralgies cervicobrachiales (NCB) en consultation de chirurgie orthopédique, par rapport à un gold standard principal basé sur l'examen clinique + IRM. 
+
+# Conformité au protocole de la méthodologiste
+
+Les points du protocole couverts sont :
+
+-   la description de la population ;
+
+-   les performances diagnostiques des tests individuels avec IC95 ;
+
+-   les comparaisons directes entre ULNT sur donnees appariees ;
+
+-   la reproductibilite inter-evaluateurs ;
+
+-   l'exploration des combinaisons de tests ;
+
+-   la lecture exploratoire selon le niveau metamerique, y compris **test par test**.
+
+2 divergences : 
+
+-   restriction aux 4 ULNT (pas de Scratch Collapse Test)
+
+-   pour les gold standard, le second gold standard prévu initialement impliquait la réponse à l'infiltration. Ici, `r infiltration_oui_n` patients ont eu une infiltration, et  `r resultat_inf_renseigne_n` patients ont des résultats renseignés. On utilise donc la colonne `Gold Standard`
+
+\newpage
+# Méthodes
+
+## Patients
+
+Les données ont été recueillies de manière prospective au CHU de Rennes. Les patients adultes adressés pour une première consultation de chirurgie orthopédique du rachis pour suspicion de névralgie cervico-brachiale ont été inclus dans une base de données dédiée. L'analyse présentée dans ce rapport a porté sur les patients pour lesquels le gold standard principal était renseigné et interprétable dans la base analysée. Dans cette version du recueil, la variable `Gold Standard` ne comportait que deux modalités, `Positif` et `Negatif`, correspondant respectivement à la présence ou à l'absence de névralgie cervico-brachiale selon le gold standard principal.
+
+xxxx
+
+## Procédures
+
+4 tests xxxx
+
+## Critères de jugement
+
+**Critère de jugement principal**
+
+Le critère de jugement principal était la performance diagnostique des quatre ULNT pour le diagnostic de névralgie cervico-brachiale, par rapport au gold standard principal. Ce critère reposait sur l'estimation, pour chaque test, de la sensibilité, de la spécificité, des valeurs prédictives positive et négative, ainsi que des rapports de vraisemblance positif et négatif.
+
+### Critères de jugement secondaires
+
+Les critères de jugement secondaires comprenaient la comparaison appariée des performances diagnostiques entre ULNT, la reproductibilité inter-évaluateurs entre l'évaluateur 1 et l'évaluateur 2, les performances diagnostiques des combinaisons conjonctives de tests, l'analyse du score global de positivité ULNT et de ses seuils, ainsi qu'une exploration des performances selon le niveau métamérique. 
+
+## Analyse statistique
+
+Les variables qualitatives ont été décrites par leurs effectifs et pourcentages. Les variables quantitatives ont été décrites par des paramètres de position et de dispersion adaptés à leur distribution. Les données manquantes n'ont pas été imputées.
+
+Les performances diagnostiques des quatre ULNT réalisés par l'évaluateur 1 ont été évaluées par rapport au gold standard principal. Pour chaque test, des tableaux de contingence 2 x 2 ont permis d'estimer la sensibilité, la spécificité, les valeurs prédictives positive et négative, les rapports de vraisemblance positif et négatif, l'indice de Youden et l'aire sous la courbe ROC. Les intervalles de confiance à 95 % des proportions ont été calculés par la méthode binomiale exacte de Clopper-Pearson. L'association entre chaque ULNT et le gold standard principal a été étudiée par le test exact de Fisher.
+
+Les performances des différents ULNT ont été comparées entre elles à l'aide du test de McNemar ($\chi^2$ pour données appariées). La reproductibilité inter-évaluateurs a été évaluée par le coefficient kappa de Cohen.
+
+Des analyses complémentaires ont porté sur les combinaisons de tests et sur le score global de positivité ULNT, défini comme le nombre total d'ULNT positifs chez un même patient. Les combinaisons conjonctives possibles des quatre ULNT ont été explorées. Le score global a été étudié selon différents seuils de positivité, puis modélisé par régression logistique binaire afin d'évaluer son association avec la probabilité de névralgie cervico-brachiale.
+
+Des analyses exploratoires ont également été réalisées selon le niveau métamérique. Pour chaque niveau, la performance de chaque ULNT a été évaluée ainsi que l'association entre le niveau métamérique et la probabilité de névralgie cervico-brachiale. Une régression logistique a ensuite été utilisée pour évaluer l'association entre le niveau métamérique, le score global de positivité ULNT et la probabilité de névralgie cervico-brachiale.
+
+Les résultats sont présentés sous forme d'estimations ponctuelles avec leurs intervalles de confiance à 95 %. Les modèles logistiques sont présentés sous forme d'odds ratios lorsque cela était pertinent. Les analyses ont été réalisées avec `R`, version 4.5.2. Tous les tests étaient bilatéraux, avec un seuil de significativité fixé à 0,05. Aucune correction de multiplicité n'a été appliquée aux analyses secondaires ou exploratoires, qui doivent donc être interprétées comme génératrices d'hypothèses.
+
+\newpage
+# Disclaimer : nombre de sujets nécessaires et précision attendue
+
+Le protocole du CHU de Rennes prévoyait initialement un raisonnement de dimensionnement basé sur la **spécificité**, à partir d'intervalles de confiance exact de Clopper-Pearson. Cette logique faisait varier la spécificité cible, la marge acceptable entre cette cible et la borne inférieure de l'`IC95 %`, ainsi que la prévalence attendue de la NCB. 
+
+11 scénarios théoriques étaient proposés, et sont recalculés ici : 
+
+```{r}
+#| label: tbl-effectifs
+#| tbl-cap: "Effectif requis pour différents scénarios de spécificité cible, prévalence et marge"
+#| echo: !expr "(!knitr::is_latex_output())"
+#| include: true
+#| results: "asis"
+sample_size_table
+```
+
+En prenant en compte ce tableau, le choix d'arrêter les inclusions peut poser question : le nombre de sujets négatifs minimal nécessaire pour atteindre la précision visée par "le pire scénario" prévue par la méthodologiste n'est pas acquis. Il faudrait 27 cas négatifs sur un effectif total de 68 patients pour cibler une spécificité de 0,90 avec une marge de 0,149 et une prévalence de 60 %. 
+
+Or, dans la cohorte analysée, nous avons `r effectif_n_neg_main` cas négatifs sur un effectif total de `r effectif_n_total_main` patients, soit une prévalence de NCB de `r paste0(round(effectif_n_pos_main / effectif_n_total_main * 100, 1), " %")`.
+
+Le nombre total de patients est suffisant, mais le nombre de patients négatifs est légèrement inférieur à ce qui était prévu pour atteindre la précision visée sur la spécificité.
+
+
+::: {.callout-note icon=false title="Quel impact ?"}
+-   Dans le scénario le plus proche du protocole : 
+    -   Spécificité cible : 0,90
+    -   Marge de précision prévue (différence entre la spécificité cible et la borne inférieure de l'IC95%): 0,149
+    -   Prévalence attendue : 60 %
+    -   Effectif total requis : 68 patients
+    -   Effectif négatif requis : 27 patients
+
+-   Dans la cohorte analysée : 
+    -   Effectif total : `r effectif_n_total_main` patients
+    -   Effectif négatif : `r effectif_n_neg_main` patients
+    -   Prévalence observée : `r paste0(round(effectif_n_pos_main / effectif_n_total_main * 100, 1), " %")`
+    -   Spécificité observée pour la combinaison de tests la plus spécifique : `r round(combination_most_specific_row$Sp, 3)`, avec un IC95% de `r paste0("[", round(combination_most_specific_row$Sp_low, 3), " ; ", round(combination_most_specific_row$Sp_high, 3), "]")`
+    -   Marge de précision observée pour la spécificité : `r round(combination_most_specific_row$Sp - combination_most_specific_row$Sp_low, 3)`, donc supérieure à la marge de précision prévue de 0,149
+
+------
+
+Ce que je propose : faire comme si la méthodologiste n'avait jamais calculé de nombre de sujets requis (parce que sinon, pourquoi avoir arrêté les inclusions avant d'avoir le nombre requis de patients négatifs ?)
+:::
+
+
+\newpage
+# Résultats
+
+## Population analysée
+
+-   Variables disponibles : Âge (`df$Age`), Sexe (`df$Sexe`), Côté (`df$Cote`), Niveau (`df$Niveau`), BMI (`df$BMI`), Tabac (`df$Tabac`), Infiltrations (`df$Infiltrations`), Résultat des infiltrations (`df$Resultat_Inf`)
+
+### Âge
+
+```{r}
+#| label: age
+#| echo: !expr "(!knitr::is_latex_output())"
+#| include: true
+#| results: "asis"
+resume_age_table
+```
+
+-   Représentation de la variable âge par histogramme avec densité et QQ-plot (le QQ plot se construit en comparant les quantiles de la variable âge à ceux d'une distribution normale théorique : si les points suivent une ligne droite, la variable suit une distribution normale).
+
+```{r}
+#| label: age-distribution
+#| fig-cap: "Distribution de l'âge"
+#| fig-width: 10
+#| fig-height: 4.6
+#| echo: !expr "(!knitr::is_latex_output())"
+#| message: false
+#| warning: false
+plot_age_distribution()
+```
+
+-   L'âge semble suivre une distribution approximativement normale. Les tests statistiques de normalité (type Shapiro-Wilk) ont ici un intérêt limité : avec `r n_total_patients` patients, ils peuvent manquer de puissance pour détecter des écarts modestes, tandis que l'inspection graphique reste plus informative.
+
+### Sexe
+
+```{r}
+#| label: sexe-distribution
+#| fig-cap: "Répartition du sexe"
+#| fig-width: 10
+#| fig-height: 4.6
+#| echo: !expr "(!knitr::is_latex_output())"
+#| message: false
+#| warning: false
+plot_sexe_distribution()
+```
+
+-   Même si le camembert est plus visuel, le diagramme en barres est plus précis pour comparer les effectifs et les proportions (car affiche les effectifs totaux).
+
+#### Côté
+
+```{r}
+#| label: côté-distribution
+#| fig-cap: "Répartition du côté"
+#| fig-width: 10
+#| fig-height: 4.6
+#| echo: !expr "(!knitr::is_latex_output())"
+#| message: false
+#| warning: false
+plot_cote_distribution()
+```
+
+#### Niveau
+
+```{r}
+#| label: niveau-distribution
+#| fig-cap: "Répartition du niveau"
+#| fig-width: 7
+#| fig-height: 3.8
+#| echo: !expr "(!knitr::is_latex_output())"
+#| message: false
+#| warning: false
+plot_niveau_distribution()
+```
+
+#### BMI
+
+```{r}
+#| label: bmi-table
+#| echo: !expr "(!knitr::is_latex_output())"
+#| include: true
+#| results: "asis"
+resume_bmi_table
+```
+
+-   Le `BMI` est renseigné chez `r sum(!is.na(df$BMI))` patients sur `r n_total_patients`.
+
+```{r}
+#| label: bmi-distribution
+#| fig-cap: "Distribution du BMI"
+#| fig-width: 10
+#| fig-height: 4.6
+#| echo: !expr "(!knitr::is_latex_output())"
+#| message: false
+#| warning: false
+par(mfrow = c(1, 2))
+hist(
+    df$BMI,
+    breaks = 10,
+    prob = TRUE,
+    main = "Distribution du BMI",
+    xlab = "BMI",
+    ylab = "Densité",
+    col = "lightblue"
+)
+lines(density(df$BMI, na.rm = TRUE), col = "red", lwd = 2)
+qqnorm(df$BMI, main = "Q-Q plot du BMI")
+qqline(df$BMI, col = "red", lwd = 2)
+```
+
+#### Tabac
+
+```{r}
+#| label: tabac-table
+#| echo: !expr "(!knitr::is_latex_output())"
+#| include: true
+#| results: "asis"
+kable(
+    tabac_summary,
+    caption = "Répartition du tabac",
+    align = "c"
+)
+```
+
+-   Le statut tabagique est renseigné chez `r tabac_renseigne_n` patients sur `r n_total_patients`.
+
+```{r}
+#| label: tabac-distribution
+#| fig-cap: "Répartition du tabac"
+#| fig-width: 10
+#| fig-height: 4.6
+#| echo: !expr "(!knitr::is_latex_output())"
+#| message: false
+#| warning: false
+par(mfrow = c(1, 2))
+bar_pos <- barplot(
+    c(tabac_non_n, tabac_oui_n),
+    names.arg = c("Non", "Oui"),
+    main = "Répartition du tabac",
+    col = c(nord("frost")[2], nord("aurora")[3]),
+    ylab = "Nombre de patients",
+    ylim = c(0, max(c(tabac_non_n, tabac_oui_n)) * 1.18)
+)
+text(
+    x = bar_pos,
+    y = c(tabac_non_n, tabac_oui_n) + max(c(tabac_non_n, tabac_oui_n)) * 0.05,
+    labels = paste0(c(tabac_non_pct, tabac_oui_pct), " %"),
+    cex = 0.9
+)
+pie(
+    c(tabac_non_n, tabac_oui_n),
+    labels = paste0(c("Non", "Oui"), "\n", c(tabac_non_pct, tabac_oui_pct), " %"),
+    main = "Tabac",
+    col = c(nord("frost")[2], nord("aurora")[3])
+)
+```
+
+#### Infiltrations
+
+```{r}
+#| label: infiltrations-table
+#| echo: !expr "(!knitr::is_latex_output())"
+#| include: true
+#| results: "asis"
+kable(
+    infiltration_summary,
+    caption = "Répartition du statut d'infiltration",
+    align = "c"
+)
+```
+
+-   Le statut d'infiltration est interprétable chez `r infiltration_renseigne_n` patients sur `r n_total_patients`.
+
+```{r}
+#| label: infiltrations-distribution
+#| fig-cap: "Répartition du statut d'infiltration"
+#| fig-width: 10
+#| fig-height: 4.6
+#| echo: !expr "(!knitr::is_latex_output())"
+#| message: false
+#| warning: false
+par(mfrow = c(1, 2))
+bar_pos <- barplot(
+    c(infiltration_non_n, infiltration_oui_n),
+    names.arg = c("Non", "Oui"),
+    main = "Statut d'infiltration",
+    col = c(nord("aurora")[4], nord("frost")[1]),
+    ylab = "Nombre de patients",
+    ylim = c(0, max(c(infiltration_non_n, infiltration_oui_n)) * 1.18)
+)
+text(
+    x = bar_pos,
+    y = c(infiltration_non_n, infiltration_oui_n) + max(c(infiltration_non_n, infiltration_oui_n)) * 0.05,
+    labels = paste0(c(infiltration_non_pct, infiltration_oui_pct), " %"),
+    cex = 0.9
+)
+pie(
+    c(infiltration_non_n, infiltration_oui_n),
+    labels = paste0(c("Non", "Oui"), "\n", c(infiltration_non_pct, infiltration_oui_pct), " %"),
+    main = "Infiltrations",
+    col = c(nord("aurora")[4], nord("frost")[1])
+)
+```
+
+#### Résultat des infiltrations
+
+```{r}
+#| label: resultat-infiltrations-table
+#| echo: !expr "(!knitr::is_latex_output())"
+#| include: true
+#| results: "asis"
+kable(
+    resultat_inf_summary,
+    caption = "Répartition du résultat des infiltrations",
+    align = "c"
+)
+```
+
+-   Parmi les `r infiltration_oui_n` patients ayant eu une infiltration, le résultat est renseigné chez `r resultat_inf_renseigne_n`.
+
+```{r}
+#| label: resultat-infiltrations-distribution
+#| fig-cap: "Répartition du résultat des infiltrations"
+#| fig-width: 7
+#| fig-height: 4.6
+#| echo: !expr "(!knitr::is_latex_output())"
+#| message: false
+#| warning: false
+bar_pos <- barplot(
+    c(resultat_inf_neg_n, resultat_inf_pos_n),
+    names.arg = c("Negatif", "Positif"),
+    main = "Résultat des infiltrations",
+    col = c(nord("aurora")[1], nord("aurora")[3]),
+    ylab = "Nombre de patients",
+    ylim = c(0, max(c(resultat_inf_neg_n, resultat_inf_pos_n)) * 1.18)
+)
+text(
+    x = bar_pos,
+    y = c(resultat_inf_neg_n, resultat_inf_pos_n) + max(c(resultat_inf_neg_n, resultat_inf_pos_n)) * 0.05,
+    labels = paste0(c(resultat_inf_neg_pct, resultat_inf_pos_pct), " %"),
+    cex = 0.9
+)
+```
+
+
+\newpage
+#### Tableau de caractéristiques initiales
+
+```{r}
+#| label: caracs initiales 2
+#| echo: !expr "(!knitr::is_latex_output())"
+#| include: true
+#| results: "asis"
+baseline_tbl
+```
+
+-   L'échantillon total comprend `r n_total_patients` patients.
+
+-   Le gold standard brut est :
+
+    -   positif dans `r gold_standard_n_pos` cas (soit `r gold_standard_pct_pos` %),
+
+    -   négatif dans `r gold_standard_n_neg` cas (soit `r gold_standard_pct_neg` %).
+
+::: {.callout-note icon=false title="Lecture simple"}
+**Ce qu'on cherche.** Cette section décrit **chez quels patients** les résultats ont été obtenus. C'est important pour savoir à qui les conclusions du rapport peuvent raisonnablement s'appliquer.
+
+**Comment lire ce résultat.** Il faut surtout regarder l'effectif total, la répartition du gold standard, et la distribution générale des niveaux métamériques. Sans cela, on risque de surinterpréter des résultats obtenus sur trop peu de patients ou dans une population trop particulière.
+
+**Ce que montrent les données ici.** L'échantillon total comprend `69` patients. Le gold standard est renseigné comme `Positif` chez `45` patients et `Negatif` chez `24`. Les niveaux `C6` et `C7` sont les plus représentés, ce qui rend les analyses plus informatives à ces niveaux qu'en `C4` ou `C5`.
+
+**Application pratique.** Les résultats du rapport s'appliquent surtout à une population de consultation spécialisée avec suspicion de NCB, et ils doivent être lus à partir des `69` patients réellement analysés. Cela explique aussi pourquoi certaines analyses par niveau restent fragiles malgré une base désormais complète sur le gold standard principal.
+:::
+
+\newpage
+
+## Performances test par test
+
+-   La première partie de l'analyse est centrée sur les tests cliniques de l'évaluateur 1
+
+-   Elle évalue les performances "tests par tests"
+
+-   Une seconde partie aggrège résultats et graphiques pour une comparaison globale des tests
+
+### ULNT1
+
+-   Résumé de la variable U1_E1
+
+#### Tableau descriptif des résultats des tests
+
+```{r}
+#| label: ulnt-descriptive-table
+#| echo: !expr "(!knitr::is_latex_output())"
+#| results: "asis"
+kable(
+    u1_descriptive,
+    caption = "Tableau descriptif des résultats de U1 (évaluateur 1)",
+    align = "c",
+    col.names = c("Test", "Positif n (%)", "Négatif n (%)", "Manquant n (%)")
+)
+```
+
+#### Tableau de contingence avec le gold standard
+
+```{r}
+#| label: ulnt-contingency-table
+#| echo: !expr "(!knitr::is_latex_output())"
+#| results: "asis"
+kable(
+    u1_contingency,
+    caption = "Tableau de contingence de U1 par rapport au gold standard, avec effectifs et pourcentages sur l'ensemble des patients analysés",
+    align = "c"
+)
+```
+
+-   T+/T- correspond à Test positif ou négatif, G+/G- correspond à Gold standard positif ou négatif. 
+
+#### Tableau des effectifs diagnostiques
+
+```{r}
+#| label: ulnt1-effectifs-table
+#| echo: !expr "(!knitr::is_latex_output())"
+#| results: "asis"
+kable(
+    u1_effectifs,
+    caption = "Effectifs diagnostiques de U1 par rapport au gold standard",
+    align = "c"
+)
+```
+
+#### Tableau des performances diagnostiques
+
+```{r}
+#| label: ulnt1-diagnostic-performance-table
+#| echo: !expr "(!knitr::is_latex_output())"
+#| results: "asis"
+kable(
+    u1_performance_summary,
+    caption = "Performances diagnostiques de U1 par rapport au gold standard",
+    align = "c",
+    col.names = c("Test", "Se [IC95]", "Sp [IC95]", "VPP [IC95]", "VPN [IC95]", "LR+", "LR-", "Youden", "AUC [IC95]")
+) %>%
+    kable_styling(
+        latex_options = c("hold_position", "scale_down"),
+        full_width = FALSE,
+        font_size = 7
+    )
+```
+
+::: {.callout-note icon=false title="Lecture simple"}
+**Ce qu'on cherche.** Ici, on veut savoir si `U1` aide à repérer une NCB quand elle est présente et à faire baisser l'hypothèse de NCB quand il est négatif.
+
+**Comment lire ce résultat.** La sensibilité dit, parmi les patients qui ont vraiment une NCB, combien ont un test positif. La spécificité dit, parmi ceux qui n'ont pas de NCB, combien gardent un test négatif. Les `LR+` et `LR-` sont particulièrement utiles en pratique : `LR+` indique ce qu'apporte un test positif, `LR-` ce qu'apporte un test négatif. Le `VPP` et le `VPN` décrivent ce qui se passe dans **cette cohorte** et dépendent de sa prévalence.
+
+**Ce que montrent les données ici.** `U1` est le meilleur test isolé de la cohorte, avec `Se 0.864`, `Sp 0.60`, `VPP 0.792`, `VPN 0.714`, `LR+ 2.16`, `LR- 0.23`, `Youden 0.464` et `AUC 0.732`. Concrètement, il repère bien les patients avec NCB et il manque relativement peu de cas, mais il produit encore un nombre non négligeable de faux positifs. Son point fort est surtout le `LR- = 0.23`, qui fait baisser utilement la probabilité de NCB quand le test est négatif. L'AUC reste ici une mesure secondaire, car le test est binaire.
+
+**Application pratique.** `U1` est un bon test d'orientation initial. Un `U1` négatif rend la NCB moins probable et peut aider à réévaluer le diagnostic, mais il ne suffit pas à lui seul pour exclure formellement une NCB. Un `U1` positif apporte un argument en faveur du diagnostic, sans être assez spécifique pour confirmer seul.
+:::
+
+### ULNT2a
+
+#### Tableau descriptif des résultats des tests
+
+```{r}
+#| label: ulnt2a-descriptive-table
+#| echo: !expr "(!knitr::is_latex_output())"
+#| results: "asis"
+kable(
+    u2a_descriptive,
+    caption = "Tableau descriptif des résultats de U2a (évaluateur 1)",
+    align = "c",
+    col.names = c("Test", "Positifs n", "Positifs %", "Négatifs n", "Négatifs %", "Manquants n", "Manquants %")
+)
+```
+
+#### Tableau de contingence avec le gold standard
+
+```{r}
+#| label: ulnt2a-contingency-table
+#| echo: !expr "(!knitr::is_latex_output())"
+#| results: "asis"
+kable(
+    u2a_contingency,
+    caption = "Tableau de contingence de U2a par rapport au gold standard, avec effectifs et pourcentages sur l'ensemble des patients analysés",
+    align = "c"
+)
+```
+
+-   T+/T- correspond à Test positif ou négatif, G+/G- correspond à Gold standard positif ou négatif. 
+
+#### Tableau des effectifs diagnostiques
+
+```{r}
+#| label: ulnt2a-effectifs-table
+#| echo: !expr "(!knitr::is_latex_output())"
+#| results: "asis"
+kable(
+    u2a_effectifs,
+    caption = "Effectifs diagnostiques de U2a par rapport au gold standard",
+    align = "c"
+)
+```
+
+#### Tableau des performances diagnostiques
+
+```{r}
+#| label: ulnt-diagnostic-performance-table
+#| echo: !expr "(!knitr::is_latex_output())"
+#| results: "asis"
+kable(
+    u2a_performance_summary,
+    caption = "Performances diagnostiques de U2a par rapport au gold standard",
+    align = "c",
+    col.names = c("Test", "Se [IC95]", "Sp [IC95]", "VPP [IC95]", "VPN [IC95]", "LR+", "LR-", "Youden", "AUC [IC95]")
+) %>%
+    kable_styling(
+        latex_options = c("hold_position", "scale_down"),
+        full_width = FALSE,
+        font_size = 7
+    )
+```
+
+::: {.callout-note icon=false title="Lecture simple"}
+**Ce qu'on cherche.** Ici, on cherche à savoir si `U2a` peut jouer le même rôle que `U1`, c'est-à-dire détecter une partie importante des NCB tout en limitant les erreurs chez les patients sans NCB.
+
+**Comment lire ce résultat.** Il faut surtout regarder le compromis entre sensibilité et spécificité, puis les rapports de vraisemblance. Plus le `LR+` est élevé, plus un positif renforce l'hypothèse de NCB. Plus le `LR-` est proche de `0`, plus un négatif aide à écarter la maladie.
+
+**Ce que montrent les données ici.** `U2a` a `Se 0.795`, `Sp 0.56`, `VPP 0.761`, `VPN 0.609`, `LR+ 1.81`, `LR- 0.37`, `Youden 0.355` et `AUC 0.678`. Il reste plutôt sensible, donc il détecte encore une part importante des cas, mais il est moins convaincant que `U1`. Sa spécificité est modeste, ce qui veut dire qu'il garde un nombre notable de faux positifs. Son `LR-` aide un peu quand le test est négatif, mais clairement moins que celui de `U1`.
+
+**Application pratique.** `U2a` est utile comme argument supplémentaire dans le raisonnement clinique, mais il paraît moins solide que `U1` pour servir de pivot. En pratique, il complète bien l'examen, sans justifier à lui seul une décision diagnostique.
+:::
+
+### ULNT2b
+
+#### Tableau descriptif des résultats des tests
+
+```{r}
+#| label: ulnt2b-descriptive-table
+#| echo: !expr "(!knitr::is_latex_output())"
+#| results: "asis"
+kable(
+    u2b_descriptive,
+    caption = "Tableau descriptif des résultats de U2b (évaluateur 1)",
+    align = "c",
+    col.names = c("Test", "Positifs n", "Positifs %", "Négatifs n", "Négatifs %", "Manquants n", "Manquants %")
+)
+```
+
+#### Tableau de contingence avec le gold standard
+
+```{r}
+#| label: ulnt2b-contingency-table
+#| echo: !expr "(!knitr::is_latex_output())"
+#| results: "asis"
+kable(
+    u2b_contingency,
+    caption = "Tableau de contingence de U2b par rapport au gold standard, avec effectifs et pourcentages sur l'ensemble des patients analysés",
+    align = "c"
+)
+```
+
+-   T+/T- correspond à Test positif ou négatif, G+/G- correspond à Gold standard positif ou négatif. 
+
+#### Tableau des effectifs diagnostiques
+
+```{r}
+#| label: ulnt2b-effectifs-table
+#| echo: !expr "(!knitr::is_latex_output())"
+#| results: "asis"
+kable(
+    u2b_effectifs,
+    caption = "Effectifs diagnostiques de U2b par rapport au gold standard",
+    align = "c"
+)
+```
+
+#### Tableau des performances diagnostiques
+
+```{r}
+#| label: ulnt2b-diagnostic-performance-table
+#| echo: !expr "(!knitr::is_latex_output())"
+#| results: "asis"
+kable(
+    u2b_performance_summary,
+    caption = "Performances diagnostiques de U2b par rapport au gold standard",
+    align = "c",
+    col.names = c("Test", "Se [IC95]", "Sp [IC95]", "VPP [IC95]", "VPN [IC95]", "LR+", "LR-", "Youden", "AUC [IC95]")
+) %>%
+    kable_styling(
+        latex_options = c("hold_position", "scale_down"),
+        full_width = FALSE,
+        font_size = 7
+    )
+```
+
+::: {.callout-note icon=false title="Lecture simple"}
+**Ce qu'on cherche.** Pour `U2b`, la question est de savoir s'il offre un meilleur équilibre entre capacité à détecter les NCB et capacité à éviter des faux positifs.
+
+**Comment lire ce résultat.** Un test plus équilibré a une sensibilité et une spécificité moins déséquilibrées, mais cela ne suffit pas : il faut aussi regarder ce que devient la probabilité de NCB après un positif (`LR+`) et après un négatif (`LR-`).
+
+**Ce que montrent les données ici.** `U2b` a `Se 0.682`, `Sp 0.64`, `VPP 0.769`, `VPN 0.533`, `LR+ 1.89`, `LR- 0.50`, `Youden 0.322` et `AUC 0.661`. Son profil est un peu plus équilibré entre sensibilité et spécificité que celui de `U2a`, mais il reste moins bon que `U1` pour ne pas manquer les cas. Un résultat positif est un peu plus crédible qu'avec `U2a`, mais le gain reste modeste. À l'inverse, un résultat négatif aide moins à faire baisser la probabilité de NCB que pour `U1`.
+
+**Application pratique.** `U2b` a un intérêt comme test de complément, surtout si l'on cherche un profil un peu moins centré sur la sensibilité pure. En revanche, il n'apparaît pas ici comme le meilleur compromis global de la cohorte.
+:::
+
+### ULNT3
+
+#### Tableau descriptif des résultats des tests
+
+```{r}
+#| label: ulnt3-descriptive-table
+#| echo: !expr "(!knitr::is_latex_output())"
+#| results: "asis"
+kable(
+    u3_descriptive,
+    caption = "Tableau descriptif des résultats de U3 (évaluateur 1)",
+    align = "c",
+    col.names = c("Test", "Positifs n", "Positifs %", "Négatifs n", "Négatifs %", "Manquants n", "Manquants %")
+)
+```
+
+#### Tableau de contingence avec le gold standard
+
+```{r}
+#| label: ulnt3-contingency-table
+#| echo: !expr "(!knitr::is_latex_output())"
+#| results: "asis"
+kable(
+    u3_contingency,
+    caption = "Tableau de contingence de U3 par rapport au gold standard, avec effectifs et pourcentages sur l'ensemble des patients analysés",
+    align = "c"
+)
+```
+
+-   T+/T- correspond à Test positif ou négatif, G+/G- correspond à Gold standard positif ou négatif. 
+
+#### Tableau des effectifs diagnostiques
+
+```{r}
+#| label: ulnt3-effectifs-table
+#| echo: !expr "(!knitr::is_latex_output())"
+#| results: "asis"
+kable(
+    u3_effectifs,
+    caption = "Effectifs diagnostiques de U3 par rapport au gold standard",
+    align = "c"
+)
+```
+
+#### Tableau des performances diagnostiques
+
+```{r}
+#| label: ulnt3-diagnostic-performance-table
+#| echo: !expr "(!knitr::is_latex_output())"
+#| results: "asis"
+kable(
+    u3_performance_summary,
+    caption = "Performances diagnostiques de U3 par rapport au gold standard",
+    align = "c",
+    col.names = c("Test", "Se [IC95]", "Sp [IC95]", "VPP [IC95]", "VPN [IC95]", "LR+", "LR-", "Youden", "AUC [IC95]")
+) %>%
+    kable_styling(
+        latex_options = c("hold_position", "scale_down"),
+        full_width = FALSE,
+        font_size = 7
+    )
+```
+
+::: {.callout-note icon=false title="Lecture simple"}
+**Ce qu'on cherche.** Ici, on regarde si `U3` apporte une information diagnostique utile, soit pour repérer les NCB, soit pour rassurer quand il est négatif.
+
+**Comment lire ce résultat.** Un test utile doit idéalement garder une bonne sensibilité, une spécificité correcte, et surtout des rapports de vraisemblance qui modifient réellement la probabilité clinique de NCB.
+
+**Ce que montrent les données ici.** `U3` a `Se 0.386`, `Sp 0.68`, `VPP 0.68`, `VPN 0.386`, `LR+ 1.21`, `LR- 0.90`, `Youden 0.066` et `AUC 0.533`. Cela veut dire qu'il manque beaucoup de patients réellement atteints et qu'un résultat négatif aide très peu à écarter la NCB. Son résultat positif renforce aussi faiblement l'hypothèse diagnostique. Sur le plan statistique, l'association avec le gold standard est ici faible, contrairement à `U1`, `U2a` et `U2b`.
+
+**Application pratique.** Dans cette cohorte, `U3` a un faible intérêt isolé. Il paraît nettement moins utile que `U1`, `U2a` ou `U2b` si l'objectif est d'orienter concrètement la décision clinique.
+:::
+
+## Synthèse globale des tests
+
+### Tableau de contingence global
+
+```{r}
+#| label: global-contingency-table
+#| echo: !expr "(!knitr::is_latex_output())"
+#| results: "asis"
+kable(
+    contingency_tab,
+    caption = "Tableau global de contingence des ULNT par rapport au gold standard",
+    align = "c"
+)
+```
+
+### Tableau global des performances diagnostiques
+
+```{r}
+#| label: global-diagnostic-performance-table
+#| echo: !expr "(!knitr::is_latex_output())"
+#| results: "asis"
+kable(
+    diag_primary_round,
+    caption = "Tableau global des performances diagnostiques des ULNT",
+    align = "c",
+    col.names = c("Test", "Se [IC95]", "Sp [IC95]", "VPP [IC95]", "VPN [IC95]", "LR+", "LR-", "Youden", "AUC [IC95]")
+) %>%
+    kable_styling(
+        latex_options = c("hold_position", "scale_down"),
+        full_width = FALSE,
+        font_size = 7
+    )
+```
+
+```{r}
+#| label: global-contingency-plot
+#| echo: !expr "(!knitr::is_latex_output())"
+#| fig-cap: "Composition des tableaux de contingence 2x2 par test"
+#| fig-width: 7
+#| fig-height: 5
+#| message: false
+#| warning: false
+#| results: "asis"
+contingency_plot
+```
+
+```{r}
+#| label: ROC-comparison-plot
+#| echo: !expr "(!knitr::is_latex_output())"
+#| fig-cap: "Comparaison synthétique de la sensibilité et de la spécificité des ULNT"
+#| fig-width: 7
+#| fig-height: 5
+#| message: false
+#| warning: false
+diag_key_plot
+```
+
+::: {.callout-note icon=false title="Lecture simple"}
+**Ce qu'on cherche.** Cette synthèse sert à comparer directement les quatre ULNT pour voir lequel paraît le plus utile dans la cohorte, et surtout pour comprendre **où** chaque test se trompe.
+
+**Comment lire ce résultat.** La figure sensibilité/spécificité compare la capacité à ne pas manquer les cas d'un côté, et à éviter les faux positifs de l'autre. Le graphique des tableaux `2x2` montre d'où viennent concrètement les erreurs : faux négatifs ou faux positifs.
+
+**Ce que montrent les données ici.** `U1` est le meilleur test isolé de la cohorte avec `Se 0.864`, `Sp 0.60`, `LR+ 2.16`, `LR- 0.23`, `Youden 0.464` et `AUC 0.732`. `U2a` et `U2b` restent utiles, mais un peu moins convaincants. `U3` est nettement moins performant, avec `Se 0.386`, `Sp 0.68`, `LR+ 1.21` et `LR- 0.90`. En pratique, `U1`, `U2a` et `U2b` repèrent plutôt bien les NCB, mais leur spécificité reste seulement faible à modérée. Aucun des quatre tests n'est à la fois très sensible et très spécifique.
+
+**Application pratique.** Les ULNT semblent surtout utiles comme **outils d'orientation**, pas comme tests définitifs. `U1` est le meilleur point d'entrée, surtout parce qu'un résultat négatif réduit utilement la probabilité de NCB. En revanche, aucun ULNT ne suffit seul pour confirmer ou exclure formellement le diagnostic sans le reste de l'examen clinique et de l'imagerie.
+:::
+
+## Comparaisons directes entre tests
+
+Le protocole demandait une comparaison des performances diagnostiques entre tests. Comme les **memes patients** passent les differents ULNT, une comparaison appariee de type **McNemar** est plus adaptee qu'un simple khi2 independant :
+
+-   chez les `G+`, elle compare les **sensibilites** ;
+
+-   chez les `G-`, elle compare les **specificites**.
+
+```{r}
+#| label: pairwise-ulnt-comparison-table
+#| echo: !expr "(!knitr::is_latex_output())"
+#| results: "asis"
+kable(
+    pairwise_comparison_round,
+    caption = "Comparaisons appariees entre ULNT pour la sensibilite (chez les G+) et la specificite (chez les G-)",
+    align = "c"
+) %>%
+    kable_styling(
+        latex_options = c("hold_position", "repeat_header", "scale_down"),
+        full_width = FALSE,
+        font_size = 7
+    )
+```
+
+::: {.callout-note icon=false title="Lecture simple"}
+**Ce qu'on cherche.** Ici, on ne compare pas les tests séparément, mais **les uns contre les autres sur les mêmes patients**. Cela permet de voir si un test manque significativement plus de cas qu'un autre, ou au contraire s'il génère significativement plus de faux positifs.
+
+**Comment lire ce résultat.** Chez les `G+`, le tableau compare les **sensibilités**. Chez les `G-`, il compare les **spécificités**. Une p-value basse signifie qu'un des deux tests se comporte différemment de l'autre sur les mêmes patients.
+
+**Ce que montrent les données ici.** Les différences nettes portent surtout sur la **sensibilité**. `U3` est significativement moins sensible que `U1`, `U2a` et `U2b`, ce qui veut dire qu'il manque plus souvent les patients réellement atteints. En revanche, il n'y a pas de différence claire de spécificité entre les tests dans cette cohorte.
+
+**Application pratique.** Si la priorité est de limiter les faux négatifs, `U3` paraît moins intéressant. Le choix entre `U1`, `U2a` et `U2b` se joue davantage sur leur utilité globale que sur une vraie différence démontrée de spécificité.
+:::
+
+## Reproductibilité inter-évaluateurs
+
+```{r}
+#| label: interrater-setup
+#| echo: !expr "(!knitr::is_latex_output())"
+kable(
+    kappa_round,
+    format = if (knitr::is_latex_output()) {
+      "latex"
+    } else if (knitr::is_html_output()) {
+      "html"
+    } else {
+      "pipe"
+    },
+    booktabs = TRUE,
+    align = "c",
+    caption = "Inter-observer agreement for each ultrasound test"
+)
+```
+
+```{r}
+#| label: fig-kappa-interobserver
+#| echo: !expr "(!knitr::is_latex_output())"
+#| message: false
+#| warning: false
+#| fig-cap: "Kappa inter-observer agreement for each ultrasound test."
+#| fig-width: 6
+#| fig-height: 4
+kappa_plot
+```
+
+Le Kappa de Cohen correspond à la concordance corrigée, c'est à dire le pourcentage d'accord entre les évaluateurs corrigé par le taux d'accord attendu par hasard.
+
+Interprétation selon tableau de Landis & Koch (1977) :
+-   < 0 : pas d'accord
+-   0.00–0.20 : accord faible
+-   0.21–0.40 : accord passable
+-   0.41–0.60 : accord modéré
+-   0.61–0.80 : accord substantiel
+-   0.81–1.00 : accord presque parfait
+
+::: {.callout-note icon=false title="Lecture simple"}
+**Ce qu'on cherche.** Ici, on veut savoir si deux évaluateurs obtiennent globalement le même résultat lorsqu'ils réalisent les ULNT. Un test peu reproductible est difficile à utiliser en pratique, même s'il semble performant.
+
+**Comment lire ce résultat.** Le `Kappa` mesure l'accord entre évaluateurs au-delà de ce qu'on attendrait simplement par hasard. Plus il est proche de `1`, plus le test est reproductible. Un accord brut élevé ne suffit pas toujours ; le `Kappa` est plus informatif.
+
+**Ce que montrent les données ici.** L'accord est globalement bon à substantiel, avec `U1 kappa 0.683`, `U2a 0.604`, `U2b 0.593` et `U3 0.625`. `U2b` est le moins reproductible du groupe, mais reste à un niveau acceptable. `U1` combine ici la meilleure utilité diagnostique et une reproductibilité solide.
+
+**Application pratique.** Les ULNT semblent globalement transposables entre examinateurs formés. Cela renforce surtout l'intérêt clinique de `U1`, qui paraît à la fois utile et relativement stable d'un observateur à l'autre.
+:::
+
+## Combinaisons et score de positivité ULNT
+
+Le protocole prévoyait une exploration des associations entre tests, mais deux objets statistiques différents doivent être distingués ici :
+
+-   les **combinaisons conjonctives prédéfinies**, pour lesquelles le résultat est positif seulement si **tous** les tests de la combinaison sont positifs ;
+
+-   le **score de positivité ULNT**, qui correspond simplement au **nombre total** de tests positifs, puis à des seuils du type `>=1`, `>=2`, `>=3` ou `>=4`.
+
+Un seuil `>=3 positifs` ne correspond donc **pas** à une combinaison fixe de trois tests : plusieurs profils différents peuvent aboutir à ce score. À l'inverse, une combinaison comme `U2b + U3` impose précisément quels tests doivent être positifs. Enfin, le seuil `>=4 positifs` correspond à la règle la plus stricte du score, c'est-à-dire **4 tests positifs sur 4**.
+
+### Combinaisons conjonctives prédéfinies
+
+```{r}
+#| label: combination-extremes-table
+#| echo: !expr "(!knitr::is_latex_output())"
+#| results: "asis"
+combination_extremes_round %>%
+  kable(
+    format = if (knitr::is_latex_output()) {
+      "latex"
+    } else if (knitr::is_html_output()) {
+      "html"
+    } else {
+      "pipe"
+    },
+    booktabs = TRUE,
+    align = "c",
+    digits = 3,
+    caption = "Résumé des combinaisons les plus sensibles et les plus spécifiques"
+  ) %>%
+  kable_styling(
+    latex_options = c("hold_position", "scale_down"),
+    full_width = FALSE,
+    font_size = 8
+  )
+```
+
+-   Pour résumer les extrêmes, la **combinaison la plus sensible** est `U1` seul (`Se 0.864`, `Sp 0.60`). En cas d'égalité de sensibilité, la combinaison retenue ici est la plus performante en spécificité, puis la plus **parcimonieuse** si besoin.
+
+-   La **combinaison la plus spécifique** est `U2b + U3` (`Sp 0.76`, `Se 0.273`). En cas d'égalité de spécificité, la combinaison retenue ici est la plus performante en sensibilité, puis la plus **parcimonieuse** si besoin.
+
+-   La spécificité maximale observée pour les combinaisons conjonctives est en réalité partagée par **quatre** combinaisons : `U2b + U3`, `U2a + U2b + U3`, `U1 + U2b + U3` et les `4 tests`. `U2b + U3` est retenue ici parce qu'elle garde la meilleure sensibilité parmi ces ex aequo, puis la meilleure parcimonie.
+
+```{r}
+#| label: all-ulnt-combinations-table
+#| echo: !expr "(!knitr::is_latex_output())"
+#| results: "asis"
+combination_all_round %>%
+  kable(
+    format = if (knitr::is_latex_output()) {
+      "latex"
+    } else if (knitr::is_html_output()) {
+      "html"
+    } else {
+      "pipe"
+    },
+    booktabs = TRUE,
+    align = "c",
+    digits = 3,
+    caption = "Combinaisons exhaustives des ULNT avec definition positive conjonctive (tous les tests de la combinaison positifs)"
+  ) %>%
+  kable_styling(
+    latex_options = c("hold_position", "repeat_header", "scale_down"),
+    full_width = FALSE,
+    font_size = 7
+  )
+```
+
+::: {.callout-note icon=false title="Lecture simple"}
+**Ce qu'on cherche.** Ici, on se demande si le fait d'exiger plusieurs tests positifs en même temps permet d'obtenir un résultat plus utile qu'un test isolé.
+
+**Comment lire ce résultat.** Une combinaison est dite positive seulement si **tous** les tests qui la composent sont positifs. En général, cela augmente la spécificité, mais au prix d'une baisse de sensibilité.
+
+**Ce que montrent les données ici.** La combinaison la plus sensible est en fait `U1` seul (`Se 0.864`, `Sp 0.60`) ; en cas d'égalité de sensibilité, le départage se fait sur la spécificité puis sur la parcimonie. La spécificité maximale des combinaisons conjonctives est `0.76`, partagée par `U2b + U3`, `U2a + U2b + U3`, `U1 + U2b + U3` et les `4 tests`. La combinaison retenue comme la plus spécifique est `U2b + U3`, car elle garde la meilleure sensibilité parmi ces ex aequo (`Se 0.273`) puis la meilleure parcimonie. Cela illustre bien le compromis attendu : quand on cherche surtout la spécificité, on perd beaucoup en sensibilité. Par exemple, `U2a + U2b` améliore un peu la spécificité (`0.72`) mais perd en sensibilité (`0.614`). Plus les combinaisons deviennent strictes, plus elles ratent de patients réellement atteints. Dans cette lecture conjonctive, la meilleure combinaison exploratoire selon Youden reste finalement `U1` seul (`Youden = 0.464`).
+
+**Application pratique.** Demander plusieurs tests positifs peut rendre le résultat plus "convaincant", mais fait rater davantage de NCB. Sur ces données, cela ne justifie pas de remplacer `U1` par une règle conjonctive.
+:::
+
+### Score ULNT : probabilité selon le nombre exact de tests positifs
+
+```{r}
+#| label: tbl-score-exact-et-seuils
+#| echo: !expr "(!knitr::is_latex_output())"
+#| message: false
+#| warning: false
+#| results: asis
+exact_score_perf_table %>%
+  kable(
+    format = if (knitr::is_latex_output()) {
+      "latex"
+    } else if (knitr::is_html_output()) {
+      "html"
+    } else {
+      "pipe"
+    },
+    booktabs = TRUE,
+    align = "c",
+    digits = 3,
+    caption = "Probabilité observée de NCB selon le nombre exact de tests positifs",
+    col.names = c(
+      "Nombre de tests positifs",
+      "Effectif (N)",
+      "Nombre de NCB",
+      "Probabilité de NCB [IC95%]"
+    )
+  )
+```
+
+```{r}
+#| label: fig-score-probability
+#| echo: !expr "(!knitr::is_latex_output())"
+#| message: false
+#| warning: false
+#| fig-cap: "Probabilité observée de NCB selon le nombre de tests positifs."
+#| fig-width: 7
+#| fig-height: 5
+score_probability_plot
+```
+
+::: {.callout-note icon=false title="Lecture simple"}
+**Ce qu'on cherche.** Cette section répond à une question très intuitive : plus il y a de tests ULNT positifs, plus la probabilité de NCB augmente-t-elle ?
+
+**Comment lire ce résultat.** Le tableau donne la probabilité de NCB observée pour `0`, `1`, `2`, `3` ou `4` tests positifs, quel que soit le détail exact des tests positifs. Le modèle logistique résume ensuite la tendance globale, et l'AUC dit si ce score sépare correctement, ou non, les patients positifs et négatifs.
+
+**Ce que montrent les données ici.** La probabilité observée de NCB passe de `14 %` avec `0` test positif à `57 %` avec `1`, puis `90 %` avec `2`, `86 %` avec `3`, et `65 %` avec `4` tests positifs. Les irrégularités aux scores élevés viennent des petits effectifs dans chaque case. Le modèle retrouve bien une tendance globale croissante : chaque test positif supplémentaire est associé à un `OR 1.833` de NCB (`IC95 [1.256 ; 2.674], p = 0.0017`). L'AUC du score est `0.693`, ce qui reste modeste et ne surpasse pas clairement `U1` seul.
+
+**Application pratique.** Le cumul de positivité renforce la suspicion de NCB et peut aider à structurer le raisonnement. En revanche, ce score reste un outil d'orientation : il ne remplace ni le meilleur test isolé, ni le contexte clinique global.
+:::
+
+### Score ULNT : performances selon les seuils
+
+L'objectif ici est de calculer les performances diagnostiques (sensibilité, spécificité, LR+, LR-, Youden, DOR) pour différents seuils de score (`>=1`, `>=2`, `>=3`, `>=4` tests positifs). Cela permet d'évaluer comment la performance diagnostique évolue en fonction du nombre de tests positifs.
+
+En pratique, cela revient à demander si un seuil du type "au moins 2 tests positifs" est plus utile qu'un test isolé. Cette logique reste différente de celle des combinaisons conjonctives : `>=3 positifs` ne précise pas quels tests sont positifs, alors que `U2b + U3` impose une paire fixe de tests positifs.
+
+Le **DOR** (diagnostic odds ratio) correspond au ratio `(VP*VN)/(FP*FN)`. Plus il est élevé, meilleure est la séparation globale entre patients positifs et négatifs, mais cette métrique doit rester secondaire ici faute d'intervalle de confiance.
+
+```{r}
+#| label: score-probability
+#| echo: !expr "(!knitr::is_latex_output())"
+score_summary_table %>%
+  kable(
+    format = if (knitr::is_latex_output()) {
+      "latex"
+    } else if (knitr::is_html_output()) {
+      "html"
+    } else {
+      "pipe"
+    },
+    booktabs = TRUE,
+    align = "c",
+    digits = 3,
+    caption = "Performances diagnostiques selon le seuil du score"
+  )
+```
+
+::: {.callout-note icon=false title="Lecture simple"}
+**Ce qu'on cherche.** Ici, on ne regarde plus le nombre exact de tests positifs, mais des règles simples du type "au moins `1`", "au moins `2`", "au moins `3`" ou "au moins `4`" tests positifs.
+
+**Comment lire ce résultat.** Un seuil bas est souvent très sensible mais peu spécifique. Un seuil élevé devient plus spécifique mais risque de manquer beaucoup de cas. Le meilleur seuil est celui qui offre le compromis le plus acceptable pour l'usage clinique visé.
+
+**Ce que montrent les données ici.** `>=1` positif est très sensible (`Se 0.955`) mais peu spécifique (`Sp 0.48`). Parmi les **seuils du score**, la spécificité la plus élevée est obtenue pour `>=4 positifs` avec `Sp 0.76` et `Se 0.250`, ce qui correspond en pratique à exiger `4` tests positifs sur `4`. Le meilleur compromis exploratoire reste `>=2 positifs`, avec `Se 0.864`, `Sp 0.60` et `Youden 0.464`. Cela correspond en pratique au même niveau de compromis que `U1` seul, sans supériorité nette.
+
+**Application pratique.** Si un score doit être utilisé, le seuil `>=2` paraît le plus raisonnable dans cette cohorte. En revanche, il n'apporte pas de bénéfice clair par rapport à `U1` seul, qui reste plus simple à utiliser et au moins aussi informatif.
+:::
+
+## Analyses exploratoires par niveau métamérique
+
+Cette section est volontairement présentée **après** les analyses principales, car son objectif est exploratoire. Elle réintroduit le détail par niveau métamérique dans un cadre explicitement prudent :
+
+-   les effectifs restent modestes (`1` à `27` dossiers analysés selon le niveau) ;
+
+-   `C4` est conservé comme catégorie distincte malgré un seul dossier ;
+
+-   aucune interprétation robuste ne doit reposer sur une seule cellule isolée.
+
+### Résumé descriptif par niveau métamérique
+
+```{r}
+#| label: diagnostic-by-level-table
+#| echo: !expr "(!knitr::is_latex_output())"
+#| results: "asis"
+#| warning: false
+kable(
+    diagnostic_by_level_round,
+    caption = "Résumé descriptif par niveau métamérique",
+    align = "c"
+) %>%
+    kable_styling(
+        latex_options = "hold_position",
+        full_width = FALSE,
+        font_size = 8
+    )
+```
+
+-   Le tableau distingue ici l'**effectif total du niveau** et l'**effectif analysé** après exclusion des statuts non interprétables du gold standard.
+
+```{r}
+#| label: results-by-level-rate
+#| echo: !expr "(!knitr::is_latex_output())"
+#| include: true
+results_by_level_status_plot
+```
+
+-   Ce premier graphique montre les **effectifs** de `NCB positif` et `NCB negatif` par niveau. `C4` y apparait bien avec **1 dossier positif** et **0 negatif**.
+
+```{r}
+#| label: results-by-level-count
+#| echo: !expr "(!knitr::is_latex_output())"
+#| include: true
+results_by_level_score_plot
+```
+
+-   Ce second graphique montre la **distribution du score ULNT de 0 a 4**. `C4` y apparait avec un unique patient de **score 0**, ce qui explique le `0` vu auparavant sur le graphique de moyenne.
+
+::: {.callout-note icon=false title="Lecture simple"}
+**Ce qu'on cherche.** Ici, on cherche à savoir si certains niveaux métamériques semblent associés à une fréquence différente de NCB ou à un profil différent de positivité des ULNT.
+
+**Comment lire ce résultat.** Avant même de regarder les performances diagnostiques, il faut regarder **combien** de patients sont présents à chaque niveau. Sans effectif suffisant, un résultat très bon ou très mauvais peut être dû au hasard.
+
+**Ce que montrent les données ici.** Les niveaux `C6` et `C7` concentrent le plus d'observations (`27` et `21` dossiers analysés), alors que `C4` ne comporte qu'un seul patient et `C5` `10`. Le score ULNT paraît plus élevé surtout en `C6` et `C7`, mais cela reste une lecture descriptive. À ce stade, on peut dire qu'il existe des différences apparentes entre niveaux, sans pouvoir encore conclure qu'elles sont robustes.
+
+**Application pratique.** Cette partie doit surtout servir à formuler des hypothèses. Il ne faut pas modifier sa pratique sur la seule base de `C4` ou de `C5`, où les effectifs sont trop faibles.
+:::
+
+### Détail exploratoire test par test et niveau par niveau
+
+```{r}
+#| label: diagnostic-by-level-detail-table
+#| echo: !expr "(!knitr::is_latex_output())"
+#| results: "asis"
+#| warning: false
+kable(
+    diagnostic_by_level_detail_round,
+    caption = "Performances diagnostiques exploratoires des ULNT selon le niveau métamérique",
+    align = "c"
+) %>%
+    kable_styling(
+        latex_options = c("hold_position", "repeat_header"),
+        full_width = FALSE,
+        font_size = 7
+    )
+```
+
+::: {.callout-note icon=false title="Lecture simple"}
+**Ce qu'on cherche.** Ce tableau détaille, pour chaque test et chaque niveau, combien de patients sont correctement ou incorrectement classés. L'objectif est de voir si un ULNT semble mieux fonctionner à certains niveaux qu'à d'autres.
+
+**Comment lire ce résultat.** `TP`, `FP`, `TN` et `FN` décrivent concrètement les bonnes et mauvaises classifications. Les `IC95%` montrent l'incertitude autour de la sensibilité et de la spécificité. Quand ils sont très larges, cela veut dire qu'on sait peu de choses malgré une valeur parfois spectaculaire.
+
+**Ce que montrent les données ici.** Les résultats extrêmes dans les petits niveaux ne doivent pas être surinterprétés. `C5` paraît très favorable pour plusieurs tests, mais sur un effectif très petit. `C6` est plus informatif, car plus peuplé, mais les performances y restent variables selon le test. `C7` montre des sensibilités élevées pour `U1`, `U2a` et surtout `U2b`, avec une spécificité seulement moyenne. `U3` reste globalement le test le plus faible selon les niveaux.
+
+**Application pratique.** Ce tableau peut aider à repérer des tendances, mais il ne justifie pas à lui seul de choisir un ULNT différent selon le niveau métamérique. Les petits effectifs imposent de rester prudent.
+:::
+
+### Lecture test par test selon le niveau métamérique
+
+```{r}
+#| label: results-by-level-test-metric-plot
+#| echo: !expr "(!knitr::is_latex_output())"
+#| include: true
+results_by_level_test_metric_plot
+```
+
+-   Ce graphique remet la lecture **test par test** : chaque facette correspond à un ULNT, avec la sensibilité et la spécificité estimées selon le niveau métamérique.
+
+#### U1 selon le niveau métamérique
+
+```{r}
+#| label: u1-by-level-table
+#| echo: !expr "(!knitr::is_latex_output())"
+#| results: "asis"
+kable(
+    u1_level_round,
+    caption = "U1 selon le niveau métamérique",
+    align = "c"
+)
+```
+
+#### U2a selon le niveau métamérique
+
+```{r}
+#| label: u2a-by-level-table
+#| echo: !expr "(!knitr::is_latex_output())"
+#| results: "asis"
+kable(
+    u2a_level_round,
+    caption = "U2a selon le niveau métamérique",
+    align = "c"
+)
+```
+
+#### U2b selon le niveau métamérique
+
+```{r}
+#| label: u2b-by-level-table
+#| echo: !expr "(!knitr::is_latex_output())"
+#| results: "asis"
+kable(
+    u2b_level_round,
+    caption = "U2b selon le niveau métamérique",
+    align = "c"
+)
+```
+
+#### U3 selon le niveau métamérique
+
+```{r}
+#| label: u3-by-level-table
+#| echo: !expr "(!knitr::is_latex_output())"
+#| results: "asis"
+kable(
+    u3_level_round,
+    caption = "U3 selon le niveau métamérique",
+    align = "c"
+)
+```
+
+::: {.callout-note icon=false title="Lecture simple"}
+**Ce qu'on cherche.** Ces quatre tableaux permettent de regarder chaque ULNT séparément pour voir si son profil change beaucoup selon le niveau métamérique.
+
+**Comment lire ce résultat.** Il faut surtout chercher une **cohérence globale** d'un niveau à l'autre, plutôt qu'une valeur spectaculaire isolée. Une performance très élevée sur très petit effectif ne suffit pas à faire conclure à un "meilleur niveau".
+
+**Ce que montrent les données ici.** `U1` paraît plutôt fort en `C6-C8`, avec des résultats particulièrement bons en `C5`, mais ce dernier niveau est trop petit pour conclure. `U2a` est proche de `U1` en `C5-C7`, avec un profil plus irrégulier en `C8`. `U2b` semble particulièrement sensible en `C7`, sans preuve robuste d'un niveau vraiment idéal. `U3` est plus variable et souvent moins sensible que les autres tests.
+
+**Application pratique.** Il ne paraît pas pertinent de choisir principalement le test en fonction du niveau métamérique. Le message pratique reste surtout que `U1`, `U2a` et `U2b` gardent plus d'intérêt global que `U3`.
+:::
+
+### Modélisation globale du niveau métamérique
+
+```{r}
+#| label: diagnostic-by-level-model-table
+#| echo: !expr "(!knitr::is_latex_output())"
+#| results: "asis"
+kable(
+    level_model_round,
+    caption = "Effet global du niveau métamérique et du score ULNT sur la probabilité de NCB",
+    align = "c"
+)
+```
+
+::: {.callout-note icon=false title="Lecture simple"}
+**Ce qu'on cherche.** Ce modèle sert à répondre à une question plus globale : le niveau métamérique apporte-t-il une information propre sur la probabilité de NCB, indépendamment du nombre de tests ULNT positifs ?
+
+**Comment lire ce résultat.** Un `OR` proche de `1` signifie qu'il n'y a pas de relation claire. Si l'intervalle de confiance contient largement `1` et que la p-value est élevée, on ne peut pas conclure à un effet robuste.
+
+**Ce que montrent les données ici.** Le niveau seul a un `OR 0.967 [0.578 ; 1.617], p = 0.897`, ce qui ne suggère aucun signal utile. Après ajustement sur le score ULNT, le niveau reste sans effet clair avec `OR 0.943 [0.542 ; 1.639], p = 0.834`. En revanche, le score ULNT garde un signal net : `OR 1.833 [1.256 ; 2.674], p = 0.0017`. Autrement dit, c'est surtout l'accumulation de tests positifs qui augmente la probabilité de NCB.
+
+**Application pratique.** Sur ces données, il vaut mieux raisonner d'abord sur le **profil global des ULNT** que sur le niveau métamérique pris isolément. Le niveau ne semble pas apporter d'information indépendante suffisamment robuste pour guider seul la décision.
+:::

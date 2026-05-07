@@ -1,15 +1,23 @@
 library(shiny)
 library(dplyr)
-library(readxl)
 library(ggplot2)
 
-# --- Chargement et Préparation des Données ---
 load_data <- function() {
-  data_path <- if (file.exists("recueil_bon.xlsx")) "recueil_bon.xlsx" else "../recueil_bon.xlsx"
-  if (!file.exists(data_path)) stop("Fichier recueil_bon.xlsx introuvable.")
-  
-  df <- as.data.frame(read_excel(data_path), stringsAsFactors = FALSE)
-  
+  data_path <- if (file.exists("recueil_bon_avec_sexe.csv")) {
+    "recueil_bon_avec_sexe.csv"
+  } else {
+    "../recueil_bon_avec_sexe.csv"
+  }
+  if (!file.exists(data_path)) stop("Fichier recueil_bon_avec_sexe.csv introuvable.")
+
+  df <- read.csv(data_path, stringsAsFactors = FALSE, check.names = FALSE)
+  names(df) <- trimws(gsub("^\ufeff", "", names(df)))
+  names(df)[names(df) == "Gold Standard"] <- "Gold_Standard"
+  names(df)[names(df) == "U1 E1"] <- "U1_E1"
+  names(df)[names(df) == "U2a E1"] <- "U2a_E1"
+  names(df)[names(df) == "U2b E1"] <- "U2b_E1"
+  names(df)[names(df) == "U3 E1"] <- "U3_E1"
+
   norm_result <- function(x) {
     x <- trimws(as.character(x))
     x[x %in% c("", "NA", "N/A", "NT")] <- NA
@@ -27,243 +35,171 @@ load_data <- function() {
     mutate(n_pos = rowSums(across(c(U1_E1, U2a_E1, U2b_E1, U3_E1)) == "Positif", na.rm = TRUE))
 }
 
-# --- Fonctions Statistiques ---
-# Utilisation de la logique "AU MOINS X TESTS" pour plus de stabilité clinique
-calc_lr_cumulative <- function(df, n_selected) {
-  total_pos <- sum(df$Gold_Standard_main == "Positif")
-  total_neg <- sum(df$Gold_Standard_main == "Negatif")
-  
-  if (n_selected == 0) {
-    # Pour 0, on garde le LR- (n_pos == 0)
-    tp <- sum(df$n_pos == 0 & df$Gold_Standard_main == "Positif")
-    fp <- sum(df$n_pos == 0 & df$Gold_Standard_main == "Negatif")
-    se <- tp / total_pos
-    sp <- (total_neg - fp) / total_neg
-    lr <- (tp / total_pos) / (fp / total_neg)
-    n_count <- tp + fp
-  } else {
-    # Pour 1+, 2+, 3+, 4+
-    tp <- sum(df$n_pos >= n_selected & df$Gold_Standard_main == "Positif")
-    fp <- sum(df$n_pos >= n_selected & df$Gold_Standard_main == "Negatif")
-    
-    se <- tp / total_pos
-    sp <- (total_neg - fp) / total_neg
-    
-    # Éviter division par zéro
-    if (fp == 0) {
-      lr <- (tp / total_pos) / (0.5 / total_neg)
-    } else {
-      lr <- (tp / total_pos) / (fp / total_neg)
+format_percent <- function(x, digits = 1) {
+  paste0(format(round(100 * x, digits), nsmall = digits, trim = TRUE), "%")
+}
+
+score_summary <- function(df) {
+  bind_rows(lapply(0:4, function(score) {
+    sub <- df %>% filter(n_pos == score)
+    n <- nrow(sub)
+    n_ncb <- sum(sub$Gold_Standard_main == "Positif")
+
+    if (n == 0) {
+      return(data.frame(score = score, n = 0, n_ncb = 0, prob = NA_real_, low = NA_real_, high = NA_real_))
     }
-    n_count <- tp + fp
+
+    ci <- binom.test(n_ncb, n)$conf.int
+    data.frame(
+      score = score,
+      n = n,
+      n_ncb = n_ncb,
+      prob = n_ncb / n,
+      low = ci[1],
+      high = ci[2]
+    )
+  }))
+}
+
+interpret_score <- function(score, n, prob) {
+  if (n == 0) return("Aucun patient comparable dans la cohorte.")
+
+  if (score == 0) {
+    return("Aucun ULNT positif: dans cette cohorte, ce profil rend la NCB peu probable.")
   }
-  
-  return(list(lr = lr, n = n_count))
+  if (score == 1) {
+    return("Un seul ULNT positif: résultat peu discriminant, à interpréter avec le reste de l'examen clinique.")
+  }
+  if (score %in% c(2, 3)) {
+    return("Deux ou trois ULNT positifs: dans cette cohorte, ce profil est fortement associé à une NCB.")
+  }
+
+  "Quatre ULNT positifs: résultat positif diffus. Dans cette cohorte, ce score n'augmente pas la probabilité plus que 2 ou 3 tests positifs; interprétation prudente."
 }
 
-post_test_prob <- function(pre_prob, lr) {
-  if (pre_prob >= 1) return(0.99)
-  if (pre_prob <= 0) return(0.01)
-  pre_odds <- pre_prob / (1 - pre_prob)
-  post_odds <- pre_odds * lr
-  post_prob <- post_odds / (1 + post_odds)
-  return(post_prob)
-}
-
-# --- Interface Utilisateur ---
 ui <- fluidPage(
-  titlePanel("Aide au Diagnostic : Névralgie Cervico-Brachiale (NCB)"),
-  
+  titlePanel("Aide au diagnostic de NCB par score ULNT"),
   sidebarLayout(
     sidebarPanel(
-      h4("1. Suspicion Clinique"),
-      sliderInput("pre_prob", "Probabilité pré-test (%)", 
-                  min = 1, max = 99, value = 50, step = 5),
-      helpText("Votre intuition AVANT les tests."),
-      
-      hr(),
-      h4("2. Résultats des ULNT"),
-      checkboxInput("u1", "ULNT 1 (Médian)", FALSE),
-      checkboxInput("u2a", "ULNT 2a (Médian/Musculo-cutané)", FALSE),
-      checkboxInput("u2b", "ULNT 2b (Radial)", FALSE),
-      checkboxInput("u3", "ULNT 3 (Ulnaire)", FALSE),
-      
-      hr(),
-      wellPanel(
-        h5("Prévalence de la cohorte"),
-        textOutput("cohort_prev")
-      )
+      h4("Résultats des ULNT"),
+      checkboxInput("u1", "ULNT 1 (médian)", FALSE),
+      checkboxInput("u2a", "ULNT 2a (médian / musculo-cutané)", FALSE),
+      checkboxInput("u2b", "ULNT 2b (radial)", FALSE),
+      checkboxInput("u3", "ULNT 3 (ulnaire)", FALSE)
     ),
-    
     mainPanel(
-      tabsetPanel(
-        tabPanel("Résultat", 
-          br(),
-          fluidRow(
-            column(6, 
-              wellPanel(
-                h4("Impact du test"),
-                uiOutput("prob_result_text")
-              )
-            ),
-            column(6,
-              plotOutput("fagan_plot", height = "300px")
-            )
-          ),
-          hr(),
-          h4("Interprétation Clinique"),
-          uiOutput("clinical_advice"),
-          br(),
-          h4("Repères visuels"),
-          div(style = "display: flex; gap: 10px; justify-content: space-around; background: white; padding: 15px; border-radius: 8px; border: 1px solid #ddd;",
-              div(style="flex: 1; text-align:center;", 
-                  p(strong("U1 (Médian)")),
-                  div(style="height: 150px; display: flex; align-items: center; justify-content: center;",
-                      img(src = "ulnt1.png", style = "max-height: 100%; max-width: 100%; object-fit: contain;")
-                  )
-              ),
-              div(style="flex: 1; text-align:center;", 
-                  p(strong("U2a (Médian)")),
-                  div(style="height: 150px; display: flex; align-items: center; justify-content: center;",
-                      img(src = "ulnt2a.png", style = "max-height: 100%; max-width: 100%; object-fit: contain;")
-                  )
-              ),
-              div(style="flex: 1; text-align:center;", 
-                  p(strong("U2b (Radial)")),
-                  div(style="height: 150px; display: flex; align-items: center; justify-content: center;",
-                      img(src = "ulnt2b.png", style = "max-height: 100%; max-width: 100%; object-fit: contain;")
-                  )
-              ),
-              div(style="flex: 1; text-align:center;", 
-                  p(strong("U3 (Ulnaire)")),
-                  div(style="height: 150px; display: flex; align-items: center; justify-content: center;",
-                      img(src = "ulnt3.png", style = "max-height: 100%; max-width: 100%; object-fit: contain;")
-                  )
-              )
-          )
-        ),
-        tabPanel("Stats de la cohorte",
-          br(),
-          h4("Valeur diagnostique cumulative"),
-          p("Probabilité de NCB si l'on a AU MOINS X tests positifs :"),
-          tableOutput("stats_table"),
-          hr(),
-          h4("Distribution réelle"),
-          tableOutput("raw_dist_table")
-        )
-      )
+      h3("Résultat"),
+      uiOutput("score_result"),
+      plotOutput("score_plot", height = "300px"),
+      h3("Interprétation clinique"),
+      uiOutput("clinical_message"),
+      h3("Repères visuels des tests"),
+      div(
+        style = "display: flex; gap: 10px; justify-content: space-around; background: white; padding: 15px; border-radius: 8px; border: 1px solid #ddd;",
+        div(style = "flex: 1; text-align: center;",
+            p(strong("U1")),
+            div(style = "height: 150px; display: flex; align-items: center; justify-content: center;",
+                img(src = "ulnt1.png", style = "max-height: 100%; max-width: 100%; object-fit: contain;"))),
+        div(style = "flex: 1; text-align: center;",
+            p(strong("U2a")),
+            div(style = "height: 150px; display: flex; align-items: center; justify-content: center;",
+                img(src = "ulnt2a.png", style = "max-height: 100%; max-width: 100%; object-fit: contain;"))),
+        div(style = "flex: 1; text-align: center;",
+            p(strong("U2b")),
+            div(style = "height: 150px; display: flex; align-items: center; justify-content: center;",
+                img(src = "ulnt2b.png", style = "max-height: 100%; max-width: 100%; object-fit: contain;"))),
+        div(style = "flex: 1; text-align: center;",
+            p(strong("U3")),
+            div(style = "height: 150px; display: flex; align-items: center; justify-content: center;",
+                img(src = "ulnt3.png", style = "max-height: 100%; max-width: 100%; object-fit: contain;")))
+      ),
+      hr(),
+      h3("Données de la cohorte"),
+      tableOutput("score_table")
     )
   )
 )
 
-# --- Serveur ---
 server <- function(input, output, session) {
   df <- load_data()
-  
-  rv_stats <- reactive({
-    n_pos <- sum(c(input$u1, input$u2a, input$u2b, input$u3))
-    res <- calc_lr_cumulative(df, n_pos)
-    post_p <- post_test_prob(input$pre_prob / 100, res$lr)
-    list(n_pos = n_pos, lr = res$lr, post_p = post_p, n = res$n)
+  summaries <- score_summary(df)
+
+  selected_score <- reactive({
+    sum(c(input$u1, input$u2a, input$u2b, input$u3))
   })
-  
-  output$cohort_prev <- renderText({
-    prev <- mean(df$Gold_Standard_main == "Positif")
-    paste0(round(prev * 100, 1), "%")
+
+  selected_summary <- reactive({
+    summaries %>% filter(score == selected_score())
   })
-  
-  output$prob_result_text <- renderUI({
-    s <- rv_stats()
-    tagList(
-      p("Nombre de tests positifs : ", strong(paste0(s$n_pos, "/4"))),
-      p("Probabilité initiale : ", strong(paste0(input$pre_prob, "%"))),
-      h3(style = "color: #2c3e50;", 
-         "Probabilité finale : ", 
-         span(style = "color: #e74c3c; font-weight: bold;", 
-              paste0(round(s$post_p * 100, 1), "%"))),
-      p(em(paste0("Le test multiplie vos chances par ", round(s$lr, 2))))
+
+  output$score_result <- renderUI({
+    s <- selected_summary()
+    weak <- s$n < 10
+    background <- if (weak) "#fde2e2" else "#f5f5f5"
+
+    div(
+      style = paste0("background-color: ", background, "; border: 1px solid #cccccc; border-radius: 4px; padding: 12px;"),
+      h4(paste0("Score ULNT: ", s$score, "/4 tests positifs")),
+      if (s$n == 0) {
+        p(strong("Aucune estimation possible."))
+      } else {
+        tagList(
+          h3(style = "margin-top: 0;", paste0("NCB observée: ", format_percent(s$prob))),
+          p(paste0("IC95%: [", format_percent(s$low), " ; ", format_percent(s$high), "]")),
+          p(paste0("Patients comparables: ", s$n)),
+          p(paste0("NCB observées: ", s$n_ncb, "/", s$n))
+        )
+      }
     )
   })
-  
-  output$clinical_advice <- renderUI({
-    s <- rv_stats()
-    pre_p <- input$pre_prob / 100
-    post_p <- s$post_p
-    prob_diff <- post_p - pre_p
-    
-    # 1. Qualité intrinsèque du test (LR)
-    test_strength <- case_when(
-      s$lr < 0.2  ~ "très performant pour exclure",
-      s$lr < 0.6  ~ "modérément performant pour exclure",
-      s$lr > 5    ~ "très performant pour confirmer",
-      s$lr > 2    ~ "modérément performant pour confirmer",
-      TRUE        ~ "peu contributif dans ce cas précis"
-    )
-    
-    # 2. Impact réel sur le patient (Différence de probabilité)
-    impact_text <- case_when(
-      abs(prob_diff) < 0.08 ~ "ne modifie quasiment pas",
-      abs(prob_diff) < 0.20 ~ "modifie légèrement",
-      TRUE                  ~ "change significativement"
-    )
-    
-    # 3. Conclusion diagnostique
-    status_text <- case_when(
-      post_p > 0.90 ~ "la NCB est quasi certaine.",
-      post_p > 0.70 ~ "la NCB est très probable.",
-      post_p > 0.30 ~ "le diagnostic est incertain (zone de doute).",
-      post_p > 0.10 ~ "la NCB est peu probable.",
-      TRUE          ~ "la NCB est quasiment exclue."
-    )
-    
-    # Couleur de l'alerte
+
+  output$clinical_message <- renderUI({
+    s <- selected_summary()
     color <- case_when(
-      post_p > 0.70 ~ "#c0392b",
-      post_p < 0.30 ~ "#27ae60",
-      TRUE          ~ "#f39c12"
+      s$score == 0 ~ "#2e7d32",
+      s$score %in% c(2, 3) ~ "#b71c1c",
+      TRUE ~ "#ef6c00"
     )
 
-    div(style = paste0("padding: 15px; border-left: 5px solid ", color, "; background-color: #f9f9f9;"),
-        p(style = "margin-bottom: 5px;",
-          "Bien que ce test soit ", strong(test_strength), ", son résultat ", strong(impact_text), " votre suspicion initiale."),
-        p(style = paste0("color: ", color, "; font-size: 1.2em; font-weight: bold;"),
-          "Au final, ", status_text),
-        
-        if(s$n_pos == 4) p(tags$i(style="color: #8e44ad; font-size: 0.9em;", "Note : Le score de 4/4 est ici moins spécifique que le 3/4, attention à une possible sensibilisation centrale.")),
-        
-        tags$small(style="color: #7f8c8d;", 
-                   paste0("Analyse basée sur un score de ", if(s$n_pos==0) "0" else paste0(s$n_pos, " ou plus"), "."))
+    div(
+      style = paste0("padding: 15px; border-left: 5px solid ", color, "; background-color: #f9f9f9;"),
+      p(style = paste0("color: ", color, "; font-size: 1.15em; font-weight: bold; margin-bottom: 0;"),
+        interpret_score(s$score, s$n, s$prob))
     )
   })
-  
-  output$fagan_plot <- renderPlot({
-    s <- rv_stats()
-    df_p <- data.frame(
-      Temps = factor(c("Initial", "Final"), levels = c("Initial", "Final")),
-      Prob = c(input$pre_prob/100, s$post_p)
-    )
-    ggplot(df_p, aes(x=Temps, y=Prob, fill=Temps)) +
-      geom_col(width=0.5) +
-      geom_text(aes(label=paste0(round(Prob*100), "%")), vjust=-0.5, size=6) +
-      scale_y_continuous(limits=c(0, 1.1), labels=scales::percent) +
-      scale_fill_manual(values=c("Initial"="#bdc3c7", "Final"="#e74c3c")) +
-      theme_minimal() + labs(x="", y="") + theme(legend.position="none")
-  })
-  
-  output$stats_table <- renderTable({
-    data.frame(Tests_Positifs = paste0(0:4, "+")) %>%
-      rowwise() %>%
+
+  output$score_plot <- renderPlot({
+    plot_df <- summaries %>%
       mutate(
-        LR = calc_lr_cumulative(df, as.numeric(gsub("\\+", "", Tests_Positifs)))$lr
+        selected = score == selected_score(),
+        score_label = factor(paste0(score, "/4"), levels = paste0(0:4, "/4"))
       )
+
+    ggplot(plot_df, aes(x = score_label, y = prob)) +
+      geom_col(aes(fill = selected), width = 0.65) +
+      geom_errorbar(aes(ymin = low, ymax = high), width = 0.18, linewidth = 0.8) +
+      geom_text(aes(label = paste0(n_ncb, "/", n)), vjust = -0.7, size = 4) +
+      scale_y_continuous(
+        limits = c(0, 1.05),
+        breaks = seq(0, 1, 0.25),
+        labels = function(x) paste0(round(100 * x), "%")
+      ) +
+      scale_fill_manual(values = c(`TRUE` = "lightcoral", `FALSE` = "grey75")) +
+      labs(x = "Nombre de tests positifs", y = "NCB observée dans la cohorte") +
+      theme_minimal(base_size = 14) +
+      theme(legend.position = "none")
   })
-  
-  output$raw_dist_table <- renderTable({
-    df %>%
-      group_by(n_pos) %>%
-      summarise(Total = n(), NCB_Pos = sum(Gold_Standard_main == "Positif")) %>%
-      rename("Score Exact" = n_pos)
-  })
+
+  output$score_table <- renderTable({
+    summaries %>%
+      transmute(
+        `Tests positifs` = paste0(score, "/4"),
+        `Patients comparables` = n,
+        `NCB observées` = paste0(n_ncb, "/", n),
+        `NCB observée` = format_percent(prob),
+        `IC95%` = paste0("[", format_percent(low), " ; ", format_percent(high), "]")
+      )
+  }, striped = TRUE, bordered = TRUE, spacing = "s")
 }
 
 shinyApp(ui, server)

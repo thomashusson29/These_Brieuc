@@ -1,0 +1,70 @@
+﻿Nom,Prénom,DDN,Date de recueil,Age,Coté,Niveau,Examen Clinique,IRM,Infiltrations,Resultat Inf,Gold Standard,U1 E1 ,U2a E1,U2b E1 ,U3 E1,U1 E2,U2a E2,U2b E2,U3 E2,BMI,Tabac,Sexe
+Le goff,gwenola,28100,45572,47,G,C5,Positif,Positif,non,,Positif,Positif,Positif,Positif,Positif,Positif,Positif,Positif,Positif,30,oui,F
+SALAUN,virginie,28397,45453,46,G,C6,Positif,Negatif,non,,Negatif,Positif,Positif,Negatif,Positif,Positif,Positif,Positif,Positif,24,oui,F
+OGIER,Fabienne,26778,45572,51,D,C5,Positif,Positif,oui,Negatif,Positif,Positif,Positif,Positif,Positif,Positif,Positif,Positif,Positif,25,non,F
+BOUIN,Pascale,21806,45453,64,D,C6,Positif,Positif,oui,Positif,Positif,Positif,Positif,Positif,Positif,Positif,Positif,Positif,Positif,20,non,F
+OLLIVIER,Sandrine,27971,45600,48,G,C7,Negatif,Positif,oui,Positif,Positif,Positif,Positif,Positif,Negatif,Positif,Positif,Positif,Positif,30,non,F
+HOUSSIN,Melinda,31411,45579,38,G,C7,Positif,Positif,,,Positif,Positif,Negatif,Negatif,Negatif,Positif,Positif,Positif,Positif,22,non,F
+GUERN RIOU,Laurence,25837,45572,54,D,C7,Positif,Positif,oui,,Positif,Positif,Positif,Positif,Positif,Negatif,Positif,Positif,Negatif,30,oui,F
+GUERN RIOU,Laurence,25837,45572,54,G,C7,Negatif,Negatif,oui,,Negatif,Negatif,Negatif,Positif,Negatif,Positif,Negatif,Positif,Negatif,30,oui,F
+MASSET,Cedric,28160,45513,47,D,C7,Positif,Positif,oui,Negatif,Positif,Negatif,Positif,Positif,Negatif,Positif,Positif,Positif,Positif,23,oui,M
+MASSET,Cedric,28160,45513,47,G,C7,Positif,Positif,oui,Negatif,Positif,Negatif,Positif,Positif,Negatif,Positif,Positif,Positif,Positif,23,oui,M
+LAUNEY,Floriane,32405,45508,35,D,C5,Positif,Positif,non,,Positif,Positif,Positif,Positif,Negatif,Positif,Negatif,Positif,Negatif,26,non,F
+LEFORT,Erick,24766,45460,56,D,C6,Positif,Positif,oui,Positif,Positif,Positif,Positif,Positif,Positif,Positif,Positif,Negatif,Positif,35,non,M
+NEVEU,Marie Therese,21945,45460,64,G,C6,Positif,Positif,oui,Positif,Positif,Negatif,Positif,Positif,Positif,Positif,Positif,Negatif,Positif,26,non,F
+COLLIOT,Marie Françoise,21903,45628,65,G,C7,Positif,Negatif,non,,Negatif,Positif,Positif,Negatif,Negatif,Positif,Negatif,Negatif,Negatif,27,non,F
+FAUCHEUX ,MICKAEL,30027,45583,42,G,C7,Positif,Positif,oui,Positif,Positif,Positif,Negatif,Positif,Negatif,Positif,Negatif,Positif,Negatif,25,oui,M
+PETAUT,Marc,24889,45460,56,G,C7,Positif,Positif,oui,Positif,Positif,Positif,Positif,Positif,Negatif,Positif,Positif,Positif,Positif,22,non,M
+FOUCHER,Coralie,32076,45439,36,D,C6,Positif,Negatif,non,,Negatif,Positif,Positif,Positif,Positif,Positif,Positif,Positif,Positif,26,oui,F
+LE GRAS ,Valerie,24117,45439,58,G,C7,Positif,Positif,oui,Positif,Positif,Positif,Positif,Positif,Positif,Positif,Positif,Positif,Positif,30,non,F
+BURBAN ,Marie Armelle,24616,45436,57,G,C7,Positif,Positif,non,,Positif,Positif,Positif,Positif,Negatif,Positif,Positif,Positif,Negatif,32,non,F
+EUZENOT,Katia,26928,45677,51,D,C7,Positif,Positif,oui,Positif,Positif,Positif,Positif,Positif,Negatif,Positif,Positif,Negatif,Negatif,37,oui,F
+DUVAL,Jeannine,18705,45670,73,D,C6,Positif,Positif,oui,Positif,Positif,Positif,Positif,Negatif,Positif,Positif,Negatif,Positif,Positif,34,non,F
+Common,Bruno,21611,45667,65,G,C4,Positif,Positif,non,,Positif,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,26,non,M
+KALYN,Anthony,32315,45650,36,D,C5,Negatif,Negatif,non,,Negatif,Negatif,Negatif,Negatif,Negatif,Positif,Negatif,Negatif,Negatif,25,oui,M
+DEAN ,Jean Malo,35057,45650,29,D,C8,Negatif,Negatif,non,,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,,,M
+TAJ,KHADIJA,29029,45712,45,G,C6,Positif,Positif,oui,Positif,Positif,Positif,Positif,Negatif,Positif,Positif,Positif,Positif,Positif,24,non,F
+VALET,Danielle,20742,45693,68,D,C7,Positif,Negatif,non,,Negatif,Positif,Positif,Positif,Positif,Positif,Positif,Positif,Positif,31,non,F
+ISIDORE,Martine,19470,45719,71,D,C6,Positif,Positif,non,,Positif,Positif,Positif,Negatif,Negatif,Positif,Positif,Negatif,Negatif,36,oui,F
+ISIDORE,Martine,19470,45719,71,G,C6,Positif,Positif,non,,Positif,Positif,Positif,Positif,Negatif,Positif,Positif,Positif,Negatif,36,oui,F
+MARTIN,Nicolas,33137,45719,34,D,C8,Positif,Positif,non,,Positif,Positif,Positif,Positif,Negatif,Positif,Positif,Positif,Negatif,25,oui,M
+MARTIN ,Nicolas,33137,45719,34,G,C8,Positif,Positif,non,,Positif,Positif,Positif,Positif,Negatif,Positif,Positif,Positif,Negatif,25,oui,M
+MARTINS,Frederic,28262,45712,47,G,C8,Positif,Positif,non,,Positif,Positif,Negatif,Negatif,Negatif,Positif,Positif,Negatif,Negatif,29,non,M
+MTIMET,Laura ,34794,45691,29,D,C8,Positif,Douteux,non,,Positif,Positif,Positif,Positif,Positif,Positif,Positif,Positif,Negatif,32,non,F
+GURY,Mathieu,30397,45691,41,D,C6,Positif,Negatif,non,,Negatif,Positif,Positif,Positif,Positif,Positif,Positif,Positif,Positif,25,non,M
+GURY,Mathieu,30397,45691,41,G,C6,Positif,Negatif,non,,Negatif,Positif,Positif,Positif,Positif,Positif,Positif,Positif,Positif,25,non,M
+BRIAND ,anne,27302,45749,50,D,C8,Positif,Positif,oui,Positif,Positif,Positif,Negatif,Positif,Negatif,Positif,Negatif,Positif,Negatif,24,oui,F
+GERMON,Sandrine,26462,45729,52,D,C6,Positif,Positif,non,,Positif,Negatif,Positif,Positif,Negatif,Negatif,Positif,Positif,Negatif,28,oui,F
+RETIF,Elodie,33438,45740,33,G,C6,Positif,Negatif,non,,Negatif,Positif,Positif,Positif,Negatif,Positif,Positif,Positif,Positif,22,non,F
+ARRAS,Drissia,25203,45740,56,G,C6,Positif,Positif,non,,Positif,Positif,Positif,Positif,Negatif,Positif,Positif,Positif,Negatif,28,non,F
+VASILE,Ionel,27375,45740,50,D,C6,Positif,Positif,oui,Positif,Positif,Positif,Positif,Positif,Negatif,Positif,Negatif,Positif,Negatif,17,oui,M
+VASILE,Ionel,27375,45740,50,G,C6,Positif,Positif,oui,Positif,Positif,Positif,Negatif,Positif,Negatif,Positif,Positif,Positif,Negatif,17,oui,M
+BUZARE,Christelle,26759,45735,51,D,C6,Positif,Positif,oui,Positif,Positif,Positif,Positif,Positif,Negatif,Positif,Positif,Positif,Negatif,,non,F
+POIRIER,Pascale,27134,45744,50,G,C8,Positif,Negatif,non,,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,,,F
+CLOLUS,Laurent,24986,45754,56,G,C8,Positif,Positif,non,,Positif,Negatif,Negatif,Negatif,Negatif,NT,NT,NT,NT,,,M
+AUSSANT,Daniele,17869,45762,76,G,C6,Positif,Positif,oui,Positif,Positif,Positif,Negatif,Negatif,Negatif,NT,NT,NT,NT,20,non,F
+LE LAUSQUE,Angelique,30264,45775,42,D,C5,Positif,Positif,non,,Positif,Positif,Positif,Positif,Positif,Positif,Positif,Negatif,Negatif,33,non,F
+BUSNEL,Herve,25221,45796,56,D,C6,Positif,Positif,oui,Positif,Positif,Positif,Positif,Negatif,Positif,Positif,Negatif,Positif,Positif,22,,M
+MACE ,Canelle,35938,45796,27,G,C5,Negatif,Negatif,non,,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,19,non,F
+MAGOMADOVA,Baneta,28587,45796,47,D,C8,Douteux,Negatif,non,,Positif,Positif,Positif,Positif,Positif,Positif,Positif,Positif,Positif,45,non,F
+BIENASSIS,Martine,19374,45784,72,D,C5,Negatif,Negatif,non,,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,Positif,Negatif,27,non,F
+BIENASSIS,Martine,19374,45784,72,G,C5,Negatif,Negatif,non,,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,27,non,F
+CHESNAIS,Françoise,23968,45838,59,D,C6,Douteux,Douteux,oui,Negatif,Negatif,Positif,Positif,Negatif,Positif,Positif,Negatif,Negatif,Positif,31,non,F
+FEREY,Emmanuel,24826,45838,57,G,C7,Positif,Positif,non,,Positif,Positif,Positif,Positif,Positif,Positif,Positif,Positif,Positif,39,non,M
+DESCHAMPS,Emeline,27395,45810,50,G,C7,Negatif,Negatif,non,,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,Positif,Negatif,Negatif,25,non,F
+BOREY,Christine,23919,45775,59,D,C7,Positif,Positif,non,,Positif,Positif,Positif,Positif,Positif,Negatif,Positif,Negatif,Negatif,23,oui,F
+BULEON,Annie,24836,45887,57,D,C7,Negatif,Negatif,non,,Negatif,Positif,Positif,Positif,Positif,Positif,Positif,Positif,Positif,24,non,F
+LELANDAIS,Mickael,32476,45915,36,D,C6,Positif,Positif,oui,Negatif,Positif,Positif,Positif,Positif,Positif,Positif,Positif,Positif,Positif,34,non,M
+GUEGAN,Morgane,29077,45985,46,D,C7,Positif,Douteux,non,,Positif,Positif,Positif,Positif,Negatif,Positif,Positif,Positif,Negatif,20,non,F
+BIARD,Gisele,21055,46034,68,D,C7,Negatif,Douteux,non,,Negatif,Negatif,Negatif,Negatif,Negatif,NT,NT,NT,NT,19,oui,F
+KERBRAT,Nelly,26246,46045,54,D,C6,Negatif,Douteux,non,,Negatif,Negatif,Negatif,Positif,Negatif,Negatif,Negatif,Positif,Negatif,19,non,F
+ALBERINI,laurence,25076,46048,57,G,C7,Negatif,Negatif,Positif,Positif,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,25,non,F
+VEILLAUX,Claudia,32574,46048,36,G,C5,Negatif,Negatif,Negatif,,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,20,oui,F
+DERAY,ODILE,17779,46062,77,D,C7,Negatif,Negatif,Negatif,,Negatif,Negatif,Negatif,Negatif,Negatif,NT,NT,NT,NT,,,F
+AZZOUZI,Hicham,28459,46094,48,D,C5,Positif,Douteux,Negatif,,Positif,Positif,Positif,Negatif,Negatif,NT,NT,NT,NT,30,oui,M
+MESLE,Marie Armelle,20124,46094,71,G,C6,Positif,Positif,Negatif,,Positif,Positif,Negatif,Negatif,Negatif,NT,NT,NT,NT,23,non,F
+DELALANDE,Denis,21874,46125,66,G,C6,Negatif,Negatif,Negatif,,Negatif,Negatif,Negatif,Negatif,Negatif,NT,NT,NT,NT,20,oui,M
+LE CORVAISIER,Thibault,31098,46139,41,G,C6,Positif,Positif,Negatif,,Positif,Positif,Positif,Negatif,Negatif,NT,NT,NT,NT,26,oui,M
+MAUDET,Romuald,29147,46139,46,G,C8,Negatif,Negatif,Negatif,,Negatif,Negatif,Positif,Negatif,Negatif,NT,NT,NT,NT,25,oui,M
+MONNIER ,Marie,24212,46140,60,D,C6,Positif,Positif,Positif,Positif,Positif,Positif,Positif,Negatif,Positif,Positif,Positif,Negatif,Positif,22,oui,F
+MONNIER ,Marie,24212,46140,60,G,C6,Positif,Positif,Positif,Positif,Positif,Positif,Positif,Negatif,Positif,Positif,Positif,Negatif,Negatif,22,oui,F
