@@ -4365,27 +4365,3 @@ ggplot(level_grouped_long, aes(x = Niveau_groupe, y = Val, fill = Metric)) +
 Globalement, le regroupement confirme la bonne sensibilité de l'ULNT1 sur les deux étages, bien que les effectifs restent limités pour conclure à une différence majeure de performance selon le niveau.
 
 \newpage
-
-## Analyse de sensibilité : exclusion des "Douteux"
-
-Dans l'analyse principale, les patients ayant un Gold Standard "Douteux" ont été classés comme négatifs. Nous vérifions ici si leur exclusion pure et simple modifie les résultats.
-
-```{r}
-#| label: sensitivity-doubtful
-#| echo: false
-
-se_sensi <- sum(df_sensi$U1_E1 == "Positif" & df_sensi$Gold_Standard == "Positif") / sum(df_sensi$Gold_Standard == "Positif")
-sp_sensi <- sum(df_sensi$U1_E1 == "Negatif" & df_sensi$Gold_Standard == "Negatif") / sum(df_sensi$Gold_Standard == "Negatif")
-
-sensi_df <- data.frame(
-    Metrique = c("Sensibilité (U1)", "Spécificité (U1)"),
-    Analyse_Principale = c(u1_Se, u1_Sp),
-    Exclusion_Douteux = c(se_sensi, sp_sensi)
-)
-
-kable(sensi_df, digits = 3, caption = "Comparaison avec et sans les patients 'Douteux'")
-```
-
--   Les résultats sont **très proches**, ce qui suggère que le choix de codage des patients "Douteux" n'introduit pas de biais majeur dans l'évaluation des tests ULNT.
-
-
