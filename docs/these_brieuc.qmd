@@ -181,7 +181,7 @@ geometry: margin=2.5cm
 ```{r}
 #| label: setup
 #| include: true
-#| echo: !expr "(!knitr::is_latex_output())"
+#| echo: false
 #| message: false
 #| warning: false
 library(forecast)
@@ -237,9 +237,26 @@ library(httpgd)
 library(e1071)
 library(psy)
 library(reshape2)
-library(reshape2)
 library(patchwork) # Pour combiner les graphiques si besoin
-knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+
+# Configuration globale pour kableExtra et knitr
+options(knitr.table.format = function() {
+    if (knitr::is_latex_output()) return("latex")
+    if (knitr::is_html_output()) return("html")
+    return("pipe") # Pour DOCX et autres
+})
+
+# Neutralisation de kableExtra pour Word pour éviter les erreurs de rendu
+if (!knitr::is_html_output() && !knitr::is_latex_output()) {
+    options(kableExtra.auto_format = FALSE)
+    # Redéfinition locale de kable_styling pour être neutre
+    kable_styling <- function(kable_input, ...) {
+        return(kable_input)
+    }
+}
+
 if (knitr::is_latex_output()) {
     knitr::opts_chunk$set(dev = "pdf", fig.path = "these_brieuc_files/figure-pdf/")
 }
@@ -289,24 +306,9 @@ plot_post_test_prob <- function(prev, lr_pos, lr_neg, test_name) {
 
 
 \newpage
-::: {.callout-note title="Origine de ce document"}
--   Ce document est au format Quarto Markdown (.qmd) : il contient du code R et est généré directement pour obtenir un rapport en PDF ou HTML. 
-
--   Il est donc à la fois un document de travail pour moi, et à la fois un document de présentation des analyses. Je laisse donc volontairement les sections de code pour transparence et reproductibilité des analyses.
-
--   La préparation des données a été faite sur R plutôt que sur Excel pour éviter les erreurs et tracer les étapes. La première partie du document est donc consacrée à la préparation des données, avec des sections de code pour chaque variable (vous pouvez donc sauter les sections de code si vous ne souhaitez pas les détails de la préparation des données).
-
--   Je suis interne en chirurgie digestive à Paris et actuellement un master 2 en biostatistiques ("Méthodologie et Statistiques en Recherche biomédicale", Université Paris Saclay). Et accessoirement, ami de Brieuc !
-
--   Le rapport est disponible en format HTML hébergé sur Github Pages, et aussi téléchargeable en PDF, DOCX et Quarto (.qmd), contenant le code R utilisé pour les analyses.
-:::
-
-\newpage
-# Import de la base et préparation des données
-
 ```{r}
 #| label: import
-#| echo: !expr "(!knitr::is_latex_output())"
+#| echo: false
 #| include: true
 #| results: "hide"
 # import principal depuis le nouveau recueil CSV, puis complément ciblé
@@ -386,7 +388,7 @@ df_sensi <- df %>% filter(Gold_Standard != "Douteux")
 
 ```{r}
 #| label: dates au format date
-#| echo: !expr "(!knitr::is_latex_output())"
+#| echo: false
 #| include: true
 #| results: "hide"
 # Convertir les colonnes de dates au format Date
@@ -396,7 +398,7 @@ df$Date_de_recueil <- parse_excel_date(df$Date_de_recueil)
 
 ```{r}
 #| label: variables numériques
-#| echo: !expr "(!knitr::is_latex_output())"
+#| echo: false
 #| include: true
 #| results: "hide"
 # Convertir les variables numériques
@@ -407,7 +409,7 @@ class(df$Age)
 
 ```{r}
 #| label: sexe
-#| echo: !expr "(!knitr::is_latex_output())"
+#| echo: false
 #| include: true
 #| results: "hide"
 # Convertir la variable "Sexe" en facteur
@@ -417,7 +419,7 @@ table(df$Sexe, useNA = "ifany")
 
 ```{r}
 #| label: côté
-#| echo: !expr "(!knitr::is_latex_output())"
+#| echo: false
 #| include: true
 #| results: "hide"
 # Convertir la variable "Côté" en facteur
@@ -430,7 +432,7 @@ table(df$Cote, useNA = "ifany")
 
 ```{r}
 #| label: niveau
-#| echo: !expr "(!knitr::is_latex_output())"
+#| echo: false
 #| include: true
 #| results: "hide"
 # Convertir la variable "Niveau" en facteur ordonné
@@ -445,7 +447,7 @@ table(df$Niveau, useNA = "ifany")
 
 ```{r}
 #| label: bmi
-#| echo: !expr "(!knitr::is_latex_output())"
+#| echo: false
 #| include: true
 #| results: "hide"
 summary(df$BMI)
@@ -455,7 +457,7 @@ table(is.na(df$BMI), useNA = "ifany")
 
 ```{r}
 #| label: tabac
-#| echo: !expr "(!knitr::is_latex_output())"
+#| echo: false
 #| include: true
 #| results: "hide"
 df$Tabac <- trimws(as.character(df$Tabac))
@@ -468,7 +470,7 @@ table(df$Tabac, useNA = "ifany")
 
 ```{r}
 #| label: examen clinique
-#| echo: !expr "(!knitr::is_latex_output())"
+#| echo: false
 #| include: true
 #| results: "hide"
 str(df$Examen_Clinique)
@@ -484,7 +486,7 @@ table(df$Examen_Clinique_Douteux_YN, useNA = "ifany")
 
 ```{r}
 #| label: irm
-#| echo: !expr "(!knitr::is_latex_output())"
+#| echo: false
 #| include: true
 #| results: "hide"
 str(df$IRM)
@@ -500,7 +502,7 @@ table(df$IRM_Douteux_YN, useNA = "ifany")
 
 ```{r}
 #| label: infiltrations
-#| echo: !expr "(!knitr::is_latex_output())"
+#| echo: false
 #| include: true
 #| results: "hide"
 str(df$Infiltrations)
@@ -517,7 +519,7 @@ table(df$Infiltrations, useNA = "ifany")
 
 ```{r}
 #| label: resultat infiltrations
-#| echo: !expr "(!knitr::is_latex_output())"
+#| echo: false
 #| include: true
 #| results: "hide"
 str(df$Resultat_Inf)
@@ -534,7 +536,7 @@ table(df$Resultat_Inf, useNA = "ifany")
 
 ```{r}
 #| label: gold standard
-#| echo: !expr "(!knitr::is_latex_output())"
+#| echo: false
 #| include: true
 #| results: "hide"
 #création d'une variable binaire "Gold_Standard_Positif_YN" (1 = Positif, 0 = Negatif ou Douteux ou NA)
@@ -552,7 +554,7 @@ table(df$Gold_Standard_Douteux_YN, useNA = "ifany")
 
 ```{r}
 #| label: ulnt1
-#| echo: !expr "(!knitr::is_latex_output())"
+#| echo: false
 #| include: true
 #| results: "hide"
 str(df$U1_E1)
@@ -565,7 +567,7 @@ table(df$U1_E1_positif, useNA = "ifany")
 
 ```{r}
 #| label: ulnt2a
-#| echo: !expr "(!knitr::is_latex_output())"
+#| echo: false
 #| include: true
 #| results: "hide"
 str(df$U2a_E1)
@@ -578,7 +580,7 @@ table(df$U2a_E1_positif, useNA = "ifany")
 
 ```{r}
 #| label: ulnt2b
-#| echo: !expr "(!knitr::is_latex_output())"
+#| echo: false
 #| include: true
 #| results: "hide"
 str(df$U2b_E1)
@@ -591,7 +593,7 @@ table(df$U2b_E1_positif, useNA = "ifany")
 
 ```{r}
 #| label: ulnt3
-#| echo: !expr "(!knitr::is_latex_output())"
+#| echo: false
 #| include: true
 #| results: "hide"
 str(df$U3_E1)
@@ -604,7 +606,7 @@ table(df$U3_E1_positif, useNA = "ifany")
 
 ```{r}
 #| label: ulnt1e2
-#| echo: !expr "(!knitr::is_latex_output())"
+#| echo: false
 #| include: true
 #| results: "hide"
 str(df$U1_E2)
@@ -620,7 +622,7 @@ table(df$U1_E2_positif, useNA = "ifany")
 
 ```{r}
 #| label: ulnt2ae2
-#| echo: !expr "(!knitr::is_latex_output())"
+#| echo: false
 #| include: true
 #| results: "hide"
 str(df$U2a_E2)
@@ -636,7 +638,7 @@ table(df$U2a_E2_positif, useNA = "ifany")
 
 ```{r}
 #| label: ulnt2be2
-#| echo: !expr "(!knitr::is_latex_output())"
+#| echo: false
 #| include: true
 #| results: "hide"
 str(df$U2b_E2)
@@ -652,7 +654,7 @@ table(df$U2b_E2_positif, useNA = "ifany")
 
 ```{r}
 #| label: ulnt3e2
-#| echo: !expr "(!knitr::is_latex_output())"
+#| echo: false
 #| include: true
 #| results: "hide"
 str(df$U3_E2)
@@ -668,7 +670,7 @@ table(df$U3_E2_positif, useNA = "ifany")
 
 ```{r}
 #| label: objets-effectif
-#| echo: !expr "(!knitr::is_latex_output())"
+#| echo: false
 #| include: true
 #| results: "hide"
 #| message: false
@@ -850,7 +852,7 @@ if (knitr::is_latex_output()) {
 
 ```{r}
 #| label: objets-caracteristiques-initiales
-#| echo: !expr "(!knitr::is_latex_output())"
+#| echo: false
 #| include: true
 #| results: "hide"
 #| message: false
@@ -1102,7 +1104,7 @@ plot_niveau_distribution <- function() {
 
 ```{r}
 #| label: objets-ulnt1
-#| echo: !expr "(!knitr::is_latex_output())"
+#| echo: false
 #| include: true
 #| results: "hide"
 #| message: false
@@ -1379,7 +1381,7 @@ plot_roc_u1 <- function() {
 
 ```{r}
 #| label: objets-ulnt2a
-#| echo: !expr "(!knitr::is_latex_output())"
+#| echo: false
 #| include: true
 #| results: "hide"
 #| message: false
@@ -1656,7 +1658,7 @@ plot_roc_u2a <- function() {
 
 ```{r}
 #| label: objets-ulnt2b
-#| echo: !expr "(!knitr::is_latex_output())"
+#| echo: false
 #| include: true
 #| results: "hide"
 #| message: false
@@ -1885,7 +1887,7 @@ plot_roc_u2b <- function() {
 
 ```{r}
 #| label: objets-ulnt3
-#| echo: !expr "(!knitr::is_latex_output())"
+#| echo: false
 #| include: true
 #| results: "hide"
 #| message: false
@@ -2114,7 +2116,7 @@ plot_roc_u3 <- function() {
 
 ```{r}
 #| label: objets-resultats-globaux
-#| echo: !expr "(!knitr::is_latex_output())"
+#| echo: false
 #| include: true
 #| results: "hide"
 #| message: false
@@ -2433,7 +2435,7 @@ contingency_plot <- ggplot(contingency_long, aes(Test, Effectif, fill = Cellule)
 
 ```{r}
 #| label: objets-resultats-par-niveau
-#| echo: !expr "(!knitr::is_latex_output())"
+#| echo: false
 #| include: true
 #| results: "hide"
 #| message: false
@@ -2772,7 +2774,7 @@ level_model_round <- data.frame(
 
 ```{r}
 #| label: objets-reproductibilite
-#| echo: !expr "(!knitr::is_latex_output())"
+#| echo: false
 #| include: true
 #| results: "hide"
 #| message: false
@@ -2865,7 +2867,7 @@ kappa_plot <- ggplot(kappa_tab, aes(x = Test, y = Kappa, fill = Test)) +
 
 ```{r}
 #| label: objets-score-combine
-#| echo: !expr "(!knitr::is_latex_output())"
+#| echo: false
 #| include: true
 #| results: "hide"
 #| message: false
@@ -3332,7 +3334,7 @@ if (knitr::is_latex_output()) {
 
 ```{r}
 #| label: objets-protocole
-#| echo: !expr "(!knitr::is_latex_output())"
+#| echo: false
 #| include: true
 #| results: "hide"
 #| message: false
@@ -3418,7 +3420,7 @@ Le protocole du CHU de Rennes prévoyait initialement un raisonnement de dimensi
 ```{r}
 #| label: tbl-effectifs
 #| tbl-cap: "Effectif requis pour différents scénarios de spécificité cible, prévalence et marge"
-#| echo: !expr "(!knitr::is_latex_output())"
+#| echo: false
 #| include: true
 #| results: "asis"
 sample_size_table
@@ -3463,7 +3465,7 @@ Ce que je propose : faire comme si la méthodologiste n'avait jamais calculé de
 
 ```{r}
 #| label: age
-#| echo: !expr "(!knitr::is_latex_output())"
+#| echo: false
 #| include: true
 #| results: "asis"
 resume_age_table
@@ -3476,7 +3478,7 @@ resume_age_table
 #| fig-cap: "Distribution de l'âge"
 #| fig-width: 10
 #| fig-height: 4.6
-#| echo: !expr "(!knitr::is_latex_output())"
+#| echo: false
 #| message: false
 #| warning: false
 plot_age_distribution()
@@ -3491,7 +3493,7 @@ plot_age_distribution()
 #| fig-cap: "Répartition du sexe"
 #| fig-width: 10
 #| fig-height: 4.6
-#| echo: !expr "(!knitr::is_latex_output())"
+#| echo: false
 #| message: false
 #| warning: false
 plot_sexe_distribution()
@@ -3506,7 +3508,7 @@ plot_sexe_distribution()
 #| fig-cap: "Répartition du côté"
 #| fig-width: 10
 #| fig-height: 4.6
-#| echo: !expr "(!knitr::is_latex_output())"
+#| echo: false
 #| message: false
 #| warning: false
 plot_cote_distribution()
@@ -3519,7 +3521,7 @@ plot_cote_distribution()
 #| fig-cap: "Répartition du niveau"
 #| fig-width: 7
 #| fig-height: 3.8
-#| echo: !expr "(!knitr::is_latex_output())"
+#| echo: false
 #| message: false
 #| warning: false
 plot_niveau_distribution()
@@ -3529,7 +3531,7 @@ plot_niveau_distribution()
 
 ```{r}
 #| label: bmi-table
-#| echo: !expr "(!knitr::is_latex_output())"
+#| echo: false
 #| include: true
 #| results: "asis"
 resume_bmi_table
@@ -3542,7 +3544,7 @@ resume_bmi_table
 #| fig-cap: "Distribution du BMI"
 #| fig-width: 10
 #| fig-height: 4.6
-#| echo: !expr "(!knitr::is_latex_output())"
+#| echo: false
 #| message: false
 #| warning: false
 par(mfrow = c(1, 2))
@@ -3564,7 +3566,7 @@ qqline(df$BMI, col = "red", lwd = 2)
 
 ```{r}
 #| label: tabac-table
-#| echo: !expr "(!knitr::is_latex_output())"
+#| echo: false
 #| include: true
 #| results: "asis"
 kable(
@@ -3581,7 +3583,7 @@ kable(
 #| fig-cap: "Répartition du tabac"
 #| fig-width: 10
 #| fig-height: 4.6
-#| echo: !expr "(!knitr::is_latex_output())"
+#| echo: false
 #| message: false
 #| warning: false
 par(mfrow = c(1, 2))
@@ -3605,7 +3607,7 @@ text(
 
 ```{r}
 #| label: infiltrations-table
-#| echo: !expr "(!knitr::is_latex_output())"
+#| echo: false
 #| include: true
 #| results: "asis"
 kable(
@@ -3622,7 +3624,7 @@ kable(
 #| fig-cap: "Répartition du statut d'infiltration"
 #| fig-width: 10
 #| fig-height: 4.6
-#| echo: !expr "(!knitr::is_latex_output())"
+#| echo: false
 #| message: false
 #| warning: false
 par(mfrow = c(1, 2))
@@ -3646,7 +3648,7 @@ text(
 
 ```{r}
 #| label: resultat-infiltrations-table
-#| echo: !expr "(!knitr::is_latex_output())"
+#| echo: false
 #| include: true
 #| results: "asis"
 kable(
@@ -3663,7 +3665,7 @@ kable(
 #| fig-cap: "Répartition du résultat des infiltrations"
 #| fig-width: 7
 #| fig-height: 4.6
-#| echo: !expr "(!knitr::is_latex_output())"
+#| echo: false
 #| message: false
 #| warning: false
 bar_pos <- barplot(
@@ -3688,7 +3690,7 @@ text(
 
 ```{r}
 #| label: caracs initiales 2
-#| echo: !expr "(!knitr::is_latex_output())"
+#| echo: false
 #| include: true
 #| results: "asis"
 baseline_tbl
@@ -3711,7 +3713,7 @@ baseline_tbl
 
 ```{r}
 #| label: ulnt-descriptive-table
-#| echo: !expr "(!knitr::is_latex_output())"
+#| echo: false
 #| results: "asis"
 kable(
     u1_descriptive,
@@ -3723,7 +3725,7 @@ kable(
 
 ```{r}
 #| label: ulnt-contingency-table
-#| echo: !expr "(!knitr::is_latex_output())"
+#| echo: false
 #| results: "asis"
 kable(
     u1_contingency,
@@ -3736,7 +3738,7 @@ kable(
 
 ```{r}
 #| label: ulnt1-effectifs-table
-#| echo: !expr "(!knitr::is_latex_output())"
+#| echo: false
 #| results: "asis"
 kable(
     u1_effectifs,
@@ -3747,7 +3749,7 @@ kable(
 
 ```{r}
 #| label: ulnt1-diagnostic-performance-table
-#| echo: !expr "(!knitr::is_latex_output())"
+#| echo: false
 #| results: "asis"
 kable(
     u1_performance_summary,
@@ -3785,7 +3787,7 @@ kable(
 
 ```{r}
 #| label: ulnt2a-descriptive-table
-#| echo: !expr "(!knitr::is_latex_output())"
+#| echo: false
 #| results: "asis"
 kable(
     u2a_descriptive,
@@ -3797,7 +3799,7 @@ kable(
 
 ```{r}
 #| label: ulnt2a-contingency-table
-#| echo: !expr "(!knitr::is_latex_output())"
+#| echo: false
 #| results: "asis"
 kable(
     u2a_contingency,
@@ -3809,7 +3811,7 @@ kable(
 
 ```{r}
 #| label: ulnt2a-effectifs-table
-#| echo: !expr "(!knitr::is_latex_output())"
+#| echo: false
 #| results: "asis"
 kable(
     u2a_effectifs,
@@ -3820,7 +3822,7 @@ kable(
 
 ```{r}
 #| label: ulnt-diagnostic-performance-table
-#| echo: !expr "(!knitr::is_latex_output())"
+#| echo: false
 #| results: "asis"
 kable(
     u2a_performance_summary,
@@ -3848,7 +3850,7 @@ kable(
 
 ```{r}
 #| label: ulnt2b-descriptive-table
-#| echo: !expr "(!knitr::is_latex_output())"
+#| echo: false
 #| results: "asis"
 kable(
     u2b_descriptive,
@@ -3860,7 +3862,7 @@ kable(
 
 ```{r}
 #| label: ulnt2b-contingency-table
-#| echo: !expr "(!knitr::is_latex_output())"
+#| echo: false
 #| results: "asis"
 kable(
     u2b_contingency,
@@ -3871,7 +3873,7 @@ kable(
 
 ```{r}
 #| label: ulnt2b-effectifs-table
-#| echo: !expr "(!knitr::is_latex_output())"
+#| echo: false
 #| results: "asis"
 kable(
     u2b_effectifs,
@@ -3882,7 +3884,7 @@ kable(
 
 ```{r}
 #| label: ulnt2b-diagnostic-performance-table
-#| echo: !expr "(!knitr::is_latex_output())"
+#| echo: false
 #| results: "asis"
 kable(
     u2b_performance_summary,
@@ -3909,7 +3911,7 @@ kable(
 
 ```{r}
 #| label: ulnt3-descriptive-table
-#| echo: !expr "(!knitr::is_latex_output())"
+#| echo: false
 #| results: "asis"
 kable(
     u3_descriptive,
@@ -3922,7 +3924,7 @@ kable(
 
 ```{r}
 #| label: ulnt3-contingency-table
-#| echo: !expr "(!knitr::is_latex_output())"
+#| echo: false
 #| results: "asis"
 kable(
     u3_contingency,
@@ -3934,7 +3936,7 @@ kable(
 
 ```{r}
 #| label: ulnt3-effectifs-table
-#| echo: !expr "(!knitr::is_latex_output())"
+#| echo: false
 #| results: "asis"
 kable(
     u3_effectifs,
@@ -3946,7 +3948,7 @@ kable(
 
 ```{r}
 #| label: ulnt3-diagnostic-performance-table
-#| echo: !expr "(!knitr::is_latex_output())"
+#| echo: false
 #| results: "asis"
 kable(
     u3_performance_summary,
@@ -3971,7 +3973,7 @@ kable(
 
 ```{r}
 #| label: global-contingency-table
-#| echo: !expr "(!knitr::is_latex_output())"
+#| echo: false
 #| results: "asis"
 kable(
     contingency_tab,
@@ -3982,7 +3984,7 @@ kable(
 
 ```{r}
 #| label: global-diagnostic-performance-table
-#| echo: !expr "(!knitr::is_latex_output())"
+#| echo: false
 #| results: "asis"
 kable(
     diag_primary_round,
@@ -3999,7 +4001,7 @@ kable(
 
 ```{r}
 #| label: global-contingency-plot
-#| echo: !expr "(!knitr::is_latex_output())"
+#| echo: false
 #| fig-cap: "Composition des tableaux de contingence 2x2 par test"
 #| fig-width: 7
 #| fig-height: 4.5
@@ -4029,8 +4031,18 @@ p_square <- plot_square_performance(diag_primary_numeric)
 
 # C. Impact clinique (exemple sur U1 qui est le plus sensible)
 p_impact <- plot_post_test_prob(prev = 0.5, lr_pos = u1_LR_pos, lr_neg = u1_LR_neg, test_name = "ULNT1")
+```
 
-p_square + p_impact
+```{r}
+#| label: global-performance-combined-plot
+#| echo: false
+p_square
+```
+
+```{r}
+#| label: global-performance-combined-plot-2
+#| echo: false
+#p_impact
 ```
 
 
@@ -4063,7 +4075,7 @@ Comme les mêmes patients passent les différents ULNT, une comparaison apparié
 
 ```{r}
 #| label: pairwise-ulnt-sensitivity-table
-#| echo: !expr "(!knitr::is_latex_output())"
+#| echo: false
 #| results: "asis"
 pairwise_sensitivity_round <- pairwise_comparison_round %>%
     select(
@@ -4120,7 +4132,7 @@ print(pairwise_sensitivity_table)
 
 ```{r}
 #| label: pairwise-ulnt-specificity-table
-#| echo: !expr "(!knitr::is_latex_output())"
+#| echo: false
 #| results: "asis"
 pairwise_specificity_table <- kable(
     pairwise_specificity_round,
@@ -4170,7 +4182,7 @@ Le coefficient de Kappa de Cohen correspond à la concordance corrigée entre de
 
 ```{r}
 #| label: interrater-setup
-#| echo: !expr "(!knitr::is_latex_output())"
+#| echo: false
 kable(
     kappa_round,
     format = if (knitr::is_latex_output()) {
@@ -4188,7 +4200,7 @@ kable(
 
 ```{r}
 #| label: fig-kappa-interobserver
-#| echo: !expr "(!knitr::is_latex_output())"
+#| echo: false
 #| message: false
 #| warning: false
 #| fig-cap: "Kappa inter-observer agreement for each ultrasound test."
@@ -4227,7 +4239,7 @@ Exemple : `≥2 positifs` correspond à aux moins 2 tests quelqu'ils soient, alo
 
 ```{r}
 #| label: all-ulnt-combinations-table
-#| echo: !expr "(!knitr::is_latex_output())"
+#| echo: false
 #| results: "asis"
 combination_all_round %>%
   kable(
@@ -4263,7 +4275,7 @@ Le score correspond simplement au **nombre de tests ULNT positifs** chez un mêm
 
 ```{r}
 #| label: score-probability
-#| echo: !expr "(!knitr::is_latex_output())"
+#| echo: false
 score_summary_table %>%
   kable(
     format = if (knitr::is_latex_output()) {
@@ -4289,24 +4301,290 @@ score_summary_table %>%
 
 NB : *Le **DOR** (diagnostic odds ratio) résume en un seul chiffre la capacité globale du score à distinguer les patients `G+` des `G-` (se calcule en faisant le rapport entre le LR+ et le LR-), mais il reste ici secondaire car moins intuitif cliniquement que la sensibilité, la spécificité et les rapports de vraisemblance. En plus, les IC du DOR sont ici très larges et se chevauchent largement, donc ils ne sont pas vraiment interprétables.*
 
-Pour interpréter ces résultats, on peut raisonner **par addition** (approche de type Shapley) : on calcule la **contribution moyenne** de chaque test au gain de sensibilité du score global.
+Pour interpréter ces résultats, on peut raisonner **par addition** (approche de type Shapley) : on calcule la **contribution moyenne** de chaque test au gain de performance du score global.
+
+#### Gain de Sensibilité
 
 ```{r}
-#| label: score-contribution-plot
+#| label: score-contribution-sensitivity-table
+#| echo: false
+score_contribution_sensitivity_table %>%
+  kable(
+    format = if (knitr::is_latex_output()) {
+      "latex"
+    } else if (knitr::is_html_output()) {
+      "html"
+    } else {
+      "pipe"
+    },
+    booktabs = TRUE,
+    align = "c",
+    caption = "Contribution moyenne de chaque test a la sensibilite du score : gain de Se (+ΔSe)"
+  ) %>%
+  kable_styling(
+    latex_options = c("hold_position", "scale_down"),
+    full_width = FALSE,
+    font_size = 7
+  )
+```
+
+```{r}
+#| label: score-contribution-se-plot
 #| echo: false
 #| fig-cap: "Contribution de chaque test au gain de sensibilité du score"
+#| fig-width: 8
+#| fig-height: 5
 
 ggplot(score_contribution_shapley, aes(x = Seuil, y = Gain_Se, fill = Test)) +
-    geom_col() +
+    geom_col(position = "dodge") +
+    geom_text(aes(label = sprintf("+%.2f", Gain_Se)), 
+              position = position_dodge(width = 0.9), vjust = -0.5, size = 3) +
     scale_fill_manual(values = c("ULNT1" = nord("aurora")[4], "ULNT2a" = nord("aurora")[1], 
                                "ULNT2b" = nord("frost")[2], "ULNT3" = nord("aurora")[2])) +
     theme_minimal() +
-    labs(x = "Seuil du score (Nombre de tests positifs)", y = "Gain de Sensibilité cumulé",
-         title = "Décomposition de la sensibilité du score")
+    labs(x = "Seuil du score", y = "Gain de Sensibilité (ΔSe)",
+         title = "Quel test contribue le plus au dépistage (Sensibilité) ?")
 ```
 
--   Ce graphique montre clairement que l'`ULNT1` (en vert foncé) est le principal contributeur à la sensibilité du score, quel que soit le seuil choisi. Ajouter les autres tests augmente la spécificité mais au prix d'une perte importante de sensibilité.
+-   Pour le seuil `≥1`, `ULNT1` a la contribution moyenne la plus forte au gain de sensibilité, cela signifie qu'il porte la plus grande part de la capacité de dépistage du score. L'ajout des autres tests n'apporte qu'un gain marginal par rapport à l'ULNT1 seul.
 
+#### Gain de Spécificité
+
+```{r}
+#| label: score-contribution-specificity-table
+#| echo: false
+score_contribution_specificity_table %>%
+  kable(
+    format = if (knitr::is_latex_output()) {
+      "latex"
+    } else if (knitr::is_html_output()) {
+      "html"
+    } else {
+      "pipe"
+    },
+    booktabs = TRUE,
+    align = "c",
+    caption = "Contribution moyenne de chaque test a la specificite du score"
+  ) %>%
+  kable_styling(
+    latex_options = c("hold_position", "scale_down"),
+    full_width = FALSE,
+    font_size = 7
+  )
+```
+
+```{r}
+#| label: score-contribution-sp-plot
+#| echo: false
+#| fig-cap: "Contribution de chaque test au pouvoir d'exclusion (Spécificité)"
+#| fig-width: 8
+#| fig-height: 5
+
+# On utilise la valeur absolue pour montrer l'"apport" positif à l'exclusion des patients sains
+ggplot(score_contribution_shapley, aes(x = Seuil, y = abs(Perte_Sp), fill = Test)) +
+    geom_col(position = "dodge") +
+    geom_text(aes(label = sprintf("+%.2f", abs(Perte_Sp))), 
+              position = position_dodge(width = 0.9), vjust = -0.5, size = 3) +
+    scale_fill_manual(values = c("ULNT1" = nord("aurora")[4], "ULNT2a" = nord("aurora")[1], 
+                               "ULNT2b" = nord("frost")[2], "ULNT3" = nord("aurora")[2])) +
+    theme_minimal() +
+    labs(x = "Seuil du score", y = "Apport à la Spécificité (Exclusion)",
+         title = "Quel test contribue le plus à confirmer le diagnostic (Spécificité) ?")
+```
+
+-   Pour la spécificité, aucun test ne ressort clairement avec cette méthode de calcul, car les contributions restent assez proches entre les tests.
+
+-   Au seuil `≥4`, les `4` tests ont exactement la meme contribution car il n'y a qu'une seule combinaison possible : `ULNT1 + ULNT2a + ULNT2b + ULNT3` et chaque test est nécessaire pour que le score soit positif.
+
+
+
+
+
+
+```{r}
+#| label: score-thresholds-plot
+#| echo: false
+#| fig-cap: "Arbitrage Sensibilité / Spécificité par seuil de score"
+
+# Données extraites de la table 29
+threshold_data <- data.frame(
+    Seuil = c(1, 2, 3, 4),
+    Sensibilité = c(0.956, 0.867, 0.667, 0.267),
+    Spécificité = c(0.500, 0.625, 0.667, 0.792)
+) %>% pivot_longer(cols = -Seuil, names_to = "Metric", values_to = "Val")
+
+ggplot(threshold_data, aes(x = Seuil, y = Val, color = Metric, group = Metric)) +
+    geom_line(linewidth = 1) +
+    geom_point(size = 3) +
+    scale_y_continuous(labels = scales::percent, limits = c(0, 1)) +
+    scale_color_manual(values = c("Sensibilité" = nord("aurora")[4], "Spécificité" = nord("frost")[4])) +
+    theme_minimal() +
+    labs(x = "Nombre de tests positifs requis (Seuil)", y = "Performance", color = "",
+         title = "Évolution de la performance selon le seuil")
+```
+
+```{r}
+#| label: score-roc-curve
+#| echo: false
+#| fig-cap: "Courbe ROC du score global (Nombre de tests positifs)"
+#| fig-width: 6
+#| fig-height: 6
+
+# Calcul de la ROC pour le score ordinal (0-4)
+roc_score <- roc(
+    response = as.numeric(score_data$Gold_Standard_main == "Positif"),
+    predictor = score_data$n_pos,
+    quiet = TRUE
+)
+
+# On force le tracé en escalier (type = "s") pour respecter la nature discrète du score
+plot(roc_score, main = "Performance globale du score (Tracé en escalier)", 
+     col = nord("aurora")[4], lwd = 3, 
+     print.auc = TRUE, print.auc.y = 0.4, 
+     auc.polygon = TRUE, auc.polygon.col = "#E5E9F0",
+     identity = TRUE, grid = TRUE,
+     print.thres = c(1, 2, 3, 4), 
+     print.thres.pattern = "Score >= %d",
+     print.thres.col = "red",
+     print.thres.cex = 0.8)
+```
+
+
+\newpage
+## Analyses par niveau métamérique (par niveau)
+
+Cette section détaille les résultats pour chaque niveau métamérique individuel. Comme précisé précédemment, ces résultats sont exploratoires en raison des faibles effectifs à certains niveaux.
+
+### Résumé descriptif par niveau métamérique
+
+```{r}
+#| label: diagnostic-by-level-table
+#| echo: false
+#| results: "asis"
+#| warning: false
+kable(
+    diagnostic_by_level_round,
+    caption = "Résumé descriptif par niveau métamérique",
+    align = "c"
+) %>%
+    kable_styling(
+        latex_options = "hold_position",
+        full_width = FALSE,
+        font_size = 8
+    )
+```
+
+```{r}
+#| label: results-by-level-rate
+#| echo: false
+#| include: true
+#| fig-cap: "Effectif de NCB par niveau métamérique"
+results_by_level_status_plot
+```
+
+```{r}
+#| label: results-by-level-count
+#| echo: false
+#| include: true
+#| fig-cap: "Distribution du score ULNT selon le niveau métamérique"
+results_by_level_score_plot
+```
+
+-   Distribution du "score de positivité" de 0 a 4. `C4` y apparait avec un unique patient de **score 0**, ce qui explique le `0` vu auparavant sur le graphique de moyenne.
+
+-   Graphique pas très utile et peu interprétable car effectif trop faibles... Globalement, à C6 - C7, les patients ont ≥ 3 tests positifs dans plus de la moitié des cas. 
+
+\newpage
+### Détail exploratoire test par test et niveau par niveau
+```{r}
+#| label: diagnostic-by-level-detail-table
+#| echo: false
+#| results: "asis"
+#| warning: false
+kable(
+    diagnostic_by_level_detail_round,
+    caption = "Performances diagnostiques exploratoires des ULNT selon le niveau métamérique",
+    align = "c"
+) %>%
+    kable_styling(
+        latex_options = c("hold_position", "repeat_header"),
+        full_width = FALSE,
+        font_size = 7
+    )
+```
+
+-   Les effectifs sont très faibles à certains niveaux, ce qui rend les résultats très instables et peu interprétables.
+
+-   Les plus interprétables sont les niveaux `C6` et `C7` qui sont les plus peuplés.
+
+    -   `C7` semble être le niveau où les tests sont les plus sensibles, notamment `U2b`, mais la spécificité y reste moyenne.
+
+-   Le test de Fisher répond à la question 
+
+
+\newpage
+### Lecture test par test selon le niveau métamérique
+
+```{r}
+#| label: results-by-level-test-metric-plot
+#| echo: false
+#| include: true
+#| fig-cap: "Sensibilité et spécificité par niveau métamérique pour chaque test"
+results_by_level_test_metric_plot
+```
+
+Mêmes infos remises en graphique : sensibilité et spécificité, test par test et niveau par niveau. 
+
+Ensuite mêmes infos remises en tableaux par tests. 
+
+Attention à ne pas surinterpréter, les IC sont larges et les effectifs très faibles à certains niveaux.
+
+
+```{r}
+#| label: u1-by-level-table
+#| echo: false
+#| results: "asis"
+kable(
+    u1_level_round,
+    caption = "U1 selon le niveau métamérique",
+    align = "c"
+)
+```
+
+```{r}
+#| label: u2a-by-level-table
+#| echo: false
+#| results: "asis"
+kable(
+    u2a_level_round,
+    caption = "U2a selon le niveau métamérique",
+    align = "c"
+)
+```
+
+```{r}
+#| label: u2b-by-level-table
+#| echo: false
+#| results: "asis"
+kable(
+    u2b_level_round,
+    caption = "U2b selon le niveau métamérique",
+    align = "c"
+)
+```
+
+```{r}
+#| label: u3-by-level-table
+#| echo: false
+#| results: "asis"
+kable(
+    u3_level_round,
+    caption = "U3 selon le niveau métamérique",
+    align = "c"
+)
+```
+
+Globalement, uil ne paraît pas pertinent de choisir principalement le test en fonction du niveau métamérique. Le message pratique reste surtout que `U1`, `U2a` et `U2b` gardent plus d'intérêt global que `U3`.
 
 \newpage
 ## Analyses par niveau métamérique (regroupé)
@@ -4355,27 +4633,3 @@ ggplot(level_grouped_long, aes(x = Niveau_groupe, y = Val, fill = Metric)) +
 Globalement, le regroupement confirme la bonne sensibilité de l'ULNT1 sur les deux étages, bien que les effectifs restent limités pour conclure à une différence majeure de performance selon le niveau.
 
 \newpage
-
-## Analyse de sensibilité : exclusion des "Douteux"
-
-Dans l'analyse principale, les patients ayant un Gold Standard "Douteux" ont été classés comme négatifs. Nous vérifions ici si leur exclusion pure et simple modifie les résultats.
-
-```{r}
-#| label: sensitivity-doubtful
-#| echo: false
-
-se_sensi <- sum(df_sensi$U1_E1 == "Positif" & df_sensi$Gold_Standard == "Positif") / sum(df_sensi$Gold_Standard == "Positif")
-sp_sensi <- sum(df_sensi$U1_E1 == "Negatif" & df_sensi$Gold_Standard == "Negatif") / sum(df_sensi$Gold_Standard == "Negatif")
-
-sensi_df <- data.frame(
-    Metrique = c("Sensibilité (U1)", "Spécificité (U1)"),
-    Analyse_Principale = c(u1_Se, u1_Sp),
-    Exclusion_Douteux = c(se_sensi, sp_sensi)
-)
-
-kable(sensi_df, digits = 3, caption = "Comparaison avec et sans les patients 'Douteux'")
-```
-
--   Les résultats sont **très proches**, ce qui suggère que le choix de codage des patients "Douteux" n'introduit pas de biais majeur dans l'évaluation des tests ULNT.
-
-
