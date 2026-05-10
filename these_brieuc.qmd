@@ -18,6 +18,7 @@ format:
     docx:
         toc: true
         toc-depth: 5
+        prefer-html: true
 
     pdf:
         toc: true
@@ -32,6 +33,7 @@ format:
         - -halt-on-error
         number-sections: true
         code-block-bg: false
+        prefer-html: true
         header-includes: |
             % Force la police Computer Modern pour le titre principal
             \usepackage{fontspec}
@@ -691,6 +693,7 @@ kable(
 if (knitr::is_latex_output()) {
     sample_size_table <- sample_size_table %>%
         kable_styling(
+            format = "latex",
             latex_options = c("hold_position", "scale_down"),
             full_width = FALSE,
             font_size = 8
@@ -698,6 +701,7 @@ if (knitr::is_latex_output()) {
 } else if (knitr::is_html_output()) {
     sample_size_table <- sample_size_table %>%
         kable_styling(
+            format = "html",
             full_width = FALSE,
             position = "center"
         )
@@ -774,6 +778,7 @@ sample_size_posthoc_table <- sample_size_posthoc_round %>%
 if (knitr::is_latex_output()) {
     sample_size_posthoc_table <- sample_size_posthoc_table %>%
         kable_styling(
+            format = "latex",
             latex_options = c("hold_position", "scale_down"),
             full_width = FALSE,
             font_size = 8
@@ -781,6 +786,7 @@ if (knitr::is_latex_output()) {
 } else if (knitr::is_html_output()) {
     sample_size_posthoc_table <- sample_size_posthoc_table %>%
         kable_styling(
+            format = "html",
             full_width = FALSE,
             position = "center"
         )
@@ -812,9 +818,12 @@ resume_age_kable <- kable(
     caption = "variable âge"
 )
 
-if (knitr::is_latex_output() || knitr::is_html_output()) {
+if (knitr::is_latex_output()) {
     resume_age_table <- resume_age_kable %>%
-        kable_styling(full_width = FALSE, position = "center")
+        kable_styling(format = "latex", full_width = FALSE, position = "center")
+} else if (knitr::is_html_output()) {
+    resume_age_table <- resume_age_kable %>%
+        kable_styling(format = "html", full_width = FALSE, position = "center")
 } else {
     resume_age_table <- resume_age_kable
 }
@@ -832,9 +841,12 @@ resume_bmi_kable <- kable(
     caption = "Variable BMI"
 )
 
-if (knitr::is_latex_output() || knitr::is_html_output()) {
+if (knitr::is_latex_output()) {
     resume_bmi_table <- resume_bmi_kable %>%
-        kable_styling(full_width = FALSE, position = "center")
+        kable_styling(format = "latex", full_width = FALSE, position = "center")
+} else if (knitr::is_html_output()) {
+    resume_bmi_table <- resume_bmi_kable %>%
+        kable_styling(format = "html", full_width = FALSE, position = "center")
 } else {
     resume_bmi_table <- resume_bmi_kable
 }
@@ -2384,7 +2396,6 @@ contingency_plot <- ggplot(contingency_long, aes(Test, Effectif, fill = Cellule)
     ) +
     theme_minimal() +
     labs(
-        title = "Composition des tableaux 2x2 par test",
         x = "Test",
         y = "Effectif"
     )
@@ -2628,8 +2639,7 @@ diagnostic_by_level_detail_round <- diagnostic_by_level_detail_raw %>%
         TN,
         FN,
         `Se [IC95% exact]` = format_prop_ci(Se, Se_low, Se_high),
-        `Sp [IC95% exact]` = format_prop_ci(Sp, Sp_low, Sp_high),
-        `p Fisher` = format_fisher_p(Fisher_p)
+        `Sp [IC95% exact]` = format_prop_ci(Sp, Sp_low, Sp_high)
     )
 
 level_test_metric_plot_data <- diagnostic_by_level_detail_raw %>%
@@ -2671,8 +2681,7 @@ make_test_level_round <- function(test_label) {
             TN,
             FN,
             `Se [IC95% exact]` = format_prop_ci(Se, Se_low, Se_high),
-            `Sp [IC95% exact]` = format_prop_ci(Sp, Sp_low, Sp_high),
-            `p Fisher` = format_fisher_p(Fisher_p)
+            `Sp [IC95% exact]` = format_prop_ci(Sp, Sp_low, Sp_high)
         )
 }
 
@@ -2818,7 +2827,6 @@ kappa_plot <- ggplot(kappa_tab, aes(x = Test, y = Kappa, fill = Test)) +
     scale_fill_manual(values = c(U1 = nord("frost")[4], U2a = nord("aurora")[1], U2b = nord("aurora")[3], U3 = nord("aurora")[4])) +
     theme_minimal() +
     labs(
-        title = "Kappa inter-observateur",
         x = "Test",
         y = "Kappa de Cohen",
         fill = "Test"
@@ -2954,6 +2962,51 @@ score_summary$LRp <- score_summary$Se / (1 - score_summary$Sp)
 score_summary$LRn <- (1 - score_summary$Se) / score_summary$Sp
 score_summary$DOR <- (score_summary$TP * score_summary$TN) / (score_summary$FP * score_summary$FN)
 score_summary$Youden <- score_summary$Se + score_summary$Sp - 1
+
+compute_dor_ci <- function(tp, fn, fp, tn, conf_level = 0.95) {
+    corrected <- any(c(tp, fn, fp, tn) == 0)
+
+    if (corrected) {
+        tp_adj <- tp + 0.5
+        fn_adj <- fn + 0.5
+        fp_adj <- fp + 0.5
+        tn_adj <- tn + 0.5
+    } else {
+        tp_adj <- tp
+        fn_adj <- fn
+        fp_adj <- fp
+        tn_adj <- tn
+    }
+
+    dor <- (tp_adj * tn_adj) / (fp_adj * fn_adj)
+    se_log_dor <- sqrt((1 / tp_adj) + (1 / fn_adj) + (1 / fp_adj) + (1 / tn_adj))
+    alpha <- 1 - conf_level
+    z <- qnorm(1 - alpha / 2)
+    log_dor <- log(dor)
+
+    data.frame(
+        DOR_est = dor,
+        DOR_low = exp(log_dor - z * se_log_dor),
+        DOR_high = exp(log_dor + z * se_log_dor),
+        DOR_corrected = corrected
+    )
+}
+
+dor_ci_summary <- do.call(
+    rbind,
+    Map(
+        compute_dor_ci,
+        score_summary$TP,
+        score_summary$FN,
+        score_summary$FP,
+        score_summary$TN
+    )
+)
+
+score_summary$DOR_low <- dor_ci_summary$DOR_low
+score_summary$DOR_high <- dor_ci_summary$DOR_high
+score_summary$DOR_corrected <- dor_ci_summary$DOR_corrected
+
 score_summary$Se_low <- mapply(function(tp, fn) binom.test(tp, tp + fn)$conf.int[1], score_summary$TP, score_summary$FN)
 score_summary$Se_high <- mapply(function(tp, fn) binom.test(tp, tp + fn)$conf.int[2], score_summary$TP, score_summary$FN)
 score_summary$Sp_low <- mapply(function(tn, fp) binom.test(tn, tn + fp)$conf.int[1], score_summary$TN, score_summary$FP)
@@ -2970,8 +3023,103 @@ score_summary_table <- score_summary %>%
         `LR+` = round(LRp, 3),
         `LR-` = round(LRn, 3),
         Youden = round(Youden, 3),
-        DOR = round(DOR, 3)
+        `DOR [IC95%]` = paste0(round(DOR, 3), " [", round(DOR_low, 3), " ; ", round(DOR_high, 3), "]")
     )
+
+score_test_positive_cols <- c(
+    U1_E1_positif = "ULNT1",
+    U2a_E1_positif = "ULNT2a",
+    U2b_E1_positif = "ULNT2b",
+    U3_E1_positif = "ULNT3"
+)
+
+subset_key <- function(cols) {
+    if (length(cols) == 0) {
+        "__empty__"
+    } else {
+        paste(sort(cols), collapse = "|")
+    }
+}
+
+compute_subset_score_metrics <- function(threshold, subset_cols) {
+    if (length(subset_cols) == 0) {
+        predicted_positive <- rep(FALSE, nrow(score_data))
+    } else {
+        predicted_positive <- rowSums(score_data[, subset_cols, drop = FALSE]) >= threshold
+    }
+
+    n_g_pos <- sum(score_data$Gold_Standard_main == "Positif")
+    n_g_neg <- sum(score_data$Gold_Standard_main == "Negatif")
+
+    sensitivity <- sum(predicted_positive & score_data$Gold_Standard_main == "Positif") / n_g_pos
+    specificity <- sum(!predicted_positive & score_data$Gold_Standard_main == "Negatif") / n_g_neg
+
+    data.frame(
+        Se = sensitivity,
+        Loss_Sp = 1 - specificity
+    )
+}
+
+compute_shapley_score_contribution <- function(threshold) {
+    test_cols <- names(score_test_positive_cols)
+    n_tests <- length(test_cols)
+
+    subset_list <- unlist(
+        lapply(0:n_tests, function(k) combn(test_cols, k, simplify = FALSE)),
+        recursive = FALSE
+    )
+
+    subset_metrics <- setNames(
+        lapply(subset_list, function(cols) compute_subset_score_metrics(threshold, cols)),
+        vapply(subset_list, subset_key, character(1))
+    )
+
+    shapley_rows <- lapply(test_cols, function(test_col) {
+        contrib_se <- 0
+        contrib_loss_sp <- 0
+
+        subsets_without_test <- subset_list[vapply(subset_list, function(cols) !(test_col %in% cols), logical(1))]
+
+        for (subset_cols in subsets_without_test) {
+            subset_size <- length(subset_cols)
+            weight <- factorial(subset_size) * factorial(n_tests - subset_size - 1) / factorial(n_tests)
+
+            metrics_before <- subset_metrics[[subset_key(subset_cols)]]
+            metrics_after <- subset_metrics[[subset_key(c(subset_cols, test_col))]]
+
+            contrib_se <- contrib_se + weight * (metrics_after$Se - metrics_before$Se)
+            contrib_loss_sp <- contrib_loss_sp + weight * (metrics_after$Loss_Sp - metrics_before$Loss_Sp)
+        }
+
+        data.frame(
+            Seuil = paste0(">=", threshold, ifelse(threshold > 1, " positifs", " positif")),
+            Test = score_test_positive_cols[[test_col]],
+            Gain_Se = contrib_se,
+            Perte_Sp = contrib_loss_sp,
+            stringsAsFactors = FALSE
+        )
+    })
+
+    bind_rows(shapley_rows)
+}
+
+score_contribution_shapley <- bind_rows(lapply(seq_len(4), compute_shapley_score_contribution))
+
+score_contribution_sensitivity_table <- score_contribution_shapley %>%
+    transmute(
+        Seuil,
+        Test,
+        Valeur = sprintf("+%.3f", Gain_Se)
+    ) %>%
+    pivot_wider(names_from = Test, values_from = Valeur)
+
+score_contribution_specificity_table <- score_contribution_shapley %>%
+    transmute(
+        Seuil,
+        Test,
+        Valeur = sprintf("-%.3f", Perte_Sp)
+    ) %>%
+    pivot_wider(names_from = Test, values_from = Valeur)
 
 combination_tests <- unlist(
     lapply(seq_along(test_labels), function(k) {
@@ -3225,9 +3373,9 @@ Les performances diagnostiques des quatre ULNT réalisés par l'évaluateur 1 on
 
 Les performances des différents ULNT ont été comparées entre elles à l'aide du test de McNemar ($\chi^2$ pour données appariées). La reproductibilité inter-évaluateurs a été évaluée par le coefficient kappa de Cohen.
 
-Des analyses complémentaires ont porté sur les combinaisons de tests et sur le score global de positivité ULNT, défini comme le nombre total d'ULNT positifs chez un même patient. Les combinaisons conjonctives possibles des quatre ULNT ont été explorées. Le score global a été étudié selon différents seuils de positivité, puis modélisé par régression logistique binaire afin d'évaluer son association avec la probabilité de névralgie cervico-brachiale.
+Des analyses complémentaires ont porté sur les combinaisons de tests et sur le score global de positivité ULNT, défini comme le nombre total d'ULNT positifs chez un même patient. Les combinaisons conjonctives possibles des quatre ULNT ont été explorées. Le score global a été étudié selon différents seuils de positivité.
 
-Des analyses exploratoires ont également été réalisées selon le niveau métamérique. Pour chaque niveau, la performance de chaque ULNT a été évaluée ainsi que l'association entre le niveau métamérique et la probabilité de névralgie cervico-brachiale. Une régression logistique a ensuite été utilisée pour évaluer l'association entre le niveau métamérique, le score global de positivité ULNT et la probabilité de névralgie cervico-brachiale.
+Des analyses exploratoires ont également été réalisées selon le niveau métamérique. Pour chaque niveau, la performance de chaque ULNT a été évaluée ainsi que l'association entre le niveau métamérique et la probabilité de névralgie cervico-brachiale. 
 
 Les résultats sont présentés sous forme d'estimations ponctuelles avec leurs intervalles de confiance à 95 %. Les modèles logistiques sont présentés sous forme d'odds ratios lorsque cela était pertinent. Les analyses ont été réalisées avec `R`, version 4.5.2. Tous les tests étaient bilatéraux, avec un seuil de significativité fixé à 0,05. Aucune correction de multiplicité n'a été appliquée aux analyses secondaires ou exploratoires, qui doivent donc être interprétées comme génératrices d'hypothèses.
 
@@ -3676,6 +3824,7 @@ kable(
 
 -   En témoigne son indice de Youden plus faible que celui de U1, et son LR- moins bon que celui de U1.
 
+\newpage
 ### ULNT2b
 
 #### Résultats
@@ -3731,10 +3880,12 @@ kable(
     )
 ```
 
-::: {.callout-note icon=false title="Lecture simple"}
--   Profil plus équilibrée entre sensibilité et spécificité que celui de `U2a`, mais il reste moins bon que `U1` pour ne pas manquer les cas. Il est à la fois aussi moins sensible que `U1` mais un peu plus spécifique que U1
-:::
+#### Interprétation
 
+-   Profil plus équilibrée entre sensibilité et spécificité que celui de `U2a`, mais il reste moins bon que `U1` pour ne pas manquer les cas. Il est à la fois aussi moins sensible que `U1` mais un peu plus spécifique que U1
+
+
+\newpage
 ### ULNT3
 
 #### Résultats
@@ -3834,12 +3985,13 @@ kable(
 #| echo: !expr "(!knitr::is_latex_output())"
 #| fig-cap: "Composition des tableaux de contingence 2x2 par test"
 #| fig-width: 7
-#| fig-height: 5
+#| fig-height: 4.5
 #| message: false
 #| warning: false
 #| results: "asis"
 contingency_plot
 ```
+
 
 ```{r}
 #| label: ROC-comparison-plot
@@ -3852,51 +4004,139 @@ contingency_plot
 diag_key_plot
 ```
 
-::: {.callout-note icon=false title="Lecture simple"}
-**Ce qu'on cherche.** Cette synthèse sert à comparer directement les quatre ULNT pour voir lequel paraît le plus utile dans la cohorte, et surtout pour comprendre **où** chaque test se trompe.
+Sur les deux graphiques, on voit très bien que : 
 
-**Comment lire ce résultat.** La figure sensibilité/spécificité compare la capacité à ne pas manquer les cas d'un côté, et à éviter les faux positifs de l'autre. Le graphique des tableaux `2x2` montre d'où viennent concrètement les erreurs : faux négatifs ou faux positifs.
+-   `ULNT1` est le plus sensible (faux négatif très faible, en rouge sur le premier graphique)
 
-**Ce que montrent les données ici.** `U1` est le meilleur test isolé de la cohorte avec `Se 0.864`, `Sp 0.60`, `LR+ 2.16`, `LR- 0.23`, `Youden 0.464` et `AUC 0.732`. `U2a` et `U2b` restent utiles, mais un peu moins convaincants. `U3` est nettement moins performant, avec `Se 0.386`, `Sp 0.68`, `LR+ 1.21` et `LR- 0.90`. En pratique, `U1`, `U2a` et `U2b` repèrent plutôt bien les NCB, mais leur spécificité reste seulement faible à modérée. Aucun des quatre tests n'est à la fois très sensible et très spécifique.
+-   `ULNT3` est le plus spécifique (faux positif plus faible, en orange). Même si ça ne se joue pas à grand chose par rapport aux autres !
 
-**Application pratique.** Les ULNT semblent surtout utiles comme **outils d'orientation**, pas comme tests définitifs. `U1` est le meilleur point d'entrée, surtout parce qu'un résultat négatif réduit utilement la probabilité de NCB. En revanche, aucun ULNT ne suffit seul pour confirmer ou exclure formellement le diagnostic sans le reste de l'examen clinique et de l'imagerie.
-:::
+-   Dans tous les cas, la spécificité est faible
 
+-   Aucun des tests pris isolément n'est à la fois sensible est spécifique
+
+-   La section suivante compare les tests entre eux pour voir si les différences sont statistiquement significatives. Je ne suis pas sûr que ce soit indispensable (on voit bien que les tests ont des profils différents et il n'y a pas besoin d'un petit `p` pour ça), mais c'était prévu dans le protocole ! Ça permet quand même de nuancer les différences observées. 
+
+\newpage
 ## Comparaisons directes entre tests
 
-Le protocole demandait une comparaison des performances diagnostiques entre tests. Comme les **memes patients** passent les differents ULNT, une comparaison appariee de type **McNemar** est plus adaptee qu'un simple khi2 independant :
+Le protocole prévoyait une comparaison des performances diagnostiques entre les différents ULNT.
 
--   chez les `G+`, elle compare les **sensibilites** ;
+L'objectif est de comparer les différences diagnostiques entre tests. 
 
--   chez les `G-`, elle compare les **specificites**.
+Il s'agit d'effectuer des tests statistiques pour voir si les différences de sensibilité et de spécificité entre les tests sont statistiquement significativies. 
+
+Comme les mêmes patients passent les différents ULNT, une comparaison appariée de type McNemar est plus adaptée qu'un simple khi2 indépendant (McNemar = khi2 pour données appariées).
+
+-   chez les `Gold Standard positif`, on compare les **sensibilités** ;
+
+-   chez les `Gold Standard négatif`, on compare les **spécificités**.
 
 ```{r}
-#| label: pairwise-ulnt-comparison-table
+#| label: pairwise-ulnt-sensitivity-table
 #| echo: !expr "(!knitr::is_latex_output())"
 #| results: "asis"
-kable(
-    pairwise_comparison_round,
-    caption = "Comparaisons appariees entre ULNT pour la sensibilite (chez les G+) et la specificite (chez les G-)",
-    align = "c"
+pairwise_sensitivity_round <- pairwise_comparison_round %>%
+    select(
+        Comparaison,
+        `N G+`,
+        `Se test 1`,
+        `Se test 2`,
+        `Diff Se`,
+        `Discordance G+ (test1 seul / test2 seul)`,
+        `p McNemar Se`
+    )
+
+pairwise_specificity_round <- pairwise_comparison_round %>%
+    select(
+        Comparaison,
+        `N G-`,
+        `Sp test 1`,
+        `Sp test 2`,
+        `Diff Sp`,
+        `Discordance G- (test1 seul / test2 seul)`,
+        `p McNemar Sp`
+    )
+
+pairwise_sensitivity_table <- kable(
+    pairwise_sensitivity_round,
+    format = if (knitr::is_latex_output()) {
+        "latex"
+    } else {
+        "html"
+    },
+    booktabs = knitr::is_latex_output(),
+    longtable = knitr::is_latex_output(),
+    escape = FALSE,
+    caption = "Comparaisons appariees entre ULNT pour la sensibilite (chez les G+)",
+    align = c("l", rep("c", 6)),
+    col.names = c(
+        "Comparaison",
+        "N",
+        "Test 1",
+        "Test 2",
+        "Diff.",
+        linebreak("Discord.\n(t1 / t2)", align = "c"),
+        linebreak("p\nMcNemar", align = "c")
+    )
 ) %>%
     kable_styling(
         latex_options = c("hold_position", "repeat_header", "scale_down"),
         full_width = FALSE,
         font_size = 7
     )
+
+print(pairwise_sensitivity_table)
 ```
 
-::: {.callout-note icon=false title="Lecture simple"}
-**Ce qu'on cherche.** Ici, on ne compare pas les tests séparément, mais **les uns contre les autres sur les mêmes patients**. Cela permet de voir si un test manque significativement plus de cas qu'un autre, ou au contraire s'il génère significativement plus de faux positifs.
+```{r}
+#| label: pairwise-ulnt-specificity-table
+#| echo: !expr "(!knitr::is_latex_output())"
+#| results: "asis"
+pairwise_specificity_table <- kable(
+    pairwise_specificity_round,
+    format = if (knitr::is_latex_output()) {
+        "latex"
+    } else {
+        "html"
+    },
+    booktabs = knitr::is_latex_output(),
+    longtable = knitr::is_latex_output(),
+    escape = FALSE,
+    caption = "Comparaisons appariees entre ULNT pour la specificite (chez les G-)",
+    align = c("l", rep("c", 6)),
+    col.names = c(
+        "Comparaison",
+        "N",
+        "Test 1",
+        "Test 2",
+        "Diff.",
+        linebreak("Discord.\n(t1 / t2)", align = "c"),
+        linebreak("p\nMcNemar", align = "c")
+    )
+) %>%
+    kable_styling(
+        latex_options = c("hold_position", "repeat_header", "scale_down"),
+        full_width = FALSE,
+        font_size = 7
+    )
 
-**Comment lire ce résultat.** Chez les `G+`, le tableau compare les **sensibilités**. Chez les `G-`, il compare les **spécificités**. Une p-value basse signifie qu'un des deux tests se comporte différemment de l'autre sur les mêmes patients.
+print(pairwise_specificity_table)
+```
 
-**Ce que montrent les données ici.** Les différences nettes portent surtout sur la **sensibilité**. `U3` est significativement moins sensible que `U1`, `U2a` et `U2b`, ce qui veut dire qu'il manque plus souvent les patients réellement atteints. En revanche, il n'y a pas de différence claire de spécificité entre les tests dans cette cohorte.
+Même conclusions que les graphiques précédents. 
 
-**Application pratique.** Si la priorité est de limiter les faux négatifs, `U3` paraît moins intéressant. Le choix entre `U1`, `U2a` et `U2b` se joue davantage sur leur utilité globale que sur une vraie différence démontrée de spécificité.
-:::
+Concernant le sensibilité : 
 
+-   `ULNT1`, `ULNT2a` et `ULNT2b` sont significativement plus sensibles que `ULNT3`
+
+-   Aucun test ne se démarque sur la spécificité. 
+
+\newpage
 ## Reproductibilité inter-évaluateurs
+
+Par interprétation d'un coefficient de Kappa de Cohen selon les seuils de Landis & Koch (1977) [@landisMeasurementObserverAgreement1977]
+
+Le coefficient de Kappa de Cohen correspond à la concordance corrigée entre deux évaluateurs, c'est à dire le pourcentage d'accord entre les évaluateurs corrigé par le taux d'accord attendu par hasard (le taux attendu par hasard correspond à la probabilité que les deux évaluateurs soient d'accord simplement par hasard, en fonction de la distribution des réponses).
 
 ```{r}
 #| label: interrater-setup
@@ -3927,9 +4167,8 @@ kable(
 kappa_plot
 ```
 
-Le Kappa de Cohen correspond à la concordance corrigée, c'est à dire le pourcentage d'accord entre les évaluateurs corrigé par le taux d'accord attendu par hasard.
+Interprétation : Accord substantiel à modéré pour tous les tests. `ULNT1` est le plus reproductible.
 
-Interprétation selon tableau de Landis & Koch (1977) :
 -   < 0 : pas d'accord
 -   0.00–0.20 : accord faible
 -   0.21–0.40 : accord passable
@@ -3937,58 +4176,24 @@ Interprétation selon tableau de Landis & Koch (1977) :
 -   0.61–0.80 : accord substantiel
 -   0.81–1.00 : accord presque parfait
 
-::: {.callout-note icon=false title="Lecture simple"}
-**Ce qu'on cherche.** Ici, on veut savoir si deux évaluateurs obtiennent globalement le même résultat lorsqu'ils réalisent les ULNT. Un test peu reproductible est difficile à utiliser en pratique, même s'il semble performant.
-
-**Comment lire ce résultat.** Le `Kappa` mesure l'accord entre évaluateurs au-delà de ce qu'on attendrait simplement par hasard. Plus il est proche de `1`, plus le test est reproductible. Un accord brut élevé ne suffit pas toujours ; le `Kappa` est plus informatif.
-
-**Ce que montrent les données ici.** L'accord est globalement bon à substantiel, avec `U1 kappa 0.683`, `U2a 0.604`, `U2b 0.593` et `U3 0.625`. `U2b` est le moins reproductible du groupe, mais reste à un niveau acceptable. `U1` combine ici la meilleure utilité diagnostique et une reproductibilité solide.
-
-**Application pratique.** Les ULNT semblent globalement transposables entre examinateurs formés. Cela renforce surtout l'intérêt clinique de `U1`, qui paraît à la fois utile et relativement stable d'un observateur à l'autre.
-:::
-
+\newpage
 ## Combinaisons et score de positivité ULNT
 
-Le protocole prévoyait une exploration des associations entre tests, mais deux objets statistiques différents doivent être distingués ici :
+Le protocole prévoyait une exploration des associations entre tests. 
 
--   les **combinaisons conjonctives prédéfinies**, pour lesquelles le résultat est positif seulement si **tous** les tests de la combinaison sont positifs ;
+2 approches sont possibles : 
 
--   le **score de positivité ULNT**, qui correspond simplement au **nombre total** de tests positifs, puis à des seuils du type `>=1`, `>=2`, `>=3` ou `>=4`.
+-   Des combinaisons "conjonctives" : combinaisons exactes de 2 à 4 tests, pour lesquelles le résultat est positif seulement si **tous** les tests de la combinaison sont positifs ;
 
-Un seuil `>=3 positifs` ne correspond donc **pas** à une combinaison fixe de trois tests : plusieurs profils différents peuvent aboutir à ce score. À l'inverse, une combinaison comme `U2b + U3` impose précisément quels tests doivent être positifs. Enfin, le seuil `>=4 positifs` correspond à la règle la plus stricte du score, c'est-à-dire **4 tests positifs sur 4**.
+-   Un "score de positivité", qui correspond simplement au **nombre total** de tests positifs, puis à des seuils du type `≥1`, `≥2`, `≥3` ou `=4`.
+
+Exemple : `≥2 positifs` correspond à aux moins 2 tests quelqu'ils soient, alors qu'une combinaison conjonctive `U2b + U3` impose précisément quels tests doivent être positifs. 
 
 ### Combinaisons conjonctives prédéfinies
 
-```{r}
-#| label: combination-extremes-table
-#| echo: !expr "(!knitr::is_latex_output())"
-#| results: "asis"
-combination_extremes_round %>%
-  kable(
-    format = if (knitr::is_latex_output()) {
-      "latex"
-    } else if (knitr::is_html_output()) {
-      "html"
-    } else {
-      "pipe"
-    },
-    booktabs = TRUE,
-    align = "c",
-    digits = 3,
-    caption = "Résumé des combinaisons les plus sensibles et les plus spécifiques"
-  ) %>%
-  kable_styling(
-    latex_options = c("hold_position", "scale_down"),
-    full_width = FALSE,
-    font_size = 8
-  )
-```
+-   Combinaison la plus sensible : `ULNT1` seul (`Se 0.864`, `Sp 0.60`). 
 
--   Pour résumer les extrêmes, la **combinaison la plus sensible** est `U1` seul (`Se 0.864`, `Sp 0.60`). En cas d'égalité de sensibilité, la combinaison retenue ici est la plus performante en spécificité, puis la plus **parcimonieuse** si besoin.
-
--   La **combinaison la plus spécifique** est `U2b + U3` (`Sp 0.76`, `Se 0.273`). En cas d'égalité de spécificité, la combinaison retenue ici est la plus performante en sensibilité, puis la plus **parcimonieuse** si besoin.
-
--   La spécificité maximale observée pour les combinaisons conjonctives est en réalité partagée par **quatre** combinaisons : `U2b + U3`, `U2a + U2b + U3`, `U1 + U2b + U3` et les `4 tests`. `U2b + U3` est retenue ici parce qu'elle garde la meilleure sensibilité parmi ces ex aequo, puis la meilleure parcimonie.
+-   Combinaison la plus spécifique : 4 combinaisons à égalité à `Sp 0.792` dont le point commun est de toutes contenir `ULNT2b` et `ULNT3`. La combinaison retenue pour la meilleure spécificité est `ULNT2b` et `ULNT3` car elle conserve la meilleure sensibilité parmi les ex aequo (`Se 0.289`), puis la meilleure parcimonie (2 tests au lieu de 3 ou 4).
 
 ```{r}
 #| label: all-ulnt-combinations-table
@@ -4006,7 +4211,7 @@ combination_all_round %>%
     booktabs = TRUE,
     align = "c",
     digits = 3,
-    caption = "Combinaisons exhaustives des ULNT avec definition positive conjonctive (tous les tests de la combinaison positifs)"
+    caption = "Combinaisons des ULNT avec définition positive conjonctive"
   ) %>%
   kable_styling(
     latex_options = c("hold_position", "repeat_header", "scale_down"),
@@ -4015,74 +4220,16 @@ combination_all_round %>%
   )
 ```
 
-::: {.callout-note icon=false title="Lecture simple"}
-**Ce qu'on cherche.** Ici, on se demande si le fait d'exiger plusieurs tests positifs en même temps permet d'obtenir un résultat plus utile qu'un test isolé.
+\FloatBarrier
 
-**Comment lire ce résultat.** Une combinaison est dite positive seulement si **tous** les tests qui la composent sont positifs. En général, cela augmente la spécificité, mais au prix d'une baisse de sensibilité.
+\newpage
+### "Score de positivité" : performances selon le nombre de tests positifs
 
-**Ce que montrent les données ici.** La combinaison la plus sensible est en fait `U1` seul (`Se 0.864`, `Sp 0.60`) ; en cas d'égalité de sensibilité, le départage se fait sur la spécificité puis sur la parcimonie. La spécificité maximale des combinaisons conjonctives est `0.76`, partagée par `U2b + U3`, `U2a + U2b + U3`, `U1 + U2b + U3` et les `4 tests`. La combinaison retenue comme la plus spécifique est `U2b + U3`, car elle garde la meilleure sensibilité parmi ces ex aequo (`Se 0.273`) puis la meilleure parcimonie. Cela illustre bien le compromis attendu : quand on cherche surtout la spécificité, on perd beaucoup en sensibilité. Par exemple, `U2a + U2b` améliore un peu la spécificité (`0.72`) mais perd en sensibilité (`0.614`). Plus les combinaisons deviennent strictes, plus elles ratent de patients réellement atteints. Dans cette lecture conjonctive, la meilleure combinaison exploratoire selon Youden reste finalement `U1` seul (`Youden = 0.464`).
+L'objectif ici est de calculer les performances diagnostiques (sensibilité, spécificité, LR+, LR-, Youden, DOR) pour différents seuils de score (`≥1`, `≥2`, `≥3`, `≥4` tests positifs). 
 
-**Application pratique.** Demander plusieurs tests positifs peut rendre le résultat plus "convaincant", mais fait rater davantage de NCB. Sur ces données, cela ne justifie pas de remplacer `U1` par une règle conjonctive.
-:::
+Cela revient à demander si un seuil du type "au moins 2 tests positifs" est plus utile qu'un test isolé. Cette logique reste différente de celle des combinaisons conjonctives : `≥3 positifs` ne précise pas quels tests sont positifs, alors que `U2b + U3` impose une paire fixe de tests positifs.
 
-### Score ULNT : probabilité selon le nombre exact de tests positifs
-
-```{r}
-#| label: tbl-score-exact-et-seuils
-#| echo: !expr "(!knitr::is_latex_output())"
-#| message: false
-#| warning: false
-#| results: asis
-exact_score_perf_table %>%
-  kable(
-    format = if (knitr::is_latex_output()) {
-      "latex"
-    } else if (knitr::is_html_output()) {
-      "html"
-    } else {
-      "pipe"
-    },
-    booktabs = TRUE,
-    align = "c",
-    digits = 3,
-    caption = "Probabilité observée de NCB selon le nombre exact de tests positifs",
-    col.names = c(
-      "Nombre de tests positifs",
-      "Effectif (N)",
-      "Nombre de NCB",
-      "Probabilité de NCB [IC95%]"
-    )
-  )
-```
-
-```{r}
-#| label: fig-score-probability
-#| echo: !expr "(!knitr::is_latex_output())"
-#| message: false
-#| warning: false
-#| fig-cap: "Probabilité observée de NCB selon le nombre de tests positifs."
-#| fig-width: 7
-#| fig-height: 5
-score_probability_plot
-```
-
-::: {.callout-note icon=false title="Lecture simple"}
-**Ce qu'on cherche.** Cette section répond à une question très intuitive : plus il y a de tests ULNT positifs, plus la probabilité de NCB augmente-t-elle ?
-
-**Comment lire ce résultat.** Le tableau donne la probabilité de NCB observée pour `0`, `1`, `2`, `3` ou `4` tests positifs, quel que soit le détail exact des tests positifs. Le modèle logistique résume ensuite la tendance globale, et l'AUC dit si ce score sépare correctement, ou non, les patients positifs et négatifs.
-
-**Ce que montrent les données ici.** La probabilité observée de NCB passe de `14 %` avec `0` test positif à `57 %` avec `1`, puis `90 %` avec `2`, `86 %` avec `3`, et `65 %` avec `4` tests positifs. Les irrégularités aux scores élevés viennent des petits effectifs dans chaque case. Le modèle retrouve bien une tendance globale croissante : chaque test positif supplémentaire est associé à un `OR 1.833` de NCB (`IC95 [1.256 ; 2.674], p = 0.0017`). L'AUC du score est `0.693`, ce qui reste modeste et ne surpasse pas clairement `U1` seul.
-
-**Application pratique.** Le cumul de positivité renforce la suspicion de NCB et peut aider à structurer le raisonnement. En revanche, ce score reste un outil d'orientation : il ne remplace ni le meilleur test isolé, ni le contexte clinique global.
-:::
-
-### Score ULNT : performances selon les seuils
-
-L'objectif ici est de calculer les performances diagnostiques (sensibilité, spécificité, LR+, LR-, Youden, DOR) pour différents seuils de score (`>=1`, `>=2`, `>=3`, `>=4` tests positifs). Cela permet d'évaluer comment la performance diagnostique évolue en fonction du nombre de tests positifs.
-
-En pratique, cela revient à demander si un seuil du type "au moins 2 tests positifs" est plus utile qu'un test isolé. Cette logique reste différente de celle des combinaisons conjonctives : `>=3 positifs` ne précise pas quels tests sont positifs, alors que `U2b + U3` impose une paire fixe de tests positifs.
-
-Le **DOR** (diagnostic odds ratio) correspond au ratio `(VP*VN)/(FP*FN)`. Plus il est élevé, meilleure est la séparation globale entre patients positifs et négatifs, mais cette métrique doit rester secondaire ici faute d'intervalle de confiance.
+Le score correspond simplement au **nombre de tests ULNT positifs** chez un même patient ; un test peut donc être très spécifique pris isolément, mais modifie peu le score si les rares patients qu'il rend positifs le sont déjà par d'autres ULNT.
 
 ```{r}
 #| label: score-probability
@@ -4100,24 +4247,86 @@ score_summary_table %>%
     align = "c",
     digits = 3,
     caption = "Performances diagnostiques selon le seuil du score"
+  ) %>%
+  kable_styling(
+    latex_options = c("hold_position", "scale_down"),
+    full_width = FALSE,
+    font_size = 7
   )
 ```
 
-::: {.callout-note icon=false title="Lecture simple"}
-**Ce qu'on cherche.** Ici, on ne regarde plus le nombre exact de tests positifs, mais des règles simples du type "au moins `1`", "au moins `2`", "au moins `3`" ou "au moins `4`" tests positifs.
+\FloatBarrier
 
-**Comment lire ce résultat.** Un seuil bas est souvent très sensible mais peu spécifique. Un seuil élevé devient plus spécifique mais risque de manquer beaucoup de cas. Le meilleur seuil est celui qui offre le compromis le plus acceptable pour l'usage clinique visé.
+NB : *Le **DOR** (diagnostic odds ratio) résume en un seul chiffre la capacité globale du score à distinguer les patients `G+` des `G-` (se calcule en faisant le rapport entre le LR+ et le LR-), mais il reste ici secondaire car moins intuitif cliniquement que la sensibilité, la spécificité et les rapports de vraisemblance. En plus, les IC du DOR sont ici très larges et se chevauchent largement, donc ils ne sont pas vraiment interprétables.*
 
-**Ce que montrent les données ici.** `>=1` positif est très sensible (`Se 0.955`) mais peu spécifique (`Sp 0.48`). Parmi les **seuils du score**, la spécificité la plus élevée est obtenue pour `>=4 positifs` avec `Sp 0.76` et `Se 0.250`, ce qui correspond en pratique à exiger `4` tests positifs sur `4`. Le meilleur compromis exploratoire reste `>=2 positifs`, avec `Se 0.864`, `Sp 0.60` et `Youden 0.464`. Cela correspond en pratique au même niveau de compromis que `U1` seul, sans supériorité nette.
+Pour interpréter ces résultats, on peut raisonner **par addition** sans imposer d'ordre entre les tests : on calcule, pour chaque seuil, la **contribution moyenne** de chaque test quand on l'ajoute à toutes les combinaisons possibles des autres tests.
 
-**Application pratique.** Si un score doit être utilisé, le seuil `>=2` paraît le plus raisonnable dans cette cohorte. En revanche, il n'apporte pas de bénéfice clair par rapport à `U1` seul, qui reste plus simple à utiliser et au moins aussi informatif.
-:::
+-   Dans le tableau de sensibilité, chaque case correspond à : `gain moyen de sensibilité (+ΔSe)` apporté par le test.
 
-## Analyses exploratoires par niveau métamérique
+-   Dans le second tableau, chaque case correspond à : `diminution moyenne de la specificite (-ΔSp)` imputable au test.
 
-Cette section est volontairement présentée **après** les analyses principales, car son objectif est exploratoire. Elle réintroduit le détail par niveau métamérique dans un cadre explicitement prudent :
+```{r}
+#| label: score-contribution-sensitivity-table
+#| echo: !expr "(!knitr::is_latex_output())"
+score_contribution_sensitivity_table %>%
+  kable(
+    format = if (knitr::is_latex_output()) {
+      "latex"
+    } else if (knitr::is_html_output()) {
+      "html"
+    } else {
+      "pipe"
+    },
+    booktabs = TRUE,
+    align = "c",
+    caption = "Contribution moyenne de chaque test a la sensibilite du score : gain de Se (+ΔSe)"
+  ) %>%
+  kable_styling(
+    latex_options = c("hold_position", "scale_down"),
+    full_width = FALSE,
+    font_size = 7
+  )
+```
 
--   les effectifs restent modestes (`1` à `27` dossiers analysés selon le niveau) ;
+\FloatBarrier
+
+-   Pour le seuil `≥1`, `ULNT1` a la contribution moyenne la plus forte au gain de sensibilité, cela signifie qu'il porte la plus grande part de la capacité de dépistage du score.
+
+```{r}
+#| label: score-contribution-specificity-table
+#| echo: !expr "(!knitr::is_latex_output())"
+score_contribution_specificity_table %>%
+  kable(
+    format = if (knitr::is_latex_output()) {
+      "latex"
+    } else if (knitr::is_html_output()) {
+      "html"
+    } else {
+      "pipe"
+    },
+    booktabs = TRUE,
+    align = "c",
+    caption = "Contribution moyenne de chaque test a la specificite du score"
+  ) %>%
+  kable_styling(
+    latex_options = c("hold_position", "scale_down"),
+    full_width = FALSE,
+    font_size = 7
+  )
+```
+
+\FloatBarrier
+
+-   Pour la spécificité, aucun test ne ressort clairement avec cette méthode de calcul, car les contributions restent assez proches entre les tests.
+
+-   Au seuil `≥4`, les `4` tests ont exactement la meme contribution car il n'y a qu'une seule combinaison possible : `ULNT1 + ULNT2a + ULNT2b + ULNT3` et chaque test est nécessaire pour que le score soit positif.
+
+\newpage
+## Analyses par niveau métamérique
+
+Objectif exploratoire car 
+
+-   les effectifs sont très faibles à certains niveaux (`1` à `27` dossiers analysés selon le niveau) ;
 
 -   `C4` est conservé comme catégorie distincte malgré un seul dossier ;
 
@@ -4142,16 +4351,15 @@ kable(
     )
 ```
 
--   Le tableau distingue ici l'**effectif total du niveau** et l'**effectif analysé** après exclusion des statuts non interprétables du gold standard.
-
 ```{r}
 #| label: results-by-level-rate
 #| echo: !expr "(!knitr::is_latex_output())"
 #| include: true
+#| fig-cap: "Effectif de NCB par niveau métamérique"
 results_by_level_status_plot
 ```
 
--   Ce premier graphique montre les **effectifs** de `NCB positif` et `NCB negatif` par niveau. `C4` y apparait bien avec **1 dossier positif** et **0 negatif**.
+\newpage
 
 ```{r}
 #| label: results-by-level-count
@@ -4160,20 +4368,12 @@ results_by_level_status_plot
 results_by_level_score_plot
 ```
 
--   Ce second graphique montre la **distribution du score ULNT de 0 a 4**. `C4` y apparait avec un unique patient de **score 0**, ce qui explique le `0` vu auparavant sur le graphique de moyenne.
+-   Distribution du "score de positivité" de 0 a 4. `C4` y apparait avec un unique patient de **score 0**, ce qui explique le `0` vu auparavant sur le graphique de moyenne.
 
-::: {.callout-note icon=false title="Lecture simple"}
-**Ce qu'on cherche.** Ici, on cherche à savoir si certains niveaux métamériques semblent associés à une fréquence différente de NCB ou à un profil différent de positivité des ULNT.
+-   Graphique pas très utile et peu interprétable car effectif trop faibles... Globalement, à C6 - C7, les patients ont ≥ 3 tests positifs dans plus de la moitié des cas. 
 
-**Comment lire ce résultat.** Avant même de regarder les performances diagnostiques, il faut regarder **combien** de patients sont présents à chaque niveau. Sans effectif suffisant, un résultat très bon ou très mauvais peut être dû au hasard.
-
-**Ce que montrent les données ici.** Les niveaux `C6` et `C7` concentrent le plus d'observations (`27` et `21` dossiers analysés), alors que `C4` ne comporte qu'un seul patient et `C5` `10`. Le score ULNT paraît plus élevé surtout en `C6` et `C7`, mais cela reste une lecture descriptive. À ce stade, on peut dire qu'il existe des différences apparentes entre niveaux, sans pouvoir encore conclure qu'elles sont robustes.
-
-**Application pratique.** Cette partie doit surtout servir à formuler des hypothèses. Il ne faut pas modifier sa pratique sur la seule base de `C4` ou de `C5`, où les effectifs sont trop faibles.
-:::
-
+\newpage
 ### Détail exploratoire test par test et niveau par niveau
-
 ```{r}
 #| label: diagnostic-by-level-detail-table
 #| echo: !expr "(!knitr::is_latex_output())"
@@ -4191,16 +4391,18 @@ kable(
     )
 ```
 
-::: {.callout-note icon=false title="Lecture simple"}
-**Ce qu'on cherche.** Ce tableau détaille, pour chaque test et chaque niveau, combien de patients sont correctement ou incorrectement classés. L'objectif est de voir si un ULNT semble mieux fonctionner à certains niveaux qu'à d'autres.
+\FloatBarrier
 
-**Comment lire ce résultat.** `TP`, `FP`, `TN` et `FN` décrivent concrètement les bonnes et mauvaises classifications. Les `IC95%` montrent l'incertitude autour de la sensibilité et de la spécificité. Quand ils sont très larges, cela veut dire qu'on sait peu de choses malgré une valeur parfois spectaculaire.
+-   Les effectifs sont très faibles à certains niveaux, ce qui rend les résultats très instables et peu interprétables.
 
-**Ce que montrent les données ici.** Les résultats extrêmes dans les petits niveaux ne doivent pas être surinterprétés. `C5` paraît très favorable pour plusieurs tests, mais sur un effectif très petit. `C6` est plus informatif, car plus peuplé, mais les performances y restent variables selon le test. `C7` montre des sensibilités élevées pour `U1`, `U2a` et surtout `U2b`, avec une spécificité seulement moyenne. `U3` reste globalement le test le plus faible selon les niveaux.
+-   Les plus interprétables sont les niveaux `C6` et `C7` qui sont les plus peuplés.
 
-**Application pratique.** Ce tableau peut aider à repérer des tendances, mais il ne justifie pas à lui seul de choisir un ULNT différent selon le niveau métamérique. Les petits effectifs imposent de rester prudent.
-:::
+    -   `C7` semble être le niveau où les tests sont les plus sensibles, notamment `U2b`, mais la spécificité y reste moyenne.
 
+-   Le test de Fisher répond à la question 
+
+
+\newpage
 ### Lecture test par test selon le niveau métamérique
 
 ```{r}
@@ -4210,9 +4412,12 @@ kable(
 results_by_level_test_metric_plot
 ```
 
--   Ce graphique remet la lecture **test par test** : chaque facette correspond à un ULNT, avec la sensibilité et la spécificité estimées selon le niveau métamérique.
+Mêmes infos remises en graphique : sensibilité et spécificité, test par test et niveau par niveau. 
 
-#### U1 selon le niveau métamérique
+Ensuite mêmes infos remises en tableaux par tests. 
+
+Attention à ne pas surinterpréter, les IC sont larges et les effectifs très faibles à certains niveaux.
+
 
 ```{r}
 #| label: u1-by-level-table
@@ -4225,8 +4430,6 @@ kable(
 )
 ```
 
-#### U2a selon le niveau métamérique
-
 ```{r}
 #| label: u2a-by-level-table
 #| echo: !expr "(!knitr::is_latex_output())"
@@ -4237,8 +4440,6 @@ kable(
     align = "c"
 )
 ```
-
-#### U2b selon le niveau métamérique
 
 ```{r}
 #| label: u2b-by-level-table
@@ -4251,8 +4452,6 @@ kable(
 )
 ```
 
-#### U3 selon le niveau métamérique
-
 ```{r}
 #| label: u3-by-level-table
 #| echo: !expr "(!knitr::is_latex_output())"
@@ -4264,35 +4463,4 @@ kable(
 )
 ```
 
-::: {.callout-note icon=false title="Lecture simple"}
-**Ce qu'on cherche.** Ces quatre tableaux permettent de regarder chaque ULNT séparément pour voir si son profil change beaucoup selon le niveau métamérique.
-
-**Comment lire ce résultat.** Il faut surtout chercher une **cohérence globale** d'un niveau à l'autre, plutôt qu'une valeur spectaculaire isolée. Une performance très élevée sur très petit effectif ne suffit pas à faire conclure à un "meilleur niveau".
-
-**Ce que montrent les données ici.** `U1` paraît plutôt fort en `C6-C8`, avec des résultats particulièrement bons en `C5`, mais ce dernier niveau est trop petit pour conclure. `U2a` est proche de `U1` en `C5-C7`, avec un profil plus irrégulier en `C8`. `U2b` semble particulièrement sensible en `C7`, sans preuve robuste d'un niveau vraiment idéal. `U3` est plus variable et souvent moins sensible que les autres tests.
-
-**Application pratique.** Il ne paraît pas pertinent de choisir principalement le test en fonction du niveau métamérique. Le message pratique reste surtout que `U1`, `U2a` et `U2b` gardent plus d'intérêt global que `U3`.
-:::
-
-### Modélisation globale du niveau métamérique
-
-```{r}
-#| label: diagnostic-by-level-model-table
-#| echo: !expr "(!knitr::is_latex_output())"
-#| results: "asis"
-kable(
-    level_model_round,
-    caption = "Effet global du niveau métamérique et du score ULNT sur la probabilité de NCB",
-    align = "c"
-)
-```
-
-::: {.callout-note icon=false title="Lecture simple"}
-**Ce qu'on cherche.** Ce modèle sert à répondre à une question plus globale : le niveau métamérique apporte-t-il une information propre sur la probabilité de NCB, indépendamment du nombre de tests ULNT positifs ?
-
-**Comment lire ce résultat.** Un `OR` proche de `1` signifie qu'il n'y a pas de relation claire. Si l'intervalle de confiance contient largement `1` et que la p-value est élevée, on ne peut pas conclure à un effet robuste.
-
-**Ce que montrent les données ici.** Le niveau seul a un `OR 0.967 [0.578 ; 1.617], p = 0.897`, ce qui ne suggère aucun signal utile. Après ajustement sur le score ULNT, le niveau reste sans effet clair avec `OR 0.943 [0.542 ; 1.639], p = 0.834`. En revanche, le score ULNT garde un signal net : `OR 1.833 [1.256 ; 2.674], p = 0.0017`. Autrement dit, c'est surtout l'accumulation de tests positifs qui augmente la probabilité de NCB.
-
-**Application pratique.** Sur ces données, il vaut mieux raisonner d'abord sur le **profil global des ULNT** que sur le niveau métamérique pris isolément. Le niveau ne semble pas apporter d'information indépendante suffisamment robuste pour guider seul la décision.
-:::
+Globalement, uil ne paraît pas pertinent de choisir principalement le test en fonction du niveau métamérique. Le message pratique reste surtout que `U1`, `U2a` et `U2b` gardent plus d'intérêt global que `U3`.
