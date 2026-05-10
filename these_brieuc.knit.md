@@ -177,12 +177,10 @@ format:
 geometry: margin=2.5cm
 ---
 
-```{r}
-#| label: setup
-#| include: true
-#| echo: !expr "(!knitr::is_latex_output())"
-#| message: false
-#| warning: false
+
+::: {.cell}
+
+```{.r .cell-code}
 library(forecast)
 library(cobalt)
 library(plotrix)
@@ -241,6 +239,8 @@ if (knitr::is_latex_output()) {
     knitr::opts_chunk$set(dev = "pdf", fig.path = "these_brieuc_files/figure-pdf/")
 }
 ```
+:::
+
 
 \newpage
 ::: {.callout-note title="Origine de ce document"}
@@ -258,11 +258,10 @@ if (knitr::is_latex_output()) {
 \newpage
 # Import de la base et préparation des données
 
-```{r}
-#| label: import
-#| echo: !expr "(!knitr::is_latex_output())"
-#| include: true
-#| results: "hide"
+
+::: {.cell}
+
+```{.r .cell-code}
 # import principal depuis le nouveau recueil CSV, puis complément ciblé
 # depuis l'ancien recueil pour les variables historiques non présentes.
 normalize_names <- function(x) {
@@ -325,43 +324,47 @@ for (v in c("Gold_Standard", "U1_E1", "U2a_E1", "U2b_E1", "U3_E1", "U1_E2", "U2a
     df[[v]] <- norm_result(df[[v]])
 }
 ```
+:::
 
-```{r}
-#| label: dates au format date
-#| echo: !expr "(!knitr::is_latex_output())"
-#| include: true
-#| results: "hide"
+
+
+::: {.cell}
+
+```{.r .cell-code}
 # Convertir les colonnes de dates au format Date
 df$DDN <- parse_excel_date(df$DDN)
 df$Date_de_recueil <- parse_excel_date(df$Date_de_recueil)
 ```
+:::
 
-```{r}
-#| label: variables numériques
-#| echo: !expr "(!knitr::is_latex_output())"
-#| include: true
-#| results: "hide"
+
+
+::: {.cell}
+
+```{.r .cell-code}
 # Convertir les variables numériques
 df$Age <- as.numeric(df$Age)
 df$BMI <- as.numeric(df$BMI)
 class(df$Age)
 ```
+:::
 
-```{r}
-#| label: sexe
-#| echo: !expr "(!knitr::is_latex_output())"
-#| include: true
-#| results: "hide"
+
+
+::: {.cell}
+
+```{.r .cell-code}
 # Convertir la variable "Sexe" en facteur
 df$Sexe <- factor(c(M = "Masculin", F = "Féminin")[df$Sexe], levels = c("Masculin", "Féminin"))
 table(df$Sexe, useNA = "ifany")
 ```
+:::
 
-```{r}
-#| label: côté
-#| echo: !expr "(!knitr::is_latex_output())"
-#| include: true
-#| results: "hide"
+
+
+::: {.cell}
+
+```{.r .cell-code}
 # Convertir la variable "Côté" en facteur
 df$Cote <- factor(
     c(G = "Gauche", D = "Droite")[df$Cote],
@@ -369,12 +372,13 @@ df$Cote <- factor(
 )
 table(df$Cote, useNA = "ifany")
 ```
+:::
 
-```{r}
-#| label: niveau
-#| echo: !expr "(!knitr::is_latex_output())"
-#| include: true
-#| results: "hide"
+
+
+::: {.cell}
+
+```{.r .cell-code}
 # Convertir la variable "Niveau" en facteur ordonné
 df$Niveau
 df$Niveau <- factor(
@@ -384,22 +388,24 @@ df$Niveau <- factor(
 )
 table(df$Niveau, useNA = "ifany")
 ```
+:::
 
-```{r}
-#| label: bmi
-#| echo: !expr "(!knitr::is_latex_output())"
-#| include: true
-#| results: "hide"
+
+
+::: {.cell}
+
+```{.r .cell-code}
 summary(df$BMI)
 class(df$BMI)
 table(is.na(df$BMI), useNA = "ifany")
 ```
+:::
 
-```{r}
-#| label: tabac
-#| echo: !expr "(!knitr::is_latex_output())"
-#| include: true
-#| results: "hide"
+
+
+::: {.cell}
+
+```{.r .cell-code}
 df$Tabac <- trimws(as.character(df$Tabac))
 df$Tabac[df$Tabac %in% c("", "NA", "N/A")] <- NA
 df$Tabac[df$Tabac == "oui"] <- "Oui"
@@ -407,12 +413,13 @@ df$Tabac[df$Tabac == "non"] <- "Non"
 df$Tabac <- factor(df$Tabac, levels = c("Non", "Oui"))
 table(df$Tabac, useNA = "ifany")
 ```
+:::
 
-```{r}
-#| label: examen clinique
-#| echo: !expr "(!knitr::is_latex_output())"
-#| include: true
-#| results: "hide"
+
+
+::: {.cell}
+
+```{.r .cell-code}
 str(df$Examen_Clinique)
 class(df$Examen_Clinique)
 unique(df$Examen_Clinique)
@@ -423,12 +430,13 @@ table(df$Examen_Clinique_Positif_YN, useNA = "ifany")
 df$Examen_Clinique_Douteux_YN <- ifelse(df$Examen_Clinique == "Douteux", 1, 0)
 table(df$Examen_Clinique_Douteux_YN, useNA = "ifany")
 ```
+:::
 
-```{r}
-#| label: irm
-#| echo: !expr "(!knitr::is_latex_output())"
-#| include: true
-#| results: "hide"
+
+
+::: {.cell}
+
+```{.r .cell-code}
 str(df$IRM)
 class(df$IRM)
 unique(df$IRM)
@@ -439,12 +447,13 @@ table(df$IRM_Positif_YN, useNA = "ifany")
 df$IRM_Douteux_YN <- ifelse(df$IRM == "Douteux", 1, 0)
 table(df$IRM_Douteux_YN, useNA = "ifany")
 ```
+:::
 
-```{r}
-#| label: infiltrations
-#| echo: !expr "(!knitr::is_latex_output())"
-#| include: true
-#| results: "hide"
+
+
+::: {.cell}
+
+```{.r .cell-code}
 str(df$Infiltrations)
 class(df$Infiltrations)
 unique(df$Infiltrations)
@@ -456,12 +465,13 @@ df$Infiltrations[df$Infiltrations %in% c("non", "Negatif")] <- "Non"
 df$Infiltrations <- factor(df$Infiltrations, levels = c("Non", "Oui"))
 table(df$Infiltrations, useNA = "ifany")
 ```
+:::
 
-```{r}
-#| label: resultat infiltrations
-#| echo: !expr "(!knitr::is_latex_output())"
-#| include: true
-#| results: "hide"
+
+
+::: {.cell}
+
+```{.r .cell-code}
 str(df$Resultat_Inf)
 class(df$Resultat_Inf)
 unique(df$Resultat_Inf)
@@ -473,12 +483,13 @@ df$Resultat_Inf[df$Resultat_Inf == "Negatif"] <- "Negatif"
 df$Resultat_Inf <- factor(df$Resultat_Inf, levels = c("Negatif", "Positif"))
 table(df$Resultat_Inf, useNA = "ifany")
 ```
+:::
 
-```{r}
-#| label: gold standard
-#| echo: !expr "(!knitr::is_latex_output())"
-#| include: true
-#| results: "hide"
+
+
+::: {.cell}
+
+```{.r .cell-code}
 #création d'une variable binaire "Gold_Standard_Positif_YN" (1 = Positif, 0 = Negatif ou Douteux ou NA)
 df$Gold_Standard_Positif_YN <- ifelse(df$Gold_Standard == "Positif", 1,
     ifelse(df$Gold_Standard %in% c("Negatif", "Douteux"), 0, NA)
@@ -491,12 +502,13 @@ df$Gold_Standard_Douteux_YN <- ifelse(df$Gold_Standard == "Douteux", 1,
 )
 table(df$Gold_Standard_Douteux_YN, useNA = "ifany")
 ```
+:::
 
-```{r}
-#| label: ulnt1
-#| echo: !expr "(!knitr::is_latex_output())"
-#| include: true
-#| results: "hide"
+
+
+::: {.cell}
+
+```{.r .cell-code}
 str(df$U1_E1)
 class(df$U1_E1)
 table(df$U1_E1, useNA = "ifany")
@@ -504,12 +516,13 @@ table(df$U1_E1, useNA = "ifany")
 df$U1_E1_positif <- as.numeric(df$U1_E1 == "Positif")
 table(df$U1_E1_positif, useNA = "ifany")
 ```
+:::
 
-```{r}
-#| label: ulnt2a
-#| echo: !expr "(!knitr::is_latex_output())"
-#| include: true
-#| results: "hide"
+
+
+::: {.cell}
+
+```{.r .cell-code}
 str(df$U2a_E1)
 class(df$U2a_E1)
 table(df$U2a_E1, useNA = "ifany")
@@ -517,12 +530,13 @@ table(df$U2a_E1, useNA = "ifany")
 df$U2a_E1_positif <- as.numeric(df$U2a_E1 == "Positif")
 table(df$U2a_E1_positif, useNA = "ifany")
 ```
+:::
 
-```{r}
-#| label: ulnt2b
-#| echo: !expr "(!knitr::is_latex_output())"
-#| include: true
-#| results: "hide"
+
+
+::: {.cell}
+
+```{.r .cell-code}
 str(df$U2b_E1)
 class(df$U2b_E1)
 table(df$U2b_E1, useNA = "ifany")
@@ -530,12 +544,13 @@ table(df$U2b_E1, useNA = "ifany")
 df$U2b_E1_positif <- as.numeric(df$U2b_E1 == "Positif")
 table(df$U2b_E1_positif, useNA = "ifany")
 ```
+:::
 
-```{r}
-#| label: ulnt3
-#| echo: !expr "(!knitr::is_latex_output())"
-#| include: true
-#| results: "hide"
+
+
+::: {.cell}
+
+```{.r .cell-code}
 str(df$U3_E1)
 class(df$U3_E1)
 table(df$U3_E1, useNA = "ifany")
@@ -543,12 +558,13 @@ table(df$U3_E1, useNA = "ifany")
 df$U3_E1_positif <- as.numeric(df$U3_E1 == "Positif")
 table(df$U3_E1_positif, useNA = "ifany")
 ```
+:::
 
-```{r}
-#| label: ulnt1e2
-#| echo: !expr "(!knitr::is_latex_output())"
-#| include: true
-#| results: "hide"
+
+
+::: {.cell}
+
+```{.r .cell-code}
 str(df$U1_E2)
 class(df$U1_E2)
 table(df$U1_E2, useNA = "ifany")
@@ -559,12 +575,13 @@ table(df$U1_E2, useNA = "ifany")
 df$U1_E2_positif <- as.numeric(df$U1_E2 == "Positif")
 table(df$U1_E2_positif, useNA = "ifany")
 ```
+:::
 
-```{r}
-#| label: ulnt2ae2
-#| echo: !expr "(!knitr::is_latex_output())"
-#| include: true
-#| results: "hide"
+
+
+::: {.cell}
+
+```{.r .cell-code}
 str(df$U2a_E2)
 class(df$U2a_E2)
 table(df$U2a_E2, useNA = "ifany")
@@ -575,12 +592,13 @@ table(df$U2a_E2, useNA = "ifany")
 df$U2a_E2_positif <- as.numeric(df$U2a_E2 == "Positif")
 table(df$U2a_E2_positif, useNA = "ifany")
 ```
+:::
 
-```{r}
-#| label: ulnt2be2
-#| echo: !expr "(!knitr::is_latex_output())"
-#| include: true
-#| results: "hide"
+
+
+::: {.cell}
+
+```{.r .cell-code}
 str(df$U2b_E2)
 class(df$U2b_E2)
 table(df$U2b_E2, useNA = "ifany")
@@ -591,12 +609,13 @@ table(df$U2b_E2, useNA = "ifany")
 df$U2b_E2_positif <- as.numeric(df$U2b_E2 == "Positif")
 table(df$U2b_E2_positif, useNA = "ifany")
 ```
+:::
 
-```{r}
-#| label: ulnt3e2
-#| echo: !expr "(!knitr::is_latex_output())"
-#| include: true
-#| results: "hide"
+
+
+::: {.cell}
+
+```{.r .cell-code}
 str(df$U3_E2)
 class(df$U3_E2)
 table(df$U3_E2, useNA = "ifany")
@@ -607,14 +626,13 @@ table(df$U3_E2, useNA = "ifany")
 df$U3_E2_positif <- as.numeric(df$U3_E2 == "Positif")
 table(df$U3_E2_positif, useNA = "ifany")
 ```
+:::
 
-```{r}
-#| label: objets-effectif
-#| echo: !expr "(!knitr::is_latex_output())"
-#| include: true
-#| results: "hide"
-#| message: false
-#| warning: false
+
+
+::: {.cell}
+
+```{.r .cell-code}
 # Objets section effectif
 sample_size_scenarios_input <- data.frame(
 S = paste0("S", 1:11),
@@ -787,16 +805,14 @@ if (knitr::is_latex_output()) {
             position = "center"
         )
 }
-
 ```
+:::
 
-```{r}
-#| label: objets-caracteristiques-initiales
-#| echo: !expr "(!knitr::is_latex_output())"
-#| include: true
-#| results: "hide"
-#| message: false
-#| warning: false
+
+
+::: {.cell}
+
+```{.r .cell-code}
 # Objets section caractéristiques initiales
 age_median <- median(df$Age, na.rm = TRUE)
 df$Age <- ifelse(df$Age == 125, age_median, df$Age)
@@ -1045,16 +1061,14 @@ plot_niveau_distribution <- function() {
         cex = 0.9
     )
 }
-
 ```
+:::
 
-```{r}
-#| label: objets-ulnt1
-#| echo: !expr "(!knitr::is_latex_output())"
-#| include: true
-#| results: "hide"
-#| message: false
-#| warning: false
+
+
+::: {.cell}
+
+```{.r .cell-code}
 # Objets ULNT1
 df$Gold_Standard_main <- ifelse(df$Gold_Standard == "Douteux", "Negatif", df$Gold_Standard)
 
@@ -1322,16 +1336,14 @@ if (u1_Fisher_p < 0.05) {
 plot_roc_u1 <- function() {
     plot(roc_u1, main = "Courbe ROC de U1 par rapport au gold standard", col = "blue", lwd = 2)
 }
-
 ```
+:::
 
-```{r}
-#| label: objets-ulnt2a
-#| echo: !expr "(!knitr::is_latex_output())"
-#| include: true
-#| results: "hide"
-#| message: false
-#| warning: false
+
+
+::: {.cell}
+
+```{.r .cell-code}
 # Objets ULNT2a
 u2a_data <- df %>%
     filter(
@@ -1599,16 +1611,14 @@ if (u2a_Fisher_p < 0.05) {
 plot_roc_u2a <- function() {
     plot(roc_u2a, main = "Courbe ROC de U2a par rapport au gold standard", col = "blue", lwd = 2)
 }
-
 ```
+:::
 
-```{r}
-#| label: objets-ulnt2b
-#| echo: !expr "(!knitr::is_latex_output())"
-#| include: true
-#| results: "hide"
-#| message: false
-#| warning: false
+
+
+::: {.cell}
+
+```{.r .cell-code}
 # Objets ULNT2b
 u2b_data <- df %>%
     filter(
@@ -1828,16 +1838,14 @@ if (u2b_Fisher_p < 0.05) {
 plot_roc_u2b <- function() {
     plot(roc_u2b, main = "Courbe ROC de U2b par rapport au gold standard", col = "blue", lwd = 2)
 }
-
 ```
+:::
 
-```{r}
-#| label: objets-ulnt3
-#| echo: !expr "(!knitr::is_latex_output())"
-#| include: true
-#| results: "hide"
-#| message: false
-#| warning: false
+
+
+::: {.cell}
+
+```{.r .cell-code}
 # Objets ULNT3
 u3_data <- df %>%
     filter(
@@ -2057,16 +2065,14 @@ if (u3_Fisher_p < 0.05) {
 plot_roc_u3 <- function() {
     plot(roc_u3, main = "Courbe ROC de U3 par rapport au gold standard", col = "blue", lwd = 2)
 }
-
 ```
+:::
 
-```{r}
-#| label: objets-resultats-globaux
-#| echo: !expr "(!knitr::is_latex_output())"
-#| include: true
-#| results: "hide"
-#| message: false
-#| warning: false
+
+
+::: {.cell}
+
+```{.r .cell-code}
 # Objets résultats globaux
 contingency_tab <- data.frame(
     Test = c("U1", "U2a", "U2b", "U3"),
@@ -2389,16 +2395,14 @@ contingency_plot <- ggplot(contingency_long, aes(Test, Effectif, fill = Cellule)
         x = "Test",
         y = "Effectif"
     )
-
 ```
+:::
 
-```{r}
-#| label: objets-resultats-par-niveau
-#| echo: !expr "(!knitr::is_latex_output())"
-#| include: true
-#| results: "hide"
-#| message: false
-#| warning: false
+
+
+::: {.cell}
+
+```{.r .cell-code}
 # Objets résultats par niveau
 level_levels <- levels(df$Niveau)
 
@@ -2728,16 +2732,14 @@ level_model_round <- data.frame(
     ),
     check.names = FALSE
 )
-
 ```
+:::
 
-```{r}
-#| label: objets-reproductibilite
-#| echo: !expr "(!knitr::is_latex_output())"
-#| include: true
-#| results: "hide"
-#| message: false
-#| warning: false
+
+
+::: {.cell}
+
+```{.r .cell-code}
 # Objets reproductibilité
 u1_kappa_data <- df %>% filter(!is.na(U1_E1), !is.na(U1_E2))
 u2a_kappa_data <- df %>% filter(!is.na(U2a_E1), !is.na(U2a_E2))
@@ -2821,16 +2823,14 @@ kappa_plot <- ggplot(kappa_tab, aes(x = Test, y = Kappa, fill = Test)) +
         y = "Kappa de Cohen",
         fill = "Test"
     )
-
 ```
+:::
 
-```{r}
-#| label: objets-score-combine
-#| echo: !expr "(!knitr::is_latex_output())"
-#| include: true
-#| results: "hide"
-#| message: false
-#| warning: false
+
+
+::: {.cell}
+
+```{.r .cell-code}
 # Objets score combiné
 df$n_pos <- df$U1_E1_positif + df$U2a_E1_positif + df$U2b_E1_positif + df$U3_E1_positif
 
@@ -3290,19 +3290,20 @@ if (knitr::is_latex_output()) {
         kable_styling(full_width = FALSE, position = "center")
 }
 ```
+:::
 
-```{r}
-#| label: objets-protocole
-#| echo: !expr "(!knitr::is_latex_output())"
-#| include: true
-#| results: "hide"
-#| message: false
-#| warning: false
+
+
+::: {.cell}
+
+```{.r .cell-code}
 # Objets de conformite au protocole
 infiltration_interpretable_n <- sum(!is.na(df$Infiltrations))
 resultat_inf_renseigne_n <- sum(df$Infiltrations == "Oui" & !is.na(df$Resultat_Inf), na.rm = TRUE)
 gold_standard_main_n <- sum(df$Gold_Standard_main %in% c("Positif", "Negatif"), na.rm = TRUE)
 ```
+:::
+
 
 # Introduction
 
@@ -3330,7 +3331,7 @@ Les points du protocole couverts sont :
 
 -   restriction aux 4 ULNT (pas de Scratch Collapse Test)
 
--   pour les gold standard, le second gold standard prévu initialement impliquait la réponse à l'infiltration. Ici, `r infiltration_oui_n` patients ont eu une infiltration, et  `r resultat_inf_renseigne_n` patients ont des résultats renseignés. On utilise donc la colonne `Gold Standard`
+-   pour les gold standard, le second gold standard prévu initialement impliquait la réponse à l'infiltration. Ici, 26 patients ont eu une infiltration, et  24 patients ont des résultats renseignés. On utilise donc la colonne `Gold Standard`
 
 \newpage
 # Méthodes
@@ -3376,18 +3377,148 @@ Le protocole du CHU de Rennes prévoyait initialement un raisonnement de dimensi
 
 11 scénarios théoriques étaient proposés, et sont recalculés ici : 
 
-```{r}
-#| label: tbl-effectifs
-#| tbl-cap: "Effectif requis pour différents scénarios de spécificité cible, prévalence et marge"
-#| echo: !expr "(!knitr::is_latex_output())"
-#| include: true
-#| results: "asis"
+
+::: {#tbl-effectifs .cell tbl-cap='Effectif requis pour différents scénarios de spécificité cible, prévalence et marge'}
+
+```{.r .cell-code}
 sample_size_table
 ```
 
+`````{=html}
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:center;"> Scenario </th>
+   <th style="text-align:center;"> Target Sp </th>
+   <th style="text-align:center;"> Prevalence </th>
+   <th style="text-align:center;"> CI width </th>
+   <th style="text-align:center;"> Required negatives </th>
+   <th style="text-align:center;"> Required total N </th>
+   <th style="text-align:center;"> Lower bound </th>
+   <th style="text-align:center;"> Computed width </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:center;"> S1 </td>
+   <td style="text-align:center;"> 0.90 </td>
+   <td style="text-align:center;"> 0.75 </td>
+   <td style="text-align:center;"> 0.099 </td>
+   <td style="text-align:center;"> 50 </td>
+   <td style="text-align:center;"> 200 </td>
+   <td style="text-align:center;"> 0.801 </td>
+   <td style="text-align:center;"> 0.099 </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> S2 </td>
+   <td style="text-align:center;"> 0.90 </td>
+   <td style="text-align:center;"> 0.50 </td>
+   <td style="text-align:center;"> 0.099 </td>
+   <td style="text-align:center;"> 50 </td>
+   <td style="text-align:center;"> 100 </td>
+   <td style="text-align:center;"> 0.801 </td>
+   <td style="text-align:center;"> 0.099 </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> S3 </td>
+   <td style="text-align:center;"> 0.90 </td>
+   <td style="text-align:center;"> 0.75 </td>
+   <td style="text-align:center;"> 0.149 </td>
+   <td style="text-align:center;"> 27 </td>
+   <td style="text-align:center;"> 108 </td>
+   <td style="text-align:center;"> 0.751 </td>
+   <td style="text-align:center;"> 0.149 </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> S4 </td>
+   <td style="text-align:center;"> 0.90 </td>
+   <td style="text-align:center;"> 0.50 </td>
+   <td style="text-align:center;"> 0.149 </td>
+   <td style="text-align:center;"> 27 </td>
+   <td style="text-align:center;"> 54 </td>
+   <td style="text-align:center;"> 0.751 </td>
+   <td style="text-align:center;"> 0.149 </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> S5 </td>
+   <td style="text-align:center;"> 0.90 </td>
+   <td style="text-align:center;"> 0.60 </td>
+   <td style="text-align:center;"> 0.099 </td>
+   <td style="text-align:center;"> 50 </td>
+   <td style="text-align:center;"> 125 </td>
+   <td style="text-align:center;"> 0.801 </td>
+   <td style="text-align:center;"> 0.099 </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> S6 </td>
+   <td style="text-align:center;"> 0.90 </td>
+   <td style="text-align:center;"> 0.60 </td>
+   <td style="text-align:center;"> 0.149 </td>
+   <td style="text-align:center;"> 27 </td>
+   <td style="text-align:center;"> 68 </td>
+   <td style="text-align:center;"> 0.751 </td>
+   <td style="text-align:center;"> 0.149 </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> S7 </td>
+   <td style="text-align:center;"> 0.85 </td>
+   <td style="text-align:center;"> 0.75 </td>
+   <td style="text-align:center;"> 0.099 </td>
+   <td style="text-align:center;"> 58 </td>
+   <td style="text-align:center;"> 232 </td>
+   <td style="text-align:center;"> 0.751 </td>
+   <td style="text-align:center;"> 0.099 </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> S8 </td>
+   <td style="text-align:center;"> 0.85 </td>
+   <td style="text-align:center;"> 0.50 </td>
+   <td style="text-align:center;"> 0.099 </td>
+   <td style="text-align:center;"> 58 </td>
+   <td style="text-align:center;"> 116 </td>
+   <td style="text-align:center;"> 0.751 </td>
+   <td style="text-align:center;"> 0.099 </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> S9 </td>
+   <td style="text-align:center;"> 0.85 </td>
+   <td style="text-align:center;"> 0.75 </td>
+   <td style="text-align:center;"> 0.149 </td>
+   <td style="text-align:center;"> 30 </td>
+   <td style="text-align:center;"> 120 </td>
+   <td style="text-align:center;"> 0.701 </td>
+   <td style="text-align:center;"> 0.149 </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> S10 </td>
+   <td style="text-align:center;"> 0.85 </td>
+   <td style="text-align:center;"> 0.60 </td>
+   <td style="text-align:center;"> 0.099 </td>
+   <td style="text-align:center;"> 58 </td>
+   <td style="text-align:center;"> 145 </td>
+   <td style="text-align:center;"> 0.751 </td>
+   <td style="text-align:center;"> 0.099 </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> S11 </td>
+   <td style="text-align:center;"> 0.85 </td>
+   <td style="text-align:center;"> 0.50 </td>
+   <td style="text-align:center;"> 0.149 </td>
+   <td style="text-align:center;"> 30 </td>
+   <td style="text-align:center;"> 60 </td>
+   <td style="text-align:center;"> 0.701 </td>
+   <td style="text-align:center;"> 0.149 </td>
+  </tr>
+</tbody>
+</table>
+
+`````
+:::
+
+
 En prenant en compte ce tableau, le choix d'arrêter les inclusions peut poser question : le nombre de sujets négatifs minimal nécessaire pour atteindre la précision visée par "le pire scénario" prévue par la méthodologiste n'est pas acquis. Il faudrait 27 cas négatifs sur un effectif total de 68 patients pour cibler une spécificité de 0,90 avec une marge de 0,149 et une prévalence de 60 %. 
 
-Or, dans la cohorte analysée, nous avons `r effectif_n_neg_main` cas négatifs sur un effectif total de `r effectif_n_total_main` patients, soit une prévalence de NCB de `r paste0(round(effectif_n_pos_main / effectif_n_total_main * 100, 1), " %")`.
+Or, dans la cohorte analysée, nous avons 24 cas négatifs sur un effectif total de 69 patients, soit une prévalence de NCB de 65.2 %.
 
 Le nombre total de patients est suffisant, mais le nombre de patients négatifs est légèrement inférieur à ce qui était prévu pour atteindre la précision visée sur la spécificité.
 
@@ -3401,11 +3532,11 @@ Le nombre total de patients est suffisant, mais le nombre de patients négatifs 
     -   Effectif négatif requis : 27 patients
 
 -   Dans la cohorte analysée : 
-    -   Effectif total : `r effectif_n_total_main` patients
-    -   Effectif négatif : `r effectif_n_neg_main` patients
-    -   Prévalence observée : `r paste0(round(effectif_n_pos_main / effectif_n_total_main * 100, 1), " %")`
-    -   Spécificité observée pour la combinaison de tests la plus spécifique : `r round(combination_most_specific_row$Sp, 3)`, avec un IC95% de `r paste0("[", round(combination_most_specific_row$Sp_low, 3), " ; ", round(combination_most_specific_row$Sp_high, 3), "]")`
-    -   Marge de précision observée pour la spécificité : `r round(combination_most_specific_row$Sp - combination_most_specific_row$Sp_low, 3)`, donc supérieure à la marge de précision prévue de 0,149
+    -   Effectif total : 69 patients
+    -   Effectif négatif : 24 patients
+    -   Prévalence observée : 65.2 %
+    -   Spécificité observée pour la combinaison de tests la plus spécifique : 0.792, avec un IC95% de [0.578 ; 0.929]
+    -   Marge de précision observée pour la spécificité : 0.213, donc supérieure à la marge de précision prévue de 0,149
 
 ------
 
@@ -3422,90 +3553,144 @@ Ce que je propose : faire comme si la méthodologiste n'avait jamais calculé de
 
 ### Âge
 
-```{r}
-#| label: age
-#| echo: !expr "(!knitr::is_latex_output())"
-#| include: true
-#| results: "asis"
+
+```{.r .cell-code}
 resume_age_table
 ```
 
+`````{=html}
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>variable âge</caption>
+ <thead>
+  <tr>
+   <th style="text-align:right;"> Min. </th>
+   <th style="text-align:right;"> 1st Qu. </th>
+   <th style="text-align:right;"> Median </th>
+   <th style="text-align:right;"> Mean </th>
+   <th style="text-align:right;"> 3rd Qu. </th>
+   <th style="text-align:right;"> Max. </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:right;"> 27 </td>
+   <td style="text-align:right;"> 45 </td>
+   <td style="text-align:right;"> 51 </td>
+   <td style="text-align:right;"> 52 </td>
+   <td style="text-align:right;"> 59 </td>
+   <td style="text-align:right;"> 77 </td>
+  </tr>
+</tbody>
+</table>
+
+`````
+
 -   Représentation de la variable âge par histogramme avec densité et QQ-plot (le QQ plot se construit en comparant les quantiles de la variable âge à ceux d'une distribution normale théorique : si les points suivent une ligne droite, la variable suit une distribution normale).
 
-```{r}
-#| label: age-distribution
-#| fig-cap: "Distribution de l'âge"
-#| fig-width: 10
-#| fig-height: 4.6
-#| echo: !expr "(!knitr::is_latex_output())"
-#| message: false
-#| warning: false
+
+::: {.cell}
+
+```{.r .cell-code}
 plot_age_distribution()
 ```
 
--   L'âge semble suivre une distribution approximativement normale. Les tests statistiques de normalité (type Shapiro-Wilk) ont ici un intérêt limité : avec `r n_total_patients` patients, ils peuvent manquer de puissance pour détecter des écarts modestes, tandis que l'inspection graphique reste plus informative.
+::: {.cell-output-display}
+![Distribution de l'âge](these_brieuc_files/figure-html/age-distribution-1.png){width=960}
+:::
+:::
+
+
+-   L'âge semble suivre une distribution approximativement normale. Les tests statistiques de normalité (type Shapiro-Wilk) ont ici un intérêt limité : avec 69 patients, ils peuvent manquer de puissance pour détecter des écarts modestes, tandis que l'inspection graphique reste plus informative.
 
 ### Sexe
 
-```{r}
-#| label: sexe-distribution
-#| fig-cap: "Répartition du sexe"
-#| fig-width: 10
-#| fig-height: 4.6
-#| echo: !expr "(!knitr::is_latex_output())"
-#| message: false
-#| warning: false
+
+::: {.cell}
+
+```{.r .cell-code}
 plot_sexe_distribution()
 ```
+
+::: {.cell-output-display}
+![Répartition du sexe](these_brieuc_files/figure-html/sexe-distribution-1.png){width=960}
+:::
+:::
+
 
 -   Même si le camembert est plus visuel, le diagramme en barres est plus précis pour comparer les effectifs et les proportions (car affiche les effectifs totaux).
 
 #### Côté
 
-```{r}
-#| label: côté-distribution
-#| fig-cap: "Répartition du côté"
-#| fig-width: 10
-#| fig-height: 4.6
-#| echo: !expr "(!knitr::is_latex_output())"
-#| message: false
-#| warning: false
+
+::: {.cell}
+
+```{.r .cell-code}
 plot_cote_distribution()
 ```
 
+::: {.cell-output-display}
+![Répartition du côté](these_brieuc_files/figure-html/côté-distribution-1.png){width=960}
+:::
+:::
+
+
 #### Niveau
 
-```{r}
-#| label: niveau-distribution
-#| fig-cap: "Répartition du niveau"
-#| fig-width: 7
-#| fig-height: 3.8
-#| echo: !expr "(!knitr::is_latex_output())"
-#| message: false
-#| warning: false
+
+::: {.cell}
+
+```{.r .cell-code}
 plot_niveau_distribution()
 ```
 
+::: {.cell-output-display}
+![Répartition du niveau](these_brieuc_files/figure-html/niveau-distribution-1.png){width=672}
+:::
+:::
+
+
 #### BMI
 
-```{r}
-#| label: bmi-table
-#| echo: !expr "(!knitr::is_latex_output())"
-#| include: true
-#| results: "asis"
+
+```{.r .cell-code}
 resume_bmi_table
 ```
 
--   Le `BMI` est renseigné chez `r sum(!is.na(df$BMI))` patients sur `r n_total_patients`.
+`````{=html}
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>Variable BMI</caption>
+ <thead>
+  <tr>
+   <th style="text-align:right;"> Min. </th>
+   <th style="text-align:right;"> 1st Qu. </th>
+   <th style="text-align:right;"> Median </th>
+   <th style="text-align:right;"> Mean </th>
+   <th style="text-align:right;"> 3rd Qu. </th>
+   <th style="text-align:right;"> Max. </th>
+   <th style="text-align:right;"> NA's </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:right;"> 17 </td>
+   <td style="text-align:right;"> 22.75 </td>
+   <td style="text-align:right;"> 25 </td>
+   <td style="text-align:right;"> 26.4375 </td>
+   <td style="text-align:right;"> 30 </td>
+   <td style="text-align:right;"> 45 </td>
+   <td style="text-align:right;"> 5 </td>
+  </tr>
+</tbody>
+</table>
 
-```{r}
-#| label: bmi-distribution
-#| fig-cap: "Distribution du BMI"
-#| fig-width: 10
-#| fig-height: 4.6
-#| echo: !expr "(!knitr::is_latex_output())"
-#| message: false
-#| warning: false
+`````
+
+-   Le `BMI` est renseigné chez 64 patients sur 69.
+
+
+::: {.cell}
+
+```{.r .cell-code}
 par(mfrow = c(1, 2))
 hist(
     df$BMI,
@@ -3521,13 +3706,16 @@ qqnorm(df$BMI, main = "Q-Q plot du BMI")
 qqline(df$BMI, col = "red", lwd = 2)
 ```
 
+::: {.cell-output-display}
+![Distribution du BMI](these_brieuc_files/figure-html/bmi-distribution-1.png){width=960}
+:::
+:::
+
+
 #### Tabac
 
-```{r}
-#| label: tabac-table
-#| echo: !expr "(!knitr::is_latex_output())"
-#| include: true
-#| results: "asis"
+
+```{.r .cell-code}
 kable(
     tabac_summary,
     caption = "Répartition du tabac",
@@ -3535,16 +3723,21 @@ kable(
 )
 ```
 
--   Le statut tabagique est renseigné chez `r tabac_renseigne_n` patients sur `r n_total_patients`.
 
-```{r}
-#| label: tabac-distribution
-#| fig-cap: "Répartition du tabac"
-#| fig-width: 10
-#| fig-height: 4.6
-#| echo: !expr "(!knitr::is_latex_output())"
-#| message: false
-#| warning: false
+
+Table: Répartition du tabac
+
+| Modalite | Effectif | Pourcentage |
+|:--------:|:--------:|:-----------:|
+|   Non    |    37    |    57.8     |
+|   Oui    |    27    |    42.2     |
+
+-   Le statut tabagique est renseigné chez 64 patients sur 69.
+
+
+::: {.cell}
+
+```{.r .cell-code}
 par(mfrow = c(1, 2))
 bar_pos <- barplot(
     c(tabac_non_n, tabac_oui_n),
@@ -3568,13 +3761,16 @@ pie(
 )
 ```
 
+::: {.cell-output-display}
+![Répartition du tabac](these_brieuc_files/figure-html/tabac-distribution-1.png){width=960}
+:::
+:::
+
+
 #### Infiltrations
 
-```{r}
-#| label: infiltrations-table
-#| echo: !expr "(!knitr::is_latex_output())"
-#| include: true
-#| results: "asis"
+
+```{.r .cell-code}
 kable(
     infiltration_summary,
     caption = "Répartition du statut d'infiltration",
@@ -3582,16 +3778,21 @@ kable(
 )
 ```
 
--   Le statut d'infiltration est interprétable chez `r infiltration_renseigne_n` patients sur `r n_total_patients`.
 
-```{r}
-#| label: infiltrations-distribution
-#| fig-cap: "Répartition du statut d'infiltration"
-#| fig-width: 10
-#| fig-height: 4.6
-#| echo: !expr "(!knitr::is_latex_output())"
-#| message: false
-#| warning: false
+
+Table: Répartition du statut d'infiltration
+
+| Modalite | Effectif | Pourcentage |
+|:--------:|:--------:|:-----------:|
+|   Non    |    42    |    61.8     |
+|   Oui    |    26    |    38.2     |
+
+-   Le statut d'infiltration est interprétable chez 68 patients sur 69.
+
+
+::: {.cell}
+
+```{.r .cell-code}
 par(mfrow = c(1, 2))
 bar_pos <- barplot(
     c(infiltration_non_n, infiltration_oui_n),
@@ -3615,13 +3816,16 @@ pie(
 )
 ```
 
+::: {.cell-output-display}
+![Répartition du statut d'infiltration](these_brieuc_files/figure-html/infiltrations-distribution-1.png){width=960}
+:::
+:::
+
+
 #### Résultat des infiltrations
 
-```{r}
-#| label: resultat-infiltrations-table
-#| echo: !expr "(!knitr::is_latex_output())"
-#| include: true
-#| results: "asis"
+
+```{.r .cell-code}
 kable(
     resultat_inf_summary,
     caption = "Répartition du résultat des infiltrations",
@@ -3629,16 +3833,21 @@ kable(
 )
 ```
 
--   Parmi les `r infiltration_oui_n` patients ayant eu une infiltration, le résultat est renseigné chez `r resultat_inf_renseigne_n`.
 
-```{r}
-#| label: resultat-infiltrations-distribution
-#| fig-cap: "Répartition du résultat des infiltrations"
-#| fig-width: 7
-#| fig-height: 4.6
-#| echo: !expr "(!knitr::is_latex_output())"
-#| message: false
-#| warning: false
+
+Table: Répartition du résultat des infiltrations
+
+| Modalite | Effectif | Pourcentage |
+|:--------:|:--------:|:-----------:|
+| Negatif  |    5     |    20.8     |
+| Positif  |    19    |    79.2     |
+
+-   Parmi les 26 patients ayant eu une infiltration, le résultat est renseigné chez 24.
+
+
+::: {.cell}
+
+```{.r .cell-code}
 bar_pos <- barplot(
     c(resultat_inf_neg_n, resultat_inf_pos_n),
     names.arg = c("Negatif", "Positif"),
@@ -3655,16 +3864,531 @@ text(
 )
 ```
 
+::: {.cell-output-display}
+![Répartition du résultat des infiltrations](these_brieuc_files/figure-html/resultat-infiltrations-distribution-1.png){width=672}
+:::
+:::
+
+
 
 \newpage
 #### Tableau de caractéristiques initiales
 
-```{r}
-#| label: caracs initiales 2
-#| echo: !expr "(!knitr::is_latex_output())"
-#| include: true
-#| results: "asis"
+
+```{.r .cell-code}
 baseline_tbl
+```
+
+```{=html}
+<div id="keuvwhqgtp" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#keuvwhqgtp table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#keuvwhqgtp thead, #keuvwhqgtp tbody, #keuvwhqgtp tfoot, #keuvwhqgtp tr, #keuvwhqgtp td, #keuvwhqgtp th {
+  border-style: none;
+}
+
+#keuvwhqgtp p {
+  margin: 0;
+  padding: 0;
+}
+
+#keuvwhqgtp .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#keuvwhqgtp .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#keuvwhqgtp .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#keuvwhqgtp .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#keuvwhqgtp .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#keuvwhqgtp .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#keuvwhqgtp .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#keuvwhqgtp .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#keuvwhqgtp .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#keuvwhqgtp .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#keuvwhqgtp .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#keuvwhqgtp .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#keuvwhqgtp .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#keuvwhqgtp .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#keuvwhqgtp .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#keuvwhqgtp .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#keuvwhqgtp .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#keuvwhqgtp .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#keuvwhqgtp .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#keuvwhqgtp .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#keuvwhqgtp .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#keuvwhqgtp .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#keuvwhqgtp .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#keuvwhqgtp .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#keuvwhqgtp .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#keuvwhqgtp .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#keuvwhqgtp .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#keuvwhqgtp .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#keuvwhqgtp .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#keuvwhqgtp .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#keuvwhqgtp .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#keuvwhqgtp .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#keuvwhqgtp .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#keuvwhqgtp .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#keuvwhqgtp .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#keuvwhqgtp .gt_left {
+  text-align: left;
+}
+
+#keuvwhqgtp .gt_center {
+  text-align: center;
+}
+
+#keuvwhqgtp .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#keuvwhqgtp .gt_font_normal {
+  font-weight: normal;
+}
+
+#keuvwhqgtp .gt_font_bold {
+  font-weight: bold;
+}
+
+#keuvwhqgtp .gt_font_italic {
+  font-style: italic;
+}
+
+#keuvwhqgtp .gt_super {
+  font-size: 65%;
+}
+
+#keuvwhqgtp .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#keuvwhqgtp .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#keuvwhqgtp .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#keuvwhqgtp .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#keuvwhqgtp .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#keuvwhqgtp .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#keuvwhqgtp .gt_indent_5 {
+  text-indent: 25px;
+}
+
+#keuvwhqgtp .katex-display {
+  display: inline-flex !important;
+  margin-bottom: 0.75em !important;
+}
+
+#keuvwhqgtp div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+  height: 0px !important;
+}
+</style>
+<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+  <thead>
+    <tr class="gt_col_headings">
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="label"><span data-qmd-base64="KipDYXJhY3TDqXJpc3RpcXVlcyoq"><span class='gt_from_md'><strong>Caractéristiques</strong></span></span></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="stat_0"><span data-qmd-base64="KipOID0gNjkqKg=="><span class='gt_from_md'><strong>N = 69</strong></span></span><span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;line-height:0;"><sup>1</sup></span></th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td headers="label" class="gt_row gt_left">Âge (années)</td>
+<td headers="stat_0" class="gt_row gt_center">51 (45, 59)</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">BMI (kg/m²)</td>
+<td headers="stat_0" class="gt_row gt_center">25.0 (22.5, 30.0)</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">Sexe</td>
+<td headers="stat_0" class="gt_row gt_center"><br /></td></tr>
+    <tr><td headers="label" class="gt_row gt_left">    Masculin</td>
+<td headers="stat_0" class="gt_row gt_center">23 (33%)</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">    Féminin</td>
+<td headers="stat_0" class="gt_row gt_center">46 (67%)</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">Côté</td>
+<td headers="stat_0" class="gt_row gt_center"><br /></td></tr>
+    <tr><td headers="label" class="gt_row gt_left">    Gauche</td>
+<td headers="stat_0" class="gt_row gt_center">35 (51%)</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">    Droite</td>
+<td headers="stat_0" class="gt_row gt_center">34 (49%)</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">Niveau</td>
+<td headers="stat_0" class="gt_row gt_center"><br /></td></tr>
+    <tr><td headers="label" class="gt_row gt_left">    C4</td>
+<td headers="stat_0" class="gt_row gt_center">1 (1.4%)</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">    C5</td>
+<td headers="stat_0" class="gt_row gt_center">10 (14%)</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">    C6</td>
+<td headers="stat_0" class="gt_row gt_center">27 (39%)</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">    C7</td>
+<td headers="stat_0" class="gt_row gt_center">21 (30%)</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">    C8</td>
+<td headers="stat_0" class="gt_row gt_center">10 (14%)</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">Tabac actif</td>
+<td headers="stat_0" class="gt_row gt_center">27 (42%)</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">Infiltrations</td>
+<td headers="stat_0" class="gt_row gt_center">26 (38%)</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">Résultat des infiltrations</td>
+<td headers="stat_0" class="gt_row gt_center">19 (79%)</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">Gold Standard positif</td>
+<td headers="stat_0" class="gt_row gt_center">45 (65%)</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">ULNT1 E1 positif</td>
+<td headers="stat_0" class="gt_row gt_center">48 (70%)</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">ULNT2a E1 positif</td>
+<td headers="stat_0" class="gt_row gt_center">46 (67%)</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">ULNT2b E1 positif</td>
+<td headers="stat_0" class="gt_row gt_center">39 (57%)</td></tr>
+    <tr><td headers="label" class="gt_row gt_left">ULNT3 E1 positif</td>
+<td headers="stat_0" class="gt_row gt_center">25 (36%)</td></tr>
+  </tbody>
+  <tfoot>
+    <tr class="gt_footnotes">
+      <td class="gt_footnote" colspan="2"><span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;line-height:0;"><sup>1</sup></span> <span data-qmd-base64="TWVkaWFuIChRMSwgUTMpOyBuICglKQ=="><span class='gt_from_md'>Median (Q1, Q3); n (%)</span></span></td>
+    </tr>
+  </tfoot>
+</table>
+</div>
 ```
 
 
@@ -3682,10 +4406,8 @@ baseline_tbl
 
 #### Résultats
 
-```{r}
-#| label: ulnt-descriptive-table
-#| echo: !expr "(!knitr::is_latex_output())"
-#| results: "asis"
+
+```{.r .cell-code}
 kable(
     u1_descriptive,
     caption = "Tableau descriptif des résultats de U1 (évaluateur 1)",
@@ -3694,10 +4416,16 @@ kable(
 )
 ```
 
-```{r}
-#| label: ulnt-contingency-table
-#| echo: !expr "(!knitr::is_latex_output())"
-#| results: "asis"
+
+
+Table: Tableau descriptif des résultats de U1 (évaluateur 1)
+
+| Test | Positif n (%) | Négatif n (%) |
+|:----:|:-------------:|:-------------:|
+|  U1  |  48 (69.6%)   |  21 (30.4%)   |
+
+
+```{.r .cell-code}
 kable(
     u1_contingency,
     caption = "Tableau de contingence de U1 par rapport au gold standard",
@@ -3705,12 +4433,20 @@ kable(
 )
 ```
 
+
+
+Table: Tableau de contingence de U1 par rapport au gold standard
+
+|  U1   |     G+     |     G-     |   Total    |
+|:-----:|:----------:|:----------:|:----------:|
+|  T+   | 39 (56.5%) |  9 (13%)   | 48 (69.6%) |
+|  T-   |  6 (8.7%)  | 15 (21.7%) | 21 (30.4%) |
+| Total | 45 (65.2%) | 24 (34.8%) | 69 (100%)  |
+
 -   T+/T- correspond à Test positif ou négatif, G+/G- correspond au Gold standard
 
-```{r}
-#| label: ulnt1-effectifs-table
-#| echo: !expr "(!knitr::is_latex_output())"
-#| results: "asis"
+
+```{.r .cell-code}
 kable(
     u1_effectifs,
     caption = "Effectifs diagnostiques de U1 par rapport au gold standard",
@@ -3718,10 +4454,16 @@ kable(
 )
 ```
 
-```{r}
-#| label: ulnt1-diagnostic-performance-table
-#| echo: !expr "(!knitr::is_latex_output())"
-#| results: "asis"
+
+
+Table: Effectifs diagnostiques de U1 par rapport au gold standard
+
+| Test | N  | VP | FN | FP | VN |
+|:----:|:--:|:--:|:--:|:--:|:--:|
+|  U1  | 69 | 39 | 6  | 9  | 15 |
+
+
+```{.r .cell-code}
 kable(
     u1_performance_summary,
     caption = "Performances diagnostiques de U1 par rapport au gold standard",
@@ -3734,6 +4476,39 @@ kable(
         font_size = 7
     )
 ```
+
+`````{=html}
+<table class="table" style="font-size: 7px; width: auto !important; margin-left: auto; margin-right: auto;">
+<caption style="font-size: initial !important;">Performances diagnostiques de U1 par rapport au gold standard</caption>
+ <thead>
+  <tr>
+   <th style="text-align:center;"> Test </th>
+   <th style="text-align:center;"> Se [IC95] </th>
+   <th style="text-align:center;"> Sp [IC95] </th>
+   <th style="text-align:center;"> VPP [IC95] </th>
+   <th style="text-align:center;"> VPN [IC95] </th>
+   <th style="text-align:center;"> LR+ </th>
+   <th style="text-align:center;"> LR- </th>
+   <th style="text-align:center;"> Youden </th>
+   <th style="text-align:center;"> AUC [IC95] </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:center;"> U1 </td>
+   <td style="text-align:center;"> 0.867 [0.732 ; 0.949] </td>
+   <td style="text-align:center;"> 0.625 [0.406 ; 0.812] </td>
+   <td style="text-align:center;"> 0.812 [0.674 ; 0.911] </td>
+   <td style="text-align:center;"> 0.714 [0.478 ; 0.887] </td>
+   <td style="text-align:center;"> 2.31 </td>
+   <td style="text-align:center;"> 0.21 </td>
+   <td style="text-align:center;"> 0.492 </td>
+   <td style="text-align:center;"> 0.746 [0.635 ; 0.857] </td>
+  </tr>
+</tbody>
+</table>
+
+`````
 
 #### Interprétation
 
@@ -3756,10 +4531,8 @@ kable(
 
 #### Résultats
 
-```{r}
-#| label: ulnt2a-descriptive-table
-#| echo: !expr "(!knitr::is_latex_output())"
-#| results: "asis"
+
+```{.r .cell-code}
 kable(
     u2a_descriptive,
     caption = "Tableau descriptif des résultats de U2a (évaluateur 1)",
@@ -3768,10 +4541,16 @@ kable(
 )
 ```
 
-```{r}
-#| label: ulnt2a-contingency-table
-#| echo: !expr "(!knitr::is_latex_output())"
-#| results: "asis"
+
+
+Table: Tableau descriptif des résultats de U2a (évaluateur 1)
+
+| Test | Positifs n | Positifs % | Négatifs n | Négatifs % |
+|:----:|:----------:|:----------:|:----------:|:----------:|
+| U2a  |     46     |    66.7    |     23     |    33.3    |
+
+
+```{.r .cell-code}
 kable(
     u2a_contingency,
     caption = "Tableau de contingence de U2a par rapport au gold standard",
@@ -3780,10 +4559,18 @@ kable(
 ```
 
 
-```{r}
-#| label: ulnt2a-effectifs-table
-#| echo: !expr "(!knitr::is_latex_output())"
-#| results: "asis"
+
+Table: Tableau de contingence de U2a par rapport au gold standard
+
+|  U2a  |     G+     |     G-     |   Total    |
+|:-----:|:----------:|:----------:|:----------:|
+|  T+   | 36 (52.2%) | 10 (14.5%) | 46 (66.7%) |
+|  T-   |  9 (13%)   | 14 (20.3%) | 23 (33.3%) |
+| Total | 45 (65.2%) | 24 (34.8%) | 69 (100%)  |
+
+
+
+```{.r .cell-code}
 kable(
     u2a_effectifs,
     caption = "Effectifs diagnostiques de U2a par rapport au gold standard",
@@ -3791,10 +4578,16 @@ kable(
 )
 ```
 
-```{r}
-#| label: ulnt-diagnostic-performance-table
-#| echo: !expr "(!knitr::is_latex_output())"
-#| results: "asis"
+
+
+Table: Effectifs diagnostiques de U2a par rapport au gold standard
+
+| Test | N  | VP | FN | FP | VN |
+|:----:|:--:|:--:|:--:|:--:|:--:|
+| U2a  | 69 | 36 | 9  | 10 | 14 |
+
+
+```{.r .cell-code}
 kable(
     u2a_performance_summary,
     caption = "Performances diagnostiques de U2a par rapport au gold standard",
@@ -3808,6 +4601,39 @@ kable(
     )
 ```
 
+`````{=html}
+<table class="table" style="font-size: 7px; width: auto !important; margin-left: auto; margin-right: auto;">
+<caption style="font-size: initial !important;">Performances diagnostiques de U2a par rapport au gold standard</caption>
+ <thead>
+  <tr>
+   <th style="text-align:center;"> Test </th>
+   <th style="text-align:center;"> Se [IC95] </th>
+   <th style="text-align:center;"> Sp [IC95] </th>
+   <th style="text-align:center;"> VPP [IC95] </th>
+   <th style="text-align:center;"> VPN [IC95] </th>
+   <th style="text-align:center;"> LR+ </th>
+   <th style="text-align:center;"> LR- </th>
+   <th style="text-align:center;"> Youden </th>
+   <th style="text-align:center;"> AUC [IC95] </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:center;"> U2a </td>
+   <td style="text-align:center;"> 0.8 [0.654 ; 0.904] </td>
+   <td style="text-align:center;"> 0.583 [0.366 ; 0.779] </td>
+   <td style="text-align:center;"> 0.783 [0.636 ; 0.891] </td>
+   <td style="text-align:center;"> 0.609 [0.385 ; 0.803] </td>
+   <td style="text-align:center;"> 1.92 </td>
+   <td style="text-align:center;"> 0.34 </td>
+   <td style="text-align:center;"> 0.383 </td>
+   <td style="text-align:center;"> 0.692 [0.575 ; 0.808] </td>
+  </tr>
+</tbody>
+</table>
+
+`````
+
 #### Interprétation
 
 -   Moins sensible que U1, mais aussi moins spécifique. 
@@ -3819,10 +4645,8 @@ kable(
 
 #### Résultats
 
-```{r}
-#| label: ulnt2b-descriptive-table
-#| echo: !expr "(!knitr::is_latex_output())"
-#| results: "asis"
+
+```{.r .cell-code}
 kable(
     u2b_descriptive,
     caption = "Tableau descriptif des résultats de U2b (évaluateur 1)",
@@ -3831,10 +4655,16 @@ kable(
 )
 ```
 
-```{r}
-#| label: ulnt2b-contingency-table
-#| echo: !expr "(!knitr::is_latex_output())"
-#| results: "asis"
+
+
+Table: Tableau descriptif des résultats de U2b (évaluateur 1)
+
+| Test | Positifs n | Positifs % | Négatifs n | Négatifs % |
+|:----:|:----------:|:----------:|:----------:|:----------:|
+| U2b  |     39     |    56.5    |     30     |    43.5    |
+
+
+```{.r .cell-code}
 kable(
     u2b_contingency,
     caption = "Tableau de contingence de U2b par rapport au gold standard",
@@ -3842,10 +4672,18 @@ kable(
 )
 ```
 
-```{r}
-#| label: ulnt2b-effectifs-table
-#| echo: !expr "(!knitr::is_latex_output())"
-#| results: "asis"
+
+
+Table: Tableau de contingence de U2b par rapport au gold standard
+
+|  U2b  |     G+     |     G-     |   Total    |
+|:-----:|:----------:|:----------:|:----------:|
+|  T+   | 31 (44.9%) | 8 (11.6%)  | 39 (56.5%) |
+|  T-   | 14 (20.3%) | 16 (23.2%) | 30 (43.5%) |
+| Total | 45 (65.2%) | 24 (34.8%) | 69 (100%)  |
+
+
+```{.r .cell-code}
 kable(
     u2b_effectifs,
     caption = "Effectifs diagnostiques de U2b par rapport au gold standard",
@@ -3853,10 +4691,16 @@ kable(
 )
 ```
 
-```{r}
-#| label: ulnt2b-diagnostic-performance-table
-#| echo: !expr "(!knitr::is_latex_output())"
-#| results: "asis"
+
+
+Table: Effectifs diagnostiques de U2b par rapport au gold standard
+
+| Test | N  | VP | FN | FP | VN |
+|:----:|:--:|:--:|:--:|:--:|:--:|
+| U2b  | 69 | 31 | 14 | 8  | 16 |
+
+
+```{.r .cell-code}
 kable(
     u2b_performance_summary,
     caption = "Performances diagnostiques de U2b par rapport au gold standard",
@@ -3870,6 +4714,39 @@ kable(
     )
 ```
 
+`````{=html}
+<table class="table" style="font-size: 7px; width: auto !important; margin-left: auto; margin-right: auto;">
+<caption style="font-size: initial !important;">Performances diagnostiques de U2b par rapport au gold standard</caption>
+ <thead>
+  <tr>
+   <th style="text-align:center;"> Test </th>
+   <th style="text-align:center;"> Se [IC95] </th>
+   <th style="text-align:center;"> Sp [IC95] </th>
+   <th style="text-align:center;"> VPP [IC95] </th>
+   <th style="text-align:center;"> VPN [IC95] </th>
+   <th style="text-align:center;"> LR+ </th>
+   <th style="text-align:center;"> LR- </th>
+   <th style="text-align:center;"> Youden </th>
+   <th style="text-align:center;"> AUC [IC95] </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:center;"> U2b </td>
+   <td style="text-align:center;"> 0.689 [0.534 ; 0.818] </td>
+   <td style="text-align:center;"> 0.667 [0.447 ; 0.844] </td>
+   <td style="text-align:center;"> 0.795 [0.635 ; 0.907] </td>
+   <td style="text-align:center;"> 0.533 [0.343 ; 0.717] </td>
+   <td style="text-align:center;"> 2.07 </td>
+   <td style="text-align:center;"> 0.47 </td>
+   <td style="text-align:center;"> 0.356 </td>
+   <td style="text-align:center;"> 0.678 [0.56 ; 0.796] </td>
+  </tr>
+</tbody>
+</table>
+
+`````
+
 #### Interprétation
 
 -   Profil plus équilibrée entre sensibilité et spécificité que celui de `U2a`, mais il reste moins bon que `U1` pour ne pas manquer les cas. Il est à la fois aussi moins sensible que `U1` mais un peu plus spécifique que U1
@@ -3880,10 +4757,8 @@ kable(
 
 #### Résultats
 
-```{r}
-#| label: ulnt3-descriptive-table
-#| echo: !expr "(!knitr::is_latex_output())"
-#| results: "asis"
+
+```{.r .cell-code}
 kable(
     u3_descriptive,
     caption = "Tableau descriptif des résultats de U3 (évaluateur 1)",
@@ -3893,10 +4768,16 @@ kable(
 ```
 
 
-```{r}
-#| label: ulnt3-contingency-table
-#| echo: !expr "(!knitr::is_latex_output())"
-#| results: "asis"
+
+Table: Tableau descriptif des résultats de U3 (évaluateur 1)
+
+| Test | Positifs n | Positifs % | Négatifs n | Négatifs % |
+|:----:|:----------:|:----------:|:----------:|:----------:|
+|  U3  |     25     |    36.2    |     44     |    63.8    |
+
+
+
+```{.r .cell-code}
 kable(
     u3_contingency,
     caption = "Tableau de contingence de U3 par rapport au gold standard",
@@ -3905,10 +4786,18 @@ kable(
 ```
 
 
-```{r}
-#| label: ulnt3-effectifs-table
-#| echo: !expr "(!knitr::is_latex_output())"
-#| results: "asis"
+
+Table: Tableau de contingence de U3 par rapport au gold standard
+
+|  U3   |     G+     |     G-     |   Total    |
+|:-----:|:----------:|:----------:|:----------:|
+|  T+   | 18 (26.1%) | 7 (10.1%)  | 25 (36.2%) |
+|  T-   | 27 (39.1%) | 17 (24.6%) | 44 (63.8%) |
+| Total | 45 (65.2%) | 24 (34.8%) | 69 (100%)  |
+
+
+
+```{.r .cell-code}
 kable(
     u3_effectifs,
     caption = "Effectifs diagnostiques de U3 par rapport au gold standard",
@@ -3917,10 +4806,16 @@ kable(
 ```
 
 
-```{r}
-#| label: ulnt3-diagnostic-performance-table
-#| echo: !expr "(!knitr::is_latex_output())"
-#| results: "asis"
+
+Table: Effectifs diagnostiques de U3 par rapport au gold standard
+
+| Test | N  | VP | FN | FP | VN |
+|:----:|:--:|:--:|:--:|:--:|:--:|
+|  U3  | 69 | 18 | 27 | 7  | 17 |
+
+
+
+```{.r .cell-code}
 kable(
     u3_performance_summary,
     caption = "Performances diagnostiques de U3 par rapport au gold standard",
@@ -3934,6 +4829,39 @@ kable(
     )
 ```
 
+`````{=html}
+<table class="table" style="font-size: 7px; width: auto !important; margin-left: auto; margin-right: auto;">
+<caption style="font-size: initial !important;">Performances diagnostiques de U3 par rapport au gold standard</caption>
+ <thead>
+  <tr>
+   <th style="text-align:center;"> Test </th>
+   <th style="text-align:center;"> Se [IC95] </th>
+   <th style="text-align:center;"> Sp [IC95] </th>
+   <th style="text-align:center;"> VPP [IC95] </th>
+   <th style="text-align:center;"> VPN [IC95] </th>
+   <th style="text-align:center;"> LR+ </th>
+   <th style="text-align:center;"> LR- </th>
+   <th style="text-align:center;"> Youden </th>
+   <th style="text-align:center;"> AUC [IC95] </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:center;"> U3 </td>
+   <td style="text-align:center;"> 0.4 [0.257 ; 0.557] </td>
+   <td style="text-align:center;"> 0.708 [0.489 ; 0.874] </td>
+   <td style="text-align:center;"> 0.72 [0.506 ; 0.879] </td>
+   <td style="text-align:center;"> 0.386 [0.244 ; 0.545] </td>
+   <td style="text-align:center;"> 1.37 </td>
+   <td style="text-align:center;"> 0.85 </td>
+   <td style="text-align:center;"> 0.108 </td>
+   <td style="text-align:center;"> 0.554 [0.436 ; 0.672] </td>
+  </tr>
+</tbody>
+</table>
+
+`````
+
 #### Interprétation 
 -   Le moins sensible de tous (`Se 0.386`) mais le plus spécifique (`Sp 0.71). 
 -   Faible intérêt isolé étant donné son manque de sensibilité 
@@ -3942,10 +4870,8 @@ kable(
 \newpage
 ## Synthèse globale des tests
 
-```{r}
-#| label: global-contingency-table
-#| echo: !expr "(!knitr::is_latex_output())"
-#| results: "asis"
+
+```{.r .cell-code}
 kable(
     contingency_tab,
     caption = "Tableau global de contingence des ULNT par rapport au gold standard",
@@ -3953,10 +4879,19 @@ kable(
 )
 ```
 
-```{r}
-#| label: global-diagnostic-performance-table
-#| echo: !expr "(!knitr::is_latex_output())"
-#| results: "asis"
+
+
+Table: Tableau global de contingence des ULNT par rapport au gold standard
+
+| Test | VP | FN | FP | VN | N  |
+|:----:|:--:|:--:|:--:|:--:|:--:|
+|  U1  | 39 | 6  | 9  | 15 | 69 |
+| U2a  | 36 | 9  | 10 | 14 | 69 |
+| U2b  | 31 | 14 | 8  | 16 | 69 |
+|  U3  | 18 | 27 | 7  | 17 | 69 |
+
+
+```{.r .cell-code}
 kable(
     diag_primary_round,
     caption = "Tableau global des performances diagnostiques des ULNT",
@@ -3970,29 +4905,92 @@ kable(
     )
 ```
 
-```{r}
-#| label: global-contingency-plot
-#| echo: !expr "(!knitr::is_latex_output())"
-#| fig-cap: "Composition des tableaux de contingence 2x2 par test"
-#| fig-width: 7
-#| fig-height: 4.5
-#| message: false
-#| warning: false
-#| results: "asis"
+`````{=html}
+<table class="table" style="font-size: 7px; width: auto !important; margin-left: auto; margin-right: auto;">
+<caption style="font-size: initial !important;">Tableau global des performances diagnostiques des ULNT</caption>
+ <thead>
+  <tr>
+   <th style="text-align:center;"> Test </th>
+   <th style="text-align:center;"> Se [IC95] </th>
+   <th style="text-align:center;"> Sp [IC95] </th>
+   <th style="text-align:center;"> VPP [IC95] </th>
+   <th style="text-align:center;"> VPN [IC95] </th>
+   <th style="text-align:center;"> LR+ </th>
+   <th style="text-align:center;"> LR- </th>
+   <th style="text-align:center;"> Youden </th>
+   <th style="text-align:center;"> AUC [IC95] </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:center;"> U1 </td>
+   <td style="text-align:center;"> 0.867 [0.732 ; 0.949] </td>
+   <td style="text-align:center;"> 0.625 [0.406 ; 0.812] </td>
+   <td style="text-align:center;"> 0.812 [0.674 ; 0.911] </td>
+   <td style="text-align:center;"> 0.714 [0.478 ; 0.887] </td>
+   <td style="text-align:center;"> 2.31 </td>
+   <td style="text-align:center;"> 0.21 </td>
+   <td style="text-align:center;"> 0.492 </td>
+   <td style="text-align:center;"> 0.746 [0.635 ; 0.857] </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> U2a </td>
+   <td style="text-align:center;"> 0.8 [0.654 ; 0.904] </td>
+   <td style="text-align:center;"> 0.583 [0.366 ; 0.779] </td>
+   <td style="text-align:center;"> 0.783 [0.636 ; 0.891] </td>
+   <td style="text-align:center;"> 0.609 [0.385 ; 0.803] </td>
+   <td style="text-align:center;"> 1.92 </td>
+   <td style="text-align:center;"> 0.34 </td>
+   <td style="text-align:center;"> 0.383 </td>
+   <td style="text-align:center;"> 0.692 [0.575 ; 0.808] </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> U2b </td>
+   <td style="text-align:center;"> 0.689 [0.534 ; 0.818] </td>
+   <td style="text-align:center;"> 0.667 [0.447 ; 0.844] </td>
+   <td style="text-align:center;"> 0.795 [0.635 ; 0.907] </td>
+   <td style="text-align:center;"> 0.533 [0.343 ; 0.717] </td>
+   <td style="text-align:center;"> 2.07 </td>
+   <td style="text-align:center;"> 0.47 </td>
+   <td style="text-align:center;"> 0.356 </td>
+   <td style="text-align:center;"> 0.678 [0.56 ; 0.796] </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> U3 </td>
+   <td style="text-align:center;"> 0.4 [0.257 ; 0.557] </td>
+   <td style="text-align:center;"> 0.708 [0.489 ; 0.874] </td>
+   <td style="text-align:center;"> 0.72 [0.506 ; 0.879] </td>
+   <td style="text-align:center;"> 0.386 [0.244 ; 0.545] </td>
+   <td style="text-align:center;"> 1.37 </td>
+   <td style="text-align:center;"> 0.85 </td>
+   <td style="text-align:center;"> 0.108 </td>
+   <td style="text-align:center;"> 0.554 [0.436 ; 0.672] </td>
+  </tr>
+</tbody>
+</table>
+
+`````
+
+
+```{.r .cell-code}
 contingency_plot
 ```
 
+![Composition des tableaux de contingence 2x2 par test](these_brieuc_files/figure-html/global-contingency-plot-1.png){width=672}
 
-```{r}
-#| label: ROC-comparison-plot
-#| echo: !expr "(!knitr::is_latex_output())"
-#| fig-cap: "Comparaison synthétique de la sensibilité et de la spécificité des ULNT"
-#| fig-width: 7
-#| fig-height: 5
-#| message: false
-#| warning: false
+
+
+::: {.cell}
+
+```{.r .cell-code}
 diag_key_plot
 ```
+
+::: {.cell-output-display}
+![Comparaison synthétique de la sensibilité et de la spécificité des ULNT](these_brieuc_files/figure-html/ROC-comparison-plot-1.png){width=672}
+:::
+:::
+
 
 Sur les deux graphiques, on voit très bien que : 
 
@@ -4021,10 +5019,8 @@ Comme les mêmes patients passent les différents ULNT, une comparaison apparié
 
 -   chez les `Gold Standard négatif`, on compare les **spécificités**.
 
-```{r}
-#| label: pairwise-ulnt-sensitivity-table
-#| echo: !expr "(!knitr::is_latex_output())"
-#| results: "asis"
+
+```{.r .cell-code}
 pairwise_sensitivity_round <- pairwise_comparison_round %>%
     select(
         Comparaison,
@@ -4078,10 +5074,81 @@ pairwise_sensitivity_table <- kable(
 print(pairwise_sensitivity_table)
 ```
 
-```{r}
-#| label: pairwise-ulnt-specificity-table
-#| echo: !expr "(!knitr::is_latex_output())"
-#| results: "asis"
+<table class="table" style="font-size: 7px; width: auto !important; margin-left: auto; margin-right: auto;">
+<caption style="font-size: initial !important;">Comparaisons appariees entre ULNT pour la sensibilite (chez les G+)</caption>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> Comparaison </th>
+   <th style="text-align:center;"> N </th>
+   <th style="text-align:center;"> Test 1 </th>
+   <th style="text-align:center;"> Test 2 </th>
+   <th style="text-align:center;"> Diff. </th>
+   <th style="text-align:center;"> \makecell[c]{Discord.\\(t1 / t2)} </th>
+   <th style="text-align:center;"> \makecell[c]{p\\McNemar} </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> U1 vs U2a </td>
+   <td style="text-align:center;"> 45 </td>
+   <td style="text-align:center;"> 0.867 </td>
+   <td style="text-align:center;"> 0.800 </td>
+   <td style="text-align:center;"> 0.067 </td>
+   <td style="text-align:center;"> 7 / 4 </td>
+   <td style="text-align:center;"> 0.546 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> U1 vs U2b </td>
+   <td style="text-align:center;"> 45 </td>
+   <td style="text-align:center;"> 0.867 </td>
+   <td style="text-align:center;"> 0.689 </td>
+   <td style="text-align:center;"> 0.178 </td>
+   <td style="text-align:center;"> 12 / 4 </td>
+   <td style="text-align:center;"> 0.0801 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> U1 vs U3 </td>
+   <td style="text-align:center;"> 45 </td>
+   <td style="text-align:center;"> 0.867 </td>
+   <td style="text-align:center;"> 0.400 </td>
+   <td style="text-align:center;"> 0.467 </td>
+   <td style="text-align:center;"> 22 / 1 </td>
+   <td style="text-align:center;"> 
+  </td>
+</tr>
+  <tr>
+   <td style="text-align:left;"> U2a vs U2b </td>
+   <td style="text-align:center;"> 45 </td>
+   <td style="text-align:center;"> 0.800 </td>
+   <td style="text-align:center;"> 0.689 </td>
+   <td style="text-align:center;"> 0.111 </td>
+   <td style="text-align:center;"> 8 / 3 </td>
+   <td style="text-align:center;"> 0.228 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> U2a vs U3 </td>
+   <td style="text-align:center;"> 45 </td>
+   <td style="text-align:center;"> 0.800 </td>
+   <td style="text-align:center;"> 0.400 </td>
+   <td style="text-align:center;"> 0.400 </td>
+   <td style="text-align:center;"> 18 / 0 </td>
+   <td style="text-align:center;"> 
+  </td>
+</tr>
+  <tr>
+   <td style="text-align:left;"> U2b vs U3 </td>
+   <td style="text-align:center;"> 45 </td>
+   <td style="text-align:center;"> 0.689 </td>
+   <td style="text-align:center;"> 0.400 </td>
+   <td style="text-align:center;"> 0.289 </td>
+   <td style="text-align:center;"> 18 / 5 </td>
+   <td style="text-align:center;"> 0.0123 </td>
+  </tr>
+</tbody>
+</table>
+
+
+```{.r .cell-code}
 pairwise_specificity_table <- kable(
     pairwise_specificity_round,
     format = if (knitr::is_latex_output()) {
@@ -4113,6 +5180,77 @@ pairwise_specificity_table <- kable(
 print(pairwise_specificity_table)
 ```
 
+<table class="table" style="font-size: 7px; width: auto !important; margin-left: auto; margin-right: auto;">
+<caption style="font-size: initial !important;">Comparaisons appariees entre ULNT pour la specificite (chez les G-)</caption>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> Comparaison </th>
+   <th style="text-align:center;"> N </th>
+   <th style="text-align:center;"> Test 1 </th>
+   <th style="text-align:center;"> Test 2 </th>
+   <th style="text-align:center;"> Diff. </th>
+   <th style="text-align:center;"> \makecell[c]{Discord.\\(t1 / t2)} </th>
+   <th style="text-align:center;"> \makecell[c]{p\\McNemar} </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> U1 vs U2a </td>
+   <td style="text-align:center;"> 24 </td>
+   <td style="text-align:center;"> 0.625 </td>
+   <td style="text-align:center;"> 0.583 </td>
+   <td style="text-align:center;"> 0.042 </td>
+   <td style="text-align:center;"> 1 / 0 </td>
+   <td style="text-align:center;"> 1 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> U1 vs U2b </td>
+   <td style="text-align:center;"> 24 </td>
+   <td style="text-align:center;"> 0.625 </td>
+   <td style="text-align:center;"> 0.667 </td>
+   <td style="text-align:center;"> -0.042 </td>
+   <td style="text-align:center;"> 2 / 3 </td>
+   <td style="text-align:center;"> 1 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> U1 vs U3 </td>
+   <td style="text-align:center;"> 24 </td>
+   <td style="text-align:center;"> 0.625 </td>
+   <td style="text-align:center;"> 0.708 </td>
+   <td style="text-align:center;"> -0.083 </td>
+   <td style="text-align:center;"> 0 / 2 </td>
+   <td style="text-align:center;"> 0.48 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> U2a vs U2b </td>
+   <td style="text-align:center;"> 24 </td>
+   <td style="text-align:center;"> 0.583 </td>
+   <td style="text-align:center;"> 0.667 </td>
+   <td style="text-align:center;"> -0.083 </td>
+   <td style="text-align:center;"> 2 / 4 </td>
+   <td style="text-align:center;"> 0.683 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> U2a vs U3 </td>
+   <td style="text-align:center;"> 24 </td>
+   <td style="text-align:center;"> 0.583 </td>
+   <td style="text-align:center;"> 0.708 </td>
+   <td style="text-align:center;"> -0.125 </td>
+   <td style="text-align:center;"> 0 / 3 </td>
+   <td style="text-align:center;"> 0.248 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> U2b vs U3 </td>
+   <td style="text-align:center;"> 24 </td>
+   <td style="text-align:center;"> 0.667 </td>
+   <td style="text-align:center;"> 0.708 </td>
+   <td style="text-align:center;"> -0.042 </td>
+   <td style="text-align:center;"> 2 / 3 </td>
+   <td style="text-align:center;"> 1 </td>
+  </tr>
+</tbody>
+</table>
+
 Même conclusions que les graphiques précédents. 
 
 Concernant le sensibilité : 
@@ -4128,9 +5266,10 @@ Par interprétation d'un coefficient de Kappa de Cohen selon les seuils de Landi
 
 Le coefficient de Kappa de Cohen correspond à la concordance corrigée entre deux évaluateurs, c'est à dire le pourcentage d'accord entre les évaluateurs corrigé par le taux d'accord attendu par hasard (le taux attendu par hasard correspond à la probabilité que les deux évaluateurs soient d'accord simplement par hasard, en fonction de la distribution des réponses).
 
-```{r}
-#| label: interrater-setup
-#| echo: !expr "(!knitr::is_latex_output())"
+
+::: {.cell}
+
+```{.r .cell-code}
 kable(
     kappa_round,
     format = if (knitr::is_latex_output()) {
@@ -4146,16 +5285,78 @@ kable(
 )
 ```
 
-```{r}
-#| label: fig-kappa-interobserver
-#| echo: !expr "(!knitr::is_latex_output())"
-#| message: false
-#| warning: false
-#| fig-cap: "Kappa inter-observer agreement for each ultrasound test."
-#| fig-width: 6
-#| fig-height: 4
+::: {.cell-output-display}
+`````{=html}
+<table>
+<caption>Inter-observer agreement for each ultrasound test</caption>
+ <thead>
+  <tr>
+   <th style="text-align:center;"> Test </th>
+   <th style="text-align:center;"> N </th>
+   <th style="text-align:center;"> Accord </th>
+   <th style="text-align:center;"> Kappa </th>
+   <th style="text-align:center;"> IC95% bas </th>
+   <th style="text-align:center;"> IC95% haut </th>
+   <th style="text-align:center;"> Interpretation </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:center;"> U1 </td>
+   <td style="text-align:center;"> 60 </td>
+   <td style="text-align:center;"> 0.883 </td>
+   <td style="text-align:center;"> 0.683 </td>
+   <td style="text-align:center;"> 0.467 </td>
+   <td style="text-align:center;"> 0.899 </td>
+   <td style="text-align:center;"> substantielle </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> U2a </td>
+   <td style="text-align:center;"> 60 </td>
+   <td style="text-align:center;"> 0.833 </td>
+   <td style="text-align:center;"> 0.604 </td>
+   <td style="text-align:center;"> 0.383 </td>
+   <td style="text-align:center;"> 0.824 </td>
+   <td style="text-align:center;"> substantielle </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> U2b </td>
+   <td style="text-align:center;"> 60 </td>
+   <td style="text-align:center;"> 0.817 </td>
+   <td style="text-align:center;"> 0.593 </td>
+   <td style="text-align:center;"> 0.377 </td>
+   <td style="text-align:center;"> 0.808 </td>
+   <td style="text-align:center;"> moderee </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> U3 </td>
+   <td style="text-align:center;"> 60 </td>
+   <td style="text-align:center;"> 0.817 </td>
+   <td style="text-align:center;"> 0.625 </td>
+   <td style="text-align:center;"> 0.425 </td>
+   <td style="text-align:center;"> 0.825 </td>
+   <td style="text-align:center;"> substantielle </td>
+  </tr>
+</tbody>
+</table>
+
+`````
+:::
+:::
+
+
+
+::: {.cell}
+
+```{.r .cell-code}
 kappa_plot
 ```
+
+::: {.cell-output-display}
+![Kappa inter-observer agreement for each ultrasound test.](these_brieuc_files/figure-html/fig-kappa-interobserver-1.png){#fig-kappa-interobserver width=576}
+:::
+:::
+
 
 Interprétation : Accord substantiel à modéré pour tous les tests. `ULNT1` est le plus reproductible.
 
@@ -4185,10 +5386,8 @@ Exemple : `≥2 positifs` correspond à aux moins 2 tests quelqu'ils soient, alo
 
 -   Combinaison la plus spécifique : 4 combinaisons à égalité à `Sp 0.792` dont le point commun est de toutes contenir `ULNT2b` et `ULNT3`. La combinaison retenue pour la meilleure spécificité est `ULNT2b` et `ULNT3` car elle conserve la meilleure sensibilité parmi les ex aequo (`Se 0.289`), puis la meilleure parcimonie (2 tests au lieu de 3 ou 4).
 
-```{r}
-#| label: all-ulnt-combinations-table
-#| echo: !expr "(!knitr::is_latex_output())"
-#| results: "asis"
+
+```{.r .cell-code}
 combination_all_round %>%
   kable(
     format = if (knitr::is_latex_output()) {
@@ -4210,6 +5409,209 @@ combination_all_round %>%
   )
 ```
 
+`````{=html}
+<table class="table" style="font-size: 7px; width: auto !important; margin-left: auto; margin-right: auto;">
+<caption style="font-size: initial !important;">Combinaisons des ULNT avec définition positive conjonctive</caption>
+ <thead>
+  <tr>
+   <th style="text-align:center;"> Combinaison </th>
+   <th style="text-align:center;"> Nombre de tests </th>
+   <th style="text-align:center;"> N analyse </th>
+   <th style="text-align:center;"> Se [IC95%] </th>
+   <th style="text-align:center;"> Sp [IC95%] </th>
+   <th style="text-align:center;"> VPP [IC95%] </th>
+   <th style="text-align:center;"> VPN [IC95%] </th>
+   <th style="text-align:center;"> LR+ </th>
+   <th style="text-align:center;"> LR- </th>
+   <th style="text-align:center;"> Youden </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:center;"> U1 </td>
+   <td style="text-align:center;"> 1 </td>
+   <td style="text-align:center;"> 69 </td>
+   <td style="text-align:center;"> 0.867 [0.732 ; 0.949] </td>
+   <td style="text-align:center;"> 0.625 [0.406 ; 0.812] </td>
+   <td style="text-align:center;"> 0.812 [0.674 ; 0.911] </td>
+   <td style="text-align:center;"> 0.714 [0.478 ; 0.887] </td>
+   <td style="text-align:center;"> 2.31 </td>
+   <td style="text-align:center;"> 0.21 </td>
+   <td style="text-align:center;"> 0.492 </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> U2a </td>
+   <td style="text-align:center;"> 1 </td>
+   <td style="text-align:center;"> 69 </td>
+   <td style="text-align:center;"> 0.8 [0.654 ; 0.904] </td>
+   <td style="text-align:center;"> 0.583 [0.366 ; 0.779] </td>
+   <td style="text-align:center;"> 0.783 [0.636 ; 0.891] </td>
+   <td style="text-align:center;"> 0.609 [0.385 ; 0.803] </td>
+   <td style="text-align:center;"> 1.92 </td>
+   <td style="text-align:center;"> 0.34 </td>
+   <td style="text-align:center;"> 0.383 </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> U2a + U2b </td>
+   <td style="text-align:center;"> 2 </td>
+   <td style="text-align:center;"> 69 </td>
+   <td style="text-align:center;"> 0.622 [0.465 ; 0.762] </td>
+   <td style="text-align:center;"> 0.75 [0.533 ; 0.902] </td>
+   <td style="text-align:center;"> 0.824 [0.655 ; 0.932] </td>
+   <td style="text-align:center;"> 0.514 [0.34 ; 0.686] </td>
+   <td style="text-align:center;"> 2.49 </td>
+   <td style="text-align:center;"> 0.50 </td>
+   <td style="text-align:center;"> 0.372 </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> U2b </td>
+   <td style="text-align:center;"> 1 </td>
+   <td style="text-align:center;"> 69 </td>
+   <td style="text-align:center;"> 0.689 [0.534 ; 0.818] </td>
+   <td style="text-align:center;"> 0.667 [0.447 ; 0.844] </td>
+   <td style="text-align:center;"> 0.795 [0.635 ; 0.907] </td>
+   <td style="text-align:center;"> 0.533 [0.343 ; 0.717] </td>
+   <td style="text-align:center;"> 2.07 </td>
+   <td style="text-align:center;"> 0.47 </td>
+   <td style="text-align:center;"> 0.356 </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> U1 + U2b </td>
+   <td style="text-align:center;"> 2 </td>
+   <td style="text-align:center;"> 69 </td>
+   <td style="text-align:center;"> 0.6 [0.443 ; 0.743] </td>
+   <td style="text-align:center;"> 0.75 [0.533 ; 0.902] </td>
+   <td style="text-align:center;"> 0.818 [0.645 ; 0.93] </td>
+   <td style="text-align:center;"> 0.5 [0.329 ; 0.671] </td>
+   <td style="text-align:center;"> 2.40 </td>
+   <td style="text-align:center;"> 0.53 </td>
+   <td style="text-align:center;"> 0.350 </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> U1 + U2a </td>
+   <td style="text-align:center;"> 2 </td>
+   <td style="text-align:center;"> 69 </td>
+   <td style="text-align:center;"> 0.711 [0.557 ; 0.836] </td>
+   <td style="text-align:center;"> 0.625 [0.406 ; 0.812] </td>
+   <td style="text-align:center;"> 0.78 [0.624 ; 0.894] </td>
+   <td style="text-align:center;"> 0.536 [0.339 ; 0.725] </td>
+   <td style="text-align:center;"> 1.90 </td>
+   <td style="text-align:center;"> 0.46 </td>
+   <td style="text-align:center;"> 0.336 </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> U1 + U2a + U2b </td>
+   <td style="text-align:center;"> 3 </td>
+   <td style="text-align:center;"> 69 </td>
+   <td style="text-align:center;"> 0.533 [0.379 ; 0.683] </td>
+   <td style="text-align:center;"> 0.75 [0.533 ; 0.902] </td>
+   <td style="text-align:center;"> 0.8 [0.614 ; 0.923] </td>
+   <td style="text-align:center;"> 0.462 [0.301 ; 0.628] </td>
+   <td style="text-align:center;"> 2.13 </td>
+   <td style="text-align:center;"> 0.62 </td>
+   <td style="text-align:center;"> 0.283 </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> U3 </td>
+   <td style="text-align:center;"> 1 </td>
+   <td style="text-align:center;"> 69 </td>
+   <td style="text-align:center;"> 0.4 [0.257 ; 0.557] </td>
+   <td style="text-align:center;"> 0.708 [0.489 ; 0.874] </td>
+   <td style="text-align:center;"> 0.72 [0.506 ; 0.879] </td>
+   <td style="text-align:center;"> 0.386 [0.244 ; 0.545] </td>
+   <td style="text-align:center;"> 1.37 </td>
+   <td style="text-align:center;"> 0.85 </td>
+   <td style="text-align:center;"> 0.108 </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> U2a + U3 </td>
+   <td style="text-align:center;"> 2 </td>
+   <td style="text-align:center;"> 69 </td>
+   <td style="text-align:center;"> 0.4 [0.257 ; 0.557] </td>
+   <td style="text-align:center;"> 0.708 [0.489 ; 0.874] </td>
+   <td style="text-align:center;"> 0.72 [0.506 ; 0.879] </td>
+   <td style="text-align:center;"> 0.386 [0.244 ; 0.545] </td>
+   <td style="text-align:center;"> 1.37 </td>
+   <td style="text-align:center;"> 0.85 </td>
+   <td style="text-align:center;"> 0.108 </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> U1 + U3 </td>
+   <td style="text-align:center;"> 2 </td>
+   <td style="text-align:center;"> 69 </td>
+   <td style="text-align:center;"> 0.378 [0.238 ; 0.535] </td>
+   <td style="text-align:center;"> 0.708 [0.489 ; 0.874] </td>
+   <td style="text-align:center;"> 0.708 [0.489 ; 0.874] </td>
+   <td style="text-align:center;"> 0.378 [0.238 ; 0.535] </td>
+   <td style="text-align:center;"> 1.30 </td>
+   <td style="text-align:center;"> 0.88 </td>
+   <td style="text-align:center;"> 0.086 </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> U1 + U2a + U3 </td>
+   <td style="text-align:center;"> 3 </td>
+   <td style="text-align:center;"> 69 </td>
+   <td style="text-align:center;"> 0.378 [0.238 ; 0.535] </td>
+   <td style="text-align:center;"> 0.708 [0.489 ; 0.874] </td>
+   <td style="text-align:center;"> 0.708 [0.489 ; 0.874] </td>
+   <td style="text-align:center;"> 0.378 [0.238 ; 0.535] </td>
+   <td style="text-align:center;"> 1.30 </td>
+   <td style="text-align:center;"> 0.88 </td>
+   <td style="text-align:center;"> 0.086 </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> U2b + U3 </td>
+   <td style="text-align:center;"> 2 </td>
+   <td style="text-align:center;"> 69 </td>
+   <td style="text-align:center;"> 0.289 [0.164 ; 0.443] </td>
+   <td style="text-align:center;"> 0.792 [0.578 ; 0.929] </td>
+   <td style="text-align:center;"> 0.722 [0.465 ; 0.903] </td>
+   <td style="text-align:center;"> 0.373 [0.241 ; 0.519] </td>
+   <td style="text-align:center;"> 1.39 </td>
+   <td style="text-align:center;"> 0.90 </td>
+   <td style="text-align:center;"> 0.081 </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> U2a + U2b + U3 </td>
+   <td style="text-align:center;"> 3 </td>
+   <td style="text-align:center;"> 69 </td>
+   <td style="text-align:center;"> 0.289 [0.164 ; 0.443] </td>
+   <td style="text-align:center;"> 0.792 [0.578 ; 0.929] </td>
+   <td style="text-align:center;"> 0.722 [0.465 ; 0.903] </td>
+   <td style="text-align:center;"> 0.373 [0.241 ; 0.519] </td>
+   <td style="text-align:center;"> 1.39 </td>
+   <td style="text-align:center;"> 0.90 </td>
+   <td style="text-align:center;"> 0.081 </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> U1 + U2b + U3 </td>
+   <td style="text-align:center;"> 3 </td>
+   <td style="text-align:center;"> 69 </td>
+   <td style="text-align:center;"> 0.267 [0.146 ; 0.419] </td>
+   <td style="text-align:center;"> 0.792 [0.578 ; 0.929] </td>
+   <td style="text-align:center;"> 0.706 [0.44 ; 0.897] </td>
+   <td style="text-align:center;"> 0.365 [0.236 ; 0.51] </td>
+   <td style="text-align:center;"> 1.28 </td>
+   <td style="text-align:center;"> 0.93 </td>
+   <td style="text-align:center;"> 0.058 </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> U1 + U2a + U2b + U3 </td>
+   <td style="text-align:center;"> 4 </td>
+   <td style="text-align:center;"> 69 </td>
+   <td style="text-align:center;"> 0.267 [0.146 ; 0.419] </td>
+   <td style="text-align:center;"> 0.792 [0.578 ; 0.929] </td>
+   <td style="text-align:center;"> 0.706 [0.44 ; 0.897] </td>
+   <td style="text-align:center;"> 0.365 [0.236 ; 0.51] </td>
+   <td style="text-align:center;"> 1.28 </td>
+   <td style="text-align:center;"> 0.93 </td>
+   <td style="text-align:center;"> 0.058 </td>
+  </tr>
+</tbody>
+</table>
+
+`````
+
 \FloatBarrier
 
 \newpage
@@ -4221,9 +5623,10 @@ Cela revient à demander si un seuil du type "au moins 2 tests positifs" est plu
 
 Le score correspond simplement au **nombre de tests ULNT positifs** chez un même patient ; un test peut donc être très spécifique pris isolément, mais modifie peu le score si les rares patients qu'il rend positifs le sont déjà par d'autres ULNT.
 
-```{r}
-#| label: score-probability
-#| echo: !expr "(!knitr::is_latex_output())"
+
+::: {.cell}
+
+```{.r .cell-code}
 score_summary_table %>%
   kable(
     format = if (knitr::is_latex_output()) {
@@ -4245,6 +5648,66 @@ score_summary_table %>%
   )
 ```
 
+::: {.cell-output-display}
+`````{=html}
+<table class="table" style="font-size: 7px; width: auto !important; margin-left: auto; margin-right: auto;">
+<caption style="font-size: initial !important;">Performances diagnostiques selon le seuil du score</caption>
+ <thead>
+  <tr>
+   <th style="text-align:center;"> Seuil </th>
+   <th style="text-align:center;"> Se [IC95%] </th>
+   <th style="text-align:center;"> Sp [IC95%] </th>
+   <th style="text-align:center;"> LR+ </th>
+   <th style="text-align:center;"> LR- </th>
+   <th style="text-align:center;"> Youden </th>
+   <th style="text-align:center;"> DOR [IC95%] </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:center;"> &gt;=1 positif </td>
+   <td style="text-align:center;"> 0.956 [0.849 ; 0.995] </td>
+   <td style="text-align:center;"> 0.5 [0.291 ; 0.709] </td>
+   <td style="text-align:center;"> 1.911 </td>
+   <td style="text-align:center;"> 0.089 </td>
+   <td style="text-align:center;"> 0.456 </td>
+   <td style="text-align:center;"> 21.5 [4.221 ; 109.512] </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> &gt;=2 positifs </td>
+   <td style="text-align:center;"> 0.867 [0.732 ; 0.949] </td>
+   <td style="text-align:center;"> 0.625 [0.406 ; 0.812] </td>
+   <td style="text-align:center;"> 2.311 </td>
+   <td style="text-align:center;"> 0.213 </td>
+   <td style="text-align:center;"> 0.492 </td>
+   <td style="text-align:center;"> 10.833 [3.288 ; 35.693] </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> &gt;=3 positifs </td>
+   <td style="text-align:center;"> 0.667 [0.51 ; 0.8] </td>
+   <td style="text-align:center;"> 0.667 [0.447 ; 0.844] </td>
+   <td style="text-align:center;"> 2.000 </td>
+   <td style="text-align:center;"> 0.500 </td>
+   <td style="text-align:center;"> 0.333 </td>
+   <td style="text-align:center;"> 4 [1.398 ; 11.441] </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> &gt;=4 positifs </td>
+   <td style="text-align:center;"> 0.267 [0.146 ; 0.419] </td>
+   <td style="text-align:center;"> 0.792 [0.578 ; 0.929] </td>
+   <td style="text-align:center;"> 1.280 </td>
+   <td style="text-align:center;"> 0.926 </td>
+   <td style="text-align:center;"> 0.058 </td>
+   <td style="text-align:center;"> 1.382 [0.422 ; 4.525] </td>
+  </tr>
+</tbody>
+</table>
+
+`````
+:::
+:::
+
+
 \FloatBarrier
 
 NB : *Le **DOR** (diagnostic odds ratio) résume en un seul chiffre la capacité globale du score à distinguer les patients `G+` des `G-` (se calcule en faisant le rapport entre le LR+ et le LR-), mais il reste ici secondaire car moins intuitif cliniquement que la sensibilité, la spécificité et les rapports de vraisemblance. En plus, les IC du DOR sont ici très larges et se chevauchent largement, donc ils ne sont pas vraiment interprétables.*
@@ -4255,9 +5718,10 @@ Pour interpréter ces résultats, on peut raisonner **par addition** sans impose
 
 -   Dans le second tableau, chaque case correspond à : `diminution moyenne de la specificite (-ΔSp)` imputable au test.
 
-```{r}
-#| label: score-contribution-sensitivity-table
-#| echo: !expr "(!knitr::is_latex_output())"
+
+::: {.cell}
+
+```{.r .cell-code}
 score_contribution_sensitivity_table %>%
   kable(
     format = if (knitr::is_latex_output()) {
@@ -4278,13 +5742,64 @@ score_contribution_sensitivity_table %>%
   )
 ```
 
+::: {.cell-output-display}
+`````{=html}
+<table class="table" style="font-size: 7px; width: auto !important; margin-left: auto; margin-right: auto;">
+<caption style="font-size: initial !important;">Contribution moyenne de chaque test a la sensibilite du score : gain de Se (+ΔSe)</caption>
+ <thead>
+  <tr>
+   <th style="text-align:center;"> Seuil </th>
+   <th style="text-align:center;"> ULNT1 </th>
+   <th style="text-align:center;"> ULNT2a </th>
+   <th style="text-align:center;"> ULNT2b </th>
+   <th style="text-align:center;"> ULNT3 </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:center;"> &gt;=1 positif </td>
+   <td style="text-align:center;"> +0.348 </td>
+   <td style="text-align:center;"> +0.267 </td>
+   <td style="text-align:center;"> +0.230 </td>
+   <td style="text-align:center;"> +0.111 </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> &gt;=2 positifs </td>
+   <td style="text-align:center;"> +0.259 </td>
+   <td style="text-align:center;"> +0.267 </td>
+   <td style="text-align:center;"> +0.230 </td>
+   <td style="text-align:center;"> +0.111 </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> &gt;=3 positifs </td>
+   <td style="text-align:center;"> +0.193 </td>
+   <td style="text-align:center;"> +0.200 </td>
+   <td style="text-align:center;"> +0.163 </td>
+   <td style="text-align:center;"> +0.111 </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> &gt;=4 positifs </td>
+   <td style="text-align:center;"> +0.067 </td>
+   <td style="text-align:center;"> +0.067 </td>
+   <td style="text-align:center;"> +0.067 </td>
+   <td style="text-align:center;"> +0.067 </td>
+  </tr>
+</tbody>
+</table>
+
+`````
+:::
+:::
+
+
 \FloatBarrier
 
 -   Pour le seuil `≥1`, `ULNT1` a la contribution moyenne la plus forte au gain de sensibilité, cela signifie qu'il porte la plus grande part de la capacité de dépistage du score.
 
-```{r}
-#| label: score-contribution-specificity-table
-#| echo: !expr "(!knitr::is_latex_output())"
+
+::: {.cell}
+
+```{.r .cell-code}
 score_contribution_specificity_table %>%
   kable(
     format = if (knitr::is_latex_output()) {
@@ -4305,6 +5820,56 @@ score_contribution_specificity_table %>%
   )
 ```
 
+::: {.cell-output-display}
+`````{=html}
+<table class="table" style="font-size: 7px; width: auto !important; margin-left: auto; margin-right: auto;">
+<caption style="font-size: initial !important;">Contribution moyenne de chaque test a la specificite du score</caption>
+ <thead>
+  <tr>
+   <th style="text-align:center;"> Seuil </th>
+   <th style="text-align:center;"> ULNT1 </th>
+   <th style="text-align:center;"> ULNT2a </th>
+   <th style="text-align:center;"> ULNT2b </th>
+   <th style="text-align:center;"> ULNT3 </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:center;"> &gt;=1 positif </td>
+   <td style="text-align:center;"> -0.115 </td>
+   <td style="text-align:center;"> -0.156 </td>
+   <td style="text-align:center;"> -0.149 </td>
+   <td style="text-align:center;"> -0.080 </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> &gt;=2 positifs </td>
+   <td style="text-align:center;"> -0.115 </td>
+   <td style="text-align:center;"> -0.115 </td>
+   <td style="text-align:center;"> -0.066 </td>
+   <td style="text-align:center;"> -0.080 </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> &gt;=3 positifs </td>
+   <td style="text-align:center;"> -0.094 </td>
+   <td style="text-align:center;"> -0.094 </td>
+   <td style="text-align:center;"> -0.066 </td>
+   <td style="text-align:center;"> -0.080 </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> &gt;=4 positifs </td>
+   <td style="text-align:center;"> -0.052 </td>
+   <td style="text-align:center;"> -0.052 </td>
+   <td style="text-align:center;"> -0.052 </td>
+   <td style="text-align:center;"> -0.052 </td>
+  </tr>
+</tbody>
+</table>
+
+`````
+:::
+:::
+
+
 \FloatBarrier
 
 -   Pour la spécificité, aucun test ne ressort clairement avec cette méthode de calcul, car les contributions restent assez proches entre les tests.
@@ -4324,11 +5889,8 @@ Objectif exploratoire car
 
 ### Résumé descriptif par niveau métamérique
 
-```{r}
-#| label: diagnostic-by-level-table
-#| echo: !expr "(!knitr::is_latex_output())"
-#| results: "asis"
-#| warning: false
+
+```{.r .cell-code}
 kable(
     diagnostic_by_level_round,
     caption = "Résumé descriptif par niveau métamérique",
@@ -4341,22 +5903,92 @@ kable(
     )
 ```
 
-```{r}
-#| label: results-by-level-rate
-#| echo: !expr "(!knitr::is_latex_output())"
-#| include: true
-#| fig-cap: "Effectif de NCB par niveau métamérique"
+`````{=html}
+<table class="table" style="font-size: 8px; width: auto !important; margin-left: auto; margin-right: auto;">
+<caption style="font-size: initial !important;">Résumé descriptif par niveau métamérique</caption>
+ <thead>
+  <tr>
+   <th style="text-align:center;"> Niveau </th>
+   <th style="text-align:center;"> N analyse </th>
+   <th style="text-align:center;"> NCB positif </th>
+   <th style="text-align:center;"> NCB negatif </th>
+   <th style="text-align:center;"> Effectif total du niveau </th>
+   <th style="text-align:center;"> Mediane score ULNT [Q1 ; Q3] </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:center;"> C4 </td>
+   <td style="text-align:center;"> 1 </td>
+   <td style="text-align:center;"> 1 </td>
+   <td style="text-align:center;"> 0 </td>
+   <td style="text-align:center;"> 1 </td>
+   <td style="text-align:center;"> 0 [0 ; 0] </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> C5 </td>
+   <td style="text-align:center;"> 10 </td>
+   <td style="text-align:center;"> 5 </td>
+   <td style="text-align:center;"> 5 </td>
+   <td style="text-align:center;"> 10 </td>
+   <td style="text-align:center;"> 1 [0 ; 3.75] </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> C6 </td>
+   <td style="text-align:center;"> 27 </td>
+   <td style="text-align:center;"> 19 </td>
+   <td style="text-align:center;"> 8 </td>
+   <td style="text-align:center;"> 27 </td>
+   <td style="text-align:center;"> 3 [2 ; 3] </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> C7 </td>
+   <td style="text-align:center;"> 21 </td>
+   <td style="text-align:center;"> 13 </td>
+   <td style="text-align:center;"> 8 </td>
+   <td style="text-align:center;"> 21 </td>
+   <td style="text-align:center;"> 3 [1 ; 4] </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> C8 </td>
+   <td style="text-align:center;"> 10 </td>
+   <td style="text-align:center;"> 7 </td>
+   <td style="text-align:center;"> 3 </td>
+   <td style="text-align:center;"> 10 </td>
+   <td style="text-align:center;"> 1.5 [0.25 ; 3] </td>
+  </tr>
+</tbody>
+</table>
+
+`````
+
+
+::: {.cell}
+
+```{.r .cell-code}
 results_by_level_status_plot
 ```
 
+::: {.cell-output-display}
+![Effectif de NCB par niveau métamérique](these_brieuc_files/figure-html/results-by-level-rate-1.png){width=672}
+:::
+:::
+
+
 \newpage
 
-```{r}
-#| label: results-by-level-count
-#| echo: !expr "(!knitr::is_latex_output())"
-#| include: true
+
+::: {.cell}
+
+```{.r .cell-code}
 results_by_level_score_plot
 ```
+
+::: {.cell-output-display}
+![](these_brieuc_files/figure-html/results-by-level-count-1.png){width=672}
+:::
+:::
+
 
 -   Distribution du "score de positivité" de 0 a 4. `C4` y apparait avec un unique patient de **score 0**, ce qui explique le `0` vu auparavant sur le graphique de moyenne.
 
@@ -4364,11 +5996,8 @@ results_by_level_score_plot
 
 \newpage
 ### Détail exploratoire test par test et niveau par niveau
-```{r}
-#| label: diagnostic-by-level-detail-table
-#| echo: !expr "(!knitr::is_latex_output())"
-#| results: "asis"
-#| warning: false
+
+```{.r .cell-code}
 kable(
     diagnostic_by_level_detail_round,
     caption = "Performances diagnostiques exploratoires des ULNT selon le niveau métamérique",
@@ -4380,6 +6009,248 @@ kable(
         font_size = 7
     )
 ```
+
+`````{=html}
+<table class="table" style="font-size: 7px; width: auto !important; margin-left: auto; margin-right: auto;">
+<caption style="font-size: initial !important;">Performances diagnostiques exploratoires des ULNT selon le niveau métamérique</caption>
+ <thead>
+  <tr>
+   <th style="text-align:center;"> Niveau </th>
+   <th style="text-align:center;"> Test </th>
+   <th style="text-align:center;"> N analyse </th>
+   <th style="text-align:center;"> TP </th>
+   <th style="text-align:center;"> FP </th>
+   <th style="text-align:center;"> TN </th>
+   <th style="text-align:center;"> FN </th>
+   <th style="text-align:center;"> Se [IC95% exact] </th>
+   <th style="text-align:center;"> Sp [IC95% exact] </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:center;"> C4 </td>
+   <td style="text-align:center;"> U1 </td>
+   <td style="text-align:center;"> 1 </td>
+   <td style="text-align:center;"> 0 </td>
+   <td style="text-align:center;"> 0 </td>
+   <td style="text-align:center;"> 0 </td>
+   <td style="text-align:center;"> 1 </td>
+   <td style="text-align:center;"> 0 [0 ; 0.975] </td>
+   <td style="text-align:center;"> NA </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> C4 </td>
+   <td style="text-align:center;"> U2a </td>
+   <td style="text-align:center;"> 1 </td>
+   <td style="text-align:center;"> 0 </td>
+   <td style="text-align:center;"> 0 </td>
+   <td style="text-align:center;"> 0 </td>
+   <td style="text-align:center;"> 1 </td>
+   <td style="text-align:center;"> 0 [0 ; 0.975] </td>
+   <td style="text-align:center;"> NA </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> C4 </td>
+   <td style="text-align:center;"> U2b </td>
+   <td style="text-align:center;"> 1 </td>
+   <td style="text-align:center;"> 0 </td>
+   <td style="text-align:center;"> 0 </td>
+   <td style="text-align:center;"> 0 </td>
+   <td style="text-align:center;"> 1 </td>
+   <td style="text-align:center;"> 0 [0 ; 0.975] </td>
+   <td style="text-align:center;"> NA </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> C4 </td>
+   <td style="text-align:center;"> U3 </td>
+   <td style="text-align:center;"> 1 </td>
+   <td style="text-align:center;"> 0 </td>
+   <td style="text-align:center;"> 0 </td>
+   <td style="text-align:center;"> 0 </td>
+   <td style="text-align:center;"> 1 </td>
+   <td style="text-align:center;"> 0 [0 ; 0.975] </td>
+   <td style="text-align:center;"> NA </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> C5 </td>
+   <td style="text-align:center;"> U1 </td>
+   <td style="text-align:center;"> 10 </td>
+   <td style="text-align:center;"> 5 </td>
+   <td style="text-align:center;"> 0 </td>
+   <td style="text-align:center;"> 5 </td>
+   <td style="text-align:center;"> 0 </td>
+   <td style="text-align:center;"> 1 [0.478 ; 1] </td>
+   <td style="text-align:center;"> 1 [0.478 ; 1] </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> C5 </td>
+   <td style="text-align:center;"> U2a </td>
+   <td style="text-align:center;"> 10 </td>
+   <td style="text-align:center;"> 5 </td>
+   <td style="text-align:center;"> 0 </td>
+   <td style="text-align:center;"> 5 </td>
+   <td style="text-align:center;"> 0 </td>
+   <td style="text-align:center;"> 1 [0.478 ; 1] </td>
+   <td style="text-align:center;"> 1 [0.478 ; 1] </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> C5 </td>
+   <td style="text-align:center;"> U2b </td>
+   <td style="text-align:center;"> 10 </td>
+   <td style="text-align:center;"> 4 </td>
+   <td style="text-align:center;"> 0 </td>
+   <td style="text-align:center;"> 5 </td>
+   <td style="text-align:center;"> 1 </td>
+   <td style="text-align:center;"> 0.8 [0.284 ; 0.995] </td>
+   <td style="text-align:center;"> 1 [0.478 ; 1] </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> C5 </td>
+   <td style="text-align:center;"> U3 </td>
+   <td style="text-align:center;"> 10 </td>
+   <td style="text-align:center;"> 3 </td>
+   <td style="text-align:center;"> 0 </td>
+   <td style="text-align:center;"> 5 </td>
+   <td style="text-align:center;"> 2 </td>
+   <td style="text-align:center;"> 0.6 [0.147 ; 0.947] </td>
+   <td style="text-align:center;"> 1 [0.478 ; 1] </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> C6 </td>
+   <td style="text-align:center;"> U1 </td>
+   <td style="text-align:center;"> 27 </td>
+   <td style="text-align:center;"> 17 </td>
+   <td style="text-align:center;"> 6 </td>
+   <td style="text-align:center;"> 2 </td>
+   <td style="text-align:center;"> 2 </td>
+   <td style="text-align:center;"> 0.895 [0.669 ; 0.987] </td>
+   <td style="text-align:center;"> 0.25 [0.032 ; 0.651] </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> C6 </td>
+   <td style="text-align:center;"> U2a </td>
+   <td style="text-align:center;"> 27 </td>
+   <td style="text-align:center;"> 16 </td>
+   <td style="text-align:center;"> 6 </td>
+   <td style="text-align:center;"> 2 </td>
+   <td style="text-align:center;"> 3 </td>
+   <td style="text-align:center;"> 0.842 [0.604 ; 0.966] </td>
+   <td style="text-align:center;"> 0.25 [0.032 ; 0.651] </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> C6 </td>
+   <td style="text-align:center;"> U2b </td>
+   <td style="text-align:center;"> 27 </td>
+   <td style="text-align:center;"> 10 </td>
+   <td style="text-align:center;"> 5 </td>
+   <td style="text-align:center;"> 3 </td>
+   <td style="text-align:center;"> 9 </td>
+   <td style="text-align:center;"> 0.526 [0.289 ; 0.756] </td>
+   <td style="text-align:center;"> 0.375 [0.085 ; 0.755] </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> C6 </td>
+   <td style="text-align:center;"> U3 </td>
+   <td style="text-align:center;"> 27 </td>
+   <td style="text-align:center;"> 9 </td>
+   <td style="text-align:center;"> 5 </td>
+   <td style="text-align:center;"> 3 </td>
+   <td style="text-align:center;"> 10 </td>
+   <td style="text-align:center;"> 0.474 [0.244 ; 0.711] </td>
+   <td style="text-align:center;"> 0.375 [0.085 ; 0.755] </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> C7 </td>
+   <td style="text-align:center;"> U1 </td>
+   <td style="text-align:center;"> 21 </td>
+   <td style="text-align:center;"> 11 </td>
+   <td style="text-align:center;"> 3 </td>
+   <td style="text-align:center;"> 5 </td>
+   <td style="text-align:center;"> 2 </td>
+   <td style="text-align:center;"> 0.846 [0.546 ; 0.981] </td>
+   <td style="text-align:center;"> 0.625 [0.245 ; 0.915] </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> C7 </td>
+   <td style="text-align:center;"> U2a </td>
+   <td style="text-align:center;"> 21 </td>
+   <td style="text-align:center;"> 11 </td>
+   <td style="text-align:center;"> 3 </td>
+   <td style="text-align:center;"> 5 </td>
+   <td style="text-align:center;"> 2 </td>
+   <td style="text-align:center;"> 0.846 [0.546 ; 0.981] </td>
+   <td style="text-align:center;"> 0.625 [0.245 ; 0.915] </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> C7 </td>
+   <td style="text-align:center;"> U2b </td>
+   <td style="text-align:center;"> 21 </td>
+   <td style="text-align:center;"> 12 </td>
+   <td style="text-align:center;"> 3 </td>
+   <td style="text-align:center;"> 5 </td>
+   <td style="text-align:center;"> 1 </td>
+   <td style="text-align:center;"> 0.923 [0.64 ; 0.998] </td>
+   <td style="text-align:center;"> 0.625 [0.245 ; 0.915] </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> C7 </td>
+   <td style="text-align:center;"> U3 </td>
+   <td style="text-align:center;"> 21 </td>
+   <td style="text-align:center;"> 4 </td>
+   <td style="text-align:center;"> 2 </td>
+   <td style="text-align:center;"> 6 </td>
+   <td style="text-align:center;"> 9 </td>
+   <td style="text-align:center;"> 0.308 [0.091 ; 0.614] </td>
+   <td style="text-align:center;"> 0.75 [0.349 ; 0.968] </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> C8 </td>
+   <td style="text-align:center;"> U1 </td>
+   <td style="text-align:center;"> 10 </td>
+   <td style="text-align:center;"> 6 </td>
+   <td style="text-align:center;"> 0 </td>
+   <td style="text-align:center;"> 3 </td>
+   <td style="text-align:center;"> 1 </td>
+   <td style="text-align:center;"> 0.857 [0.421 ; 0.996] </td>
+   <td style="text-align:center;"> 1 [0.292 ; 1] </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> C8 </td>
+   <td style="text-align:center;"> U2a </td>
+   <td style="text-align:center;"> 10 </td>
+   <td style="text-align:center;"> 4 </td>
+   <td style="text-align:center;"> 1 </td>
+   <td style="text-align:center;"> 2 </td>
+   <td style="text-align:center;"> 3 </td>
+   <td style="text-align:center;"> 0.571 [0.184 ; 0.901] </td>
+   <td style="text-align:center;"> 0.667 [0.094 ; 0.992] </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> C8 </td>
+   <td style="text-align:center;"> U2b </td>
+   <td style="text-align:center;"> 10 </td>
+   <td style="text-align:center;"> 5 </td>
+   <td style="text-align:center;"> 0 </td>
+   <td style="text-align:center;"> 3 </td>
+   <td style="text-align:center;"> 2 </td>
+   <td style="text-align:center;"> 0.714 [0.29 ; 0.963] </td>
+   <td style="text-align:center;"> 1 [0.292 ; 1] </td>
+  </tr>
+  <tr>
+   <td style="text-align:center;"> C8 </td>
+   <td style="text-align:center;"> U3 </td>
+   <td style="text-align:center;"> 10 </td>
+   <td style="text-align:center;"> 2 </td>
+   <td style="text-align:center;"> 0 </td>
+   <td style="text-align:center;"> 3 </td>
+   <td style="text-align:center;"> 5 </td>
+   <td style="text-align:center;"> 0.286 [0.037 ; 0.71] </td>
+   <td style="text-align:center;"> 1 [0.292 ; 1] </td>
+  </tr>
+</tbody>
+</table>
+
+`````
 
 \FloatBarrier
 
@@ -4395,12 +6266,18 @@ kable(
 \newpage
 ### Lecture test par test selon le niveau métamérique
 
-```{r}
-#| label: results-by-level-test-metric-plot
-#| echo: !expr "(!knitr::is_latex_output())"
-#| include: true
+
+::: {.cell}
+
+```{.r .cell-code}
 results_by_level_test_metric_plot
 ```
+
+::: {.cell-output-display}
+![](these_brieuc_files/figure-html/results-by-level-test-metric-plot-1.png){width=672}
+:::
+:::
+
 
 Mêmes infos remises en graphique : sensibilité et spécificité, test par test et niveau par niveau. 
 
@@ -4409,10 +6286,8 @@ Ensuite mêmes infos remises en tableaux par tests.
 Attention à ne pas surinterpréter, les IC sont larges et les effectifs très faibles à certains niveaux.
 
 
-```{r}
-#| label: u1-by-level-table
-#| echo: !expr "(!knitr::is_latex_output())"
-#| results: "asis"
+
+```{.r .cell-code}
 kable(
     u1_level_round,
     caption = "U1 selon le niveau métamérique",
@@ -4420,10 +6295,20 @@ kable(
 )
 ```
 
-```{r}
-#| label: u2a-by-level-table
-#| echo: !expr "(!knitr::is_latex_output())"
-#| results: "asis"
+
+
+Table: U1 selon le niveau métamérique
+
+| Niveau | N analyse | TP | FP | TN | FN |   Se [IC95% exact]    |   Sp [IC95% exact]    |
+|:------:|:---------:|:--:|:--:|:--:|:--:|:---------------------:|:---------------------:|
+|   C4   |     1     | 0  | 0  | 0  | 1  |     0 [0 ; 0.975]     |          NA           |
+|   C5   |    10     | 5  | 0  | 5  | 0  |     1 [0.478 ; 1]     |     1 [0.478 ; 1]     |
+|   C6   |    27     | 17 | 6  | 2  | 2  | 0.895 [0.669 ; 0.987] | 0.25 [0.032 ; 0.651]  |
+|   C7   |    21     | 11 | 3  | 5  | 2  | 0.846 [0.546 ; 0.981] | 0.625 [0.245 ; 0.915] |
+|   C8   |    10     | 6  | 0  | 3  | 1  | 0.857 [0.421 ; 0.996] |     1 [0.292 ; 1]     |
+
+
+```{.r .cell-code}
 kable(
     u2a_level_round,
     caption = "U2a selon le niveau métamérique",
@@ -4431,10 +6316,20 @@ kable(
 )
 ```
 
-```{r}
-#| label: u2b-by-level-table
-#| echo: !expr "(!knitr::is_latex_output())"
-#| results: "asis"
+
+
+Table: U2a selon le niveau métamérique
+
+| Niveau | N analyse | TP | FP | TN | FN |   Se [IC95% exact]    |   Sp [IC95% exact]    |
+|:------:|:---------:|:--:|:--:|:--:|:--:|:---------------------:|:---------------------:|
+|   C4   |     1     | 0  | 0  | 0  | 1  |     0 [0 ; 0.975]     |          NA           |
+|   C5   |    10     | 5  | 0  | 5  | 0  |     1 [0.478 ; 1]     |     1 [0.478 ; 1]     |
+|   C6   |    27     | 16 | 6  | 2  | 3  | 0.842 [0.604 ; 0.966] | 0.25 [0.032 ; 0.651]  |
+|   C7   |    21     | 11 | 3  | 5  | 2  | 0.846 [0.546 ; 0.981] | 0.625 [0.245 ; 0.915] |
+|   C8   |    10     | 4  | 1  | 2  | 3  | 0.571 [0.184 ; 0.901] | 0.667 [0.094 ; 0.992] |
+
+
+```{.r .cell-code}
 kable(
     u2b_level_round,
     caption = "U2b selon le niveau métamérique",
@@ -4442,10 +6337,20 @@ kable(
 )
 ```
 
-```{r}
-#| label: u3-by-level-table
-#| echo: !expr "(!knitr::is_latex_output())"
-#| results: "asis"
+
+
+Table: U2b selon le niveau métamérique
+
+| Niveau | N analyse | TP | FP | TN | FN |   Se [IC95% exact]    |   Sp [IC95% exact]    |
+|:------:|:---------:|:--:|:--:|:--:|:--:|:---------------------:|:---------------------:|
+|   C4   |     1     | 0  | 0  | 0  | 1  |     0 [0 ; 0.975]     |          NA           |
+|   C5   |    10     | 4  | 0  | 5  | 1  |  0.8 [0.284 ; 0.995]  |     1 [0.478 ; 1]     |
+|   C6   |    27     | 10 | 5  | 3  | 9  | 0.526 [0.289 ; 0.756] | 0.375 [0.085 ; 0.755] |
+|   C7   |    21     | 12 | 3  | 5  | 1  | 0.923 [0.64 ; 0.998]  | 0.625 [0.245 ; 0.915] |
+|   C8   |    10     | 5  | 0  | 3  | 2  | 0.714 [0.29 ; 0.963]  |     1 [0.292 ; 1]     |
+
+
+```{.r .cell-code}
 kable(
     u3_level_round,
     caption = "U3 selon le niveau métamérique",
@@ -4453,4 +6358,17 @@ kable(
 )
 ```
 
+
+
+Table: U3 selon le niveau métamérique
+
+| Niveau | N analyse | TP | FP | TN | FN |   Se [IC95% exact]    |   Sp [IC95% exact]    |
+|:------:|:---------:|:--:|:--:|:--:|:--:|:---------------------:|:---------------------:|
+|   C4   |     1     | 0  | 0  | 0  | 1  |     0 [0 ; 0.975]     |          NA           |
+|   C5   |    10     | 3  | 0  | 5  | 2  |  0.6 [0.147 ; 0.947]  |     1 [0.478 ; 1]     |
+|   C6   |    27     | 9  | 5  | 3  | 10 | 0.474 [0.244 ; 0.711] | 0.375 [0.085 ; 0.755] |
+|   C7   |    21     | 4  | 2  | 6  | 9  | 0.308 [0.091 ; 0.614] | 0.75 [0.349 ; 0.968]  |
+|   C8   |    10     | 2  | 0  | 3  | 5  | 0.286 [0.037 ; 0.71]  |     1 [0.292 ; 1]     |
+
 Globalement, uil ne paraît pas pertinent de choisir principalement le test en fonction du niveau métamérique. Le message pratique reste surtout que `U1`, `U2a` et `U2b` gardent plus d'intérêt global que `U3`.
+
