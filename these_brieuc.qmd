@@ -3450,7 +3450,9 @@ Le nombre total de patients est suffisant, mais le nombre de patients négatifs 
 
 ------
 
-Ce que je propose : faire comme si la méthodologiste n'avait jamais calculé de nombre de sujets requis (parce que sinon, pourquoi avoir arrêté les inclusions avant d'avoir le nombre requis de patients négatifs ?)
+Ce que je propose : en soi, le nombre de sujets total requis est atteint (69 patients, mieux que 68), toutefois le nombre de sujets NÉGATIFS n'est pas atteint à cause d'une petite imprécision sur l'estimation de la prévalence *a priori*. Elle est de 60 % dans le protocole, mais de `r paste0(round(effectif_n_pos_main / effectif_n_total_main * 100, 1), " %")` dans la cohorte analysée. Comme l'étude vise une spécificité cible, le nombre de sujets négatifs est plus déterminant que le nombre total de sujets pour atteindre la précision visée.
+
+J'ai mis une section "Nombre de sujets nécessaires et impact de la prévalence" pour discuter de ça à la fin du document.
 :::
 
 
@@ -4631,5 +4633,82 @@ ggplot(level_grouped_long, aes(x = Niveau_groupe, y = Val, fill = Metric)) +
 ```
 
 Globalement, le regroupement confirme la bonne sensibilité de l'ULNT1 sur les deux étages, bien que les effectifs restent limités pour conclure à une différence majeure de performance selon le niveau.
+
+\newpage
+## Nombre de sujets nécessaires et impact de la prévalence
+
+```{r}
+#| label: discussion-calculations
+#| echo: false
+
+# Chiffres Attendus (Protocole - Scénario S6)
+sp_target = 0.90
+n_tot_target = 68
+n_neg_target = 27
+marge_target = 0.149
+prev_target = 0.60
+
+# Chiffres Observés (Réel)
+sp_obs = 0.792
+n_tot_obs = effectif_n_total_main
+n_neg_obs = effectif_n_neg_main
+lb_obs = qbeta(0.05, n_neg_obs * sp_obs, n_neg_obs * (1 - sp_obs) + 1)
+marge_obs = sp_obs - lb_obs
+prev_obs = effectif_prev_main
+
+# Calculs pour l'argumentation
+prev_max_pour_27 = 1 - (27 / n_tot_obs)
+perte_prec_theo = ( (0.9 - qbeta(0.05, 24*0.9, 24*0.1+1)) - (0.9 - qbeta(0.05, 27*0.9, 27*0.1+1)) )
+
+calc_n_neg <- function(t, target_margin) {
+  for (n in 2:200) {
+    lb <- qbeta(0.05, n * t, n * (1 - t) + 1)
+    if ((t - lb) <= target_margin) return(n)
+  }
+  return(NA)
+}
+n_neg_requis_sp_obs = calc_n_neg(sp_obs, 0.149)
+n_total_requis_sp_obs = ceiling(n_neg_requis_sp_obs / (1 - prev_obs))
+
+# Construction du tableau comparatif
+df_discussion_comp <- data.frame(
+    Indicateur = c(
+        "Spécificité (cible vs observée)",
+        "Effectif total (N)",
+        "Effectif négatif (n)",
+        "Prévalence NCB",
+        "Marge de précision (ω)"
+    ),
+    `Attendus / Espérés` = c(
+        sprintf("%.2f", sp_target),
+        as.character(n_tot_target),
+        as.character(n_neg_target),
+        paste0(round(prev_target * 100, 0), " %"),
+        sprintf("%.3f", marge_target)
+    ),
+    `Observés` = c(
+        sprintf("%.3f", sp_obs),
+        as.character(n_tot_obs),
+        as.character(n_neg_obs),
+        paste0(round(prev_obs * 100, 1), " %"),
+        sprintf("%.3f", marge_obs)
+    ),
+    check.names = FALSE
+)
+
+kable(df_discussion_comp, caption = "Comparaison entre les objectifs du protocole et les données observées") %>%
+    kable_styling(full_width = FALSE, position = "center")
+```
+
+### Interprétation
+
+L'analyse de ces chiffres permet de nuancer les conclusions : 
+
+1.  **L'impact de la prévalence** : Le recrutement total (N=69) est conforme à l'objectif. L'insuffisance du nombre de sujets négatifs (n=24 au lieu de 27) s'explique uniquement par une prévalence de la maladie plus forte que prévue sur le terrain (65% contre 60% dans le pire scénario du protocole). Pour atteindre 27 négatifs, il aurait fallu une prévalence maximale de `r round(prev_max_pour_27 * 100, 1)`%.
+2.  **Une perte de précision minime** : Si la spécificité avait été de 0.90, le passage de 27 à 24 sujets n'aurait fait perdre que `r round(perte_prec_theo * 100, 1)`% de précision sur la borne inférieure de l'intervalle de confiance.
+3.  **La réalité de la performance** : La difficulté à atteindre la précision cible vient moins du nombre de sujets que de la performance réelle des tests. Avec une spécificité observée de `r sp_obs`, il aurait fallu `r n_neg_requis_sp_obs` sujets négatifs (soit environ `r n_total_requis_sp_obs` patients au total) pour stabiliser l'estimation avec la marge de 0.15 initialement souhaitée.
+
+**Conclusion pour la discussion :** Cette étude doit être considérée comme une étape exploratoire robuste. Elle démontre une hiérarchie claire entre les tests, mais confirme qu'une étude de confirmation (visant une précision étroite) nécessiterait une cohorte plus large, d'environ 100 patients, pour compenser une spécificité plus faible qu'attendu.
+
 
 \newpage
