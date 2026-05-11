@@ -3404,11 +3404,11 @@ Les performances diagnostiques des quatre ULNT réalisés par l'évaluateur 1 on
 
 Les performances des différents ULNT ont été comparées entre elles à l'aide du test de McNemar ($\chi^2$ pour données appariées). La reproductibilité inter-évaluateurs a été évaluée par le coefficient kappa de Cohen.
 
-Des analyses complémentaires ont porté sur les combinaisons de tests et sur le score global de positivité ULNT, défini comme le nombre total d'ULNT positifs chez un même patient. Les combinaisons conjonctives possibles des quatre ULNT ont été explorées. Le score global a été étudié selon différents seuils de positivité.
+Des analyses complémentaires ont porté sur les combinaisons de tests. Deux types de combinaisons ont été évaluées : des combinaisons conjonctives entre les différents ULNT, ainsi qu'un score global de positivité ULNT, défini comme le nombre total d'ULNT positifs chez un même patient. Ce score global a été étudié selon différents seuils de positivité. L'importance relative de chaque test dans ce score global a été explorée par une approche de type Shapley value (permutation de l'ordre d'inclusion des tests dans le score, et estimation de la contribution de chaque test à la sensibilité et à la spécificité du score à chaque seuil).
 
-Des analyses exploratoires ont également été réalisées selon le niveau métamérique. Pour chaque niveau, la performance de chaque ULNT a été évaluée ainsi que l'association entre le niveau métamérique et la probabilité de névralgie cervico-brachiale. 
+Des analyses exploratoires ont également été réalisées. La première analyse étudiant la performance des tests selon le niveau métamérique. Pour chaque niveau, la performance de chaque ULNT a été évaluée ainsi que l'association entre le niveau métamérique et la probabilité de névralgie cervico-brachiale. La seconde analyse exploratoire a porté sur un affinement du gold standard en ajoutant un résultat positif à l'infiltration comme définition et en définissant les cas négatifs comme les patients ayant eu un gold standard initial négatif. 
 
-Les résultats sont présentés sous forme d'estimations ponctuelles avec leurs intervalles de confiance à 95 %. Les modèles logistiques sont présentés sous forme d'odds ratios lorsque cela était pertinent. Les analyses ont été réalisées avec `R`, version 4.5.2. Tous les tests étaient bilatéraux, avec un seuil de significativité fixé à 0,05. Aucune correction de multiplicité n'a été appliquée aux analyses secondaires ou exploratoires, qui doivent donc être interprétées comme génératrices d'hypothèses.
+Les résultats sont présentés sous forme d'estimations ponctuelles avec leurs intervalles de confiance à 95 %. Les variables quantitatives ont été décrites par des paramètes de position et de dispersion adapté à leur distribution. Les analyses ont été réalisées avec `R`, version 4.5.2. Tous les tests étaient bilatéraux, avec un seuil de significativité fixé à 0,05. Aucune correction de multiplicité n'a été appliquée aux analyses secondaires ou exploratoires étant donné le caractère observationnel de l'étude. 
 
 \newpage
 # Disclaimer : nombre de sujets nécessaires et précision attendue
@@ -4930,11 +4930,15 @@ tbl_score_a2 <- format_table_strong(df_perf_score_a2)
 
 #### Performances des tests et comparaisons (Approche 2)
 
-Dans cette approche, la modification du groupe de contrôle a un impact important. La sensibilité évaluée reste la même que dans l'approche 1 (puisque les cas positifs sont les mêmes), mais **la spécificité chute drastiquement**.
+Dans cette approche, la modification du groupe de contrôle a un impact important. La sensibilité évaluée reste la même que dans l'approche 1 (puisque les cas positifs sont les mêmes), mais **la spécificité chute**.
 
-En effet, le groupe "Négatif" inclut désormais 
+Le groupe "Négatif" inclut désormais :
 
--   Les vrais malades cliniques (GS principal positif) qui rendent les tests positifs (Vrais Positifs cliniques), mais qui sont ici comptés artificiellement comme des Faux Positifs car ils n'ont pas eu d'infiltration. **La comparaison de la spécificité a donc un intérêt clinique très limité ici.**
+-   Les vrais malades cliniques (GS principal positif) qui rendent les tests positifs (Vrais Positifs cliniques), mais qui sont ici comptés artificiellement comme des Faux Positifs car ils n'ont pas eu d'infiltration. 
+
+-   Les vrais négatifs initiaux (GS principal négatif) qui rendent les tests négatifs (Vrais Négatifs).
+
+**La comparaison de la spécificité a donc un intérêt clinique très limité ici.**
 
 ```{r}
 #| label: tbl-strong-a2-indiv
