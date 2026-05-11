@@ -4303,7 +4303,7 @@ score_summary_table %>%
 
 NB : *Le **DOR** (diagnostic odds ratio) résume en un seul chiffre la capacité globale du score à distinguer les patients `G+` des `G-` (se calcule en faisant le rapport entre le LR+ et le LR-), mais il reste ici secondaire car moins intuitif cliniquement que la sensibilité, la spécificité et les rapports de vraisemblance. En plus, les IC du DOR sont ici très larges et se chevauchent largement, donc ils ne sont pas vraiment interprétables.*
 
-Pour interpréter ces résultats, on peut raisonner **par addition** (approche de type Shapley) : on calcule la **contribution moyenne** de chaque test au gain de performance du score global.
+Pour interpréter ces résultats, on peut raisonner **par addition** (approche de type Shapley value par permutation de l'ordre d'inclusion des tests et estimation de leur contribution) : on calcule la **contribution moyenne** de chaque test au gain de performance du score global.
 
 #### Gain de Sensibilité
 
