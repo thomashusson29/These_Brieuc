@@ -4930,11 +4930,15 @@ tbl_score_a2 <- format_table_strong(df_perf_score_a2)
 
 #### Performances des tests et comparaisons (Approche 2)
 
-Dans cette approche, la modification du groupe de contrôle a un impact important. La sensibilité évaluée reste la même que dans l'approche 1 (puisque les cas positifs sont les mêmes), mais **la spécificité chute drastiquement**.
+Dans cette approche, la modification du groupe de contrôle a un impact important. La sensibilité évaluée reste la même que dans l'approche 1 (puisque les cas positifs sont les mêmes), mais **la spécificité chute**.
 
-En effet, le groupe "Négatif" inclut désormais 
+Le groupe "Négatif" inclut désormais :
 
--   Les vrais malades cliniques (GS principal positif) qui rendent les tests positifs (Vrais Positifs cliniques), mais qui sont ici comptés artificiellement comme des Faux Positifs car ils n'ont pas eu d'infiltration. **La comparaison de la spécificité a donc un intérêt clinique très limité ici.**
+-   Les vrais malades cliniques (GS principal positif) qui rendent les tests positifs (Vrais Positifs cliniques), mais qui sont ici comptés artificiellement comme des Faux Positifs car ils n'ont pas eu d'infiltration. 
+
+-   Les vrais négatifs initiaux (GS principal négatif) qui rendent les tests négatifs (Vrais Négatifs).
+
+**La comparaison de la spécificité a donc un intérêt clinique très limité ici.**
 
 ```{r}
 #| label: tbl-strong-a2-indiv
