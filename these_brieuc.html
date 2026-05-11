@@ -269,9 +269,9 @@ window.Quarto = {
 <p>Les variables qualitatives ont été décrites par leurs effectifs et pourcentages. Les variables quantitatives ont été décrites par des paramètres de position et de dispersion adaptés à leur distribution. Les données manquantes n’ont pas été imputées.</p>
 <p>Les performances diagnostiques des quatre ULNT réalisés par l’évaluateur 1 ont été évaluées par rapport au gold standard principal. Pour chaque test, des tableaux de contingence 2 x 2 ont permis d’estimer la sensibilité, la spécificité, les valeurs prédictives positive et négative, les rapports de vraisemblance positif et négatif, l’indice de Youden et l’aire sous la courbe ROC. Les intervalles de confiance à 95 % des proportions ont été calculés par la méthode binomiale exacte de Clopper-Pearson. L’association entre chaque ULNT et le gold standard principal a été étudiée par le test exact de Fisher.</p>
 <p>Les performances des différents ULNT ont été comparées entre elles à l’aide du test de McNemar (<span class="math inline">\(\chi^2\)</span> pour données appariées). La reproductibilité inter-évaluateurs a été évaluée par le coefficient kappa de Cohen.</p>
-<p>Des analyses complémentaires ont porté sur les combinaisons de tests et sur le score global de positivité ULNT, défini comme le nombre total d’ULNT positifs chez un même patient. Les combinaisons conjonctives possibles des quatre ULNT ont été explorées. Le score global a été étudié selon différents seuils de positivité.</p>
-<p>Des analyses exploratoires ont également été réalisées selon le niveau métamérique. Pour chaque niveau, la performance de chaque ULNT a été évaluée ainsi que l’association entre le niveau métamérique et la probabilité de névralgie cervico-brachiale.</p>
-<p>Les résultats sont présentés sous forme d’estimations ponctuelles avec leurs intervalles de confiance à 95 %. Les modèles logistiques sont présentés sous forme d’odds ratios lorsque cela était pertinent. Les analyses ont été réalisées avec <code>R</code>, version 4.5.2. Tous les tests étaient bilatéraux, avec un seuil de significativité fixé à 0,05. Aucune correction de multiplicité n’a été appliquée aux analyses secondaires ou exploratoires, qui doivent donc être interprétées comme génératrices d’hypothèses.</p>
+<p>Des analyses complémentaires ont porté sur les combinaisons de tests. Deux types de combinaisons ont été évaluées : des combinaisons conjonctives entre les différents ULNT, ainsi qu’un score global de positivité ULNT, défini comme le nombre total d’ULNT positifs chez un même patient. Ce score global a été étudié selon différents seuils de positivité. L’importance relative de chaque test dans ce score global a été explorée par une approche de type Shapley value (permutation de l’ordre d’inclusion des tests dans le score, et estimation de la contribution de chaque test à la sensibilité et à la spécificité du score à chaque seuil).</p>
+<p>Des analyses exploratoires ont également été réalisées. La première analyse étudiant la performance des tests selon le niveau métamérique. Pour chaque niveau, la performance de chaque ULNT a été évaluée ainsi que l’association entre le niveau métamérique et la probabilité de névralgie cervico-brachiale. La seconde analyse exploratoire a porté sur un affinement du gold standard en ajoutant un résultat positif à l’infiltration comme définition et en définissant les cas négatifs comme les patients ayant eu un gold standard initial négatif.</p>
+<p>Les résultats sont présentés sous forme d’estimations ponctuelles avec leurs intervalles de confiance à 95 %. Les variables quantitatives ont été décrites par des paramètes de position et de dispersion adapté à leur distribution. Les analyses ont été réalisées avec <code>R</code>, version 4.5.2. Tous les tests étaient bilatéraux, avec un seuil de significativité fixé à 0,05. Aucune correction de multiplicité n’a été appliquée aux analyses secondaires ou exploratoires étant donné le caractère observationnel de l’étude.</p>
 <div style="page-break-after: always;"></div>
 </section>
 </section>
@@ -700,23 +700,23 @@ Table&nbsp;1: Effectif requis pour différents scénarios de spécificité cible
 </section>
 <section id="tableau-de-caractéristiques-initiales" class="level4" data-number="5.1.2.7">
 <h4 data-number="5.1.2.7" class="anchored" data-anchor-id="tableau-de-caractéristiques-initiales"><span class="header-section-number">5.1.2.7</span> Tableau de caractéristiques initiales</h4>
-<div id="apjwmogakf" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#apjwmogakf table {
+<div id="hzvnlinoxx" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#hzvnlinoxx table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#apjwmogakf thead, #apjwmogakf tbody, #apjwmogakf tfoot, #apjwmogakf tr, #apjwmogakf td, #apjwmogakf th {
+#hzvnlinoxx thead, #hzvnlinoxx tbody, #hzvnlinoxx tfoot, #hzvnlinoxx tr, #hzvnlinoxx td, #hzvnlinoxx th {
   border-style: none;
 }
 
-#apjwmogakf p {
+#hzvnlinoxx p {
   margin: 0;
   padding: 0;
 }
 
-#apjwmogakf .gt_table {
+#hzvnlinoxx .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -742,12 +742,12 @@ Table&nbsp;1: Effectif requis pour différents scénarios de spécificité cible
   border-left-color: #D3D3D3;
 }
 
-#apjwmogakf .gt_caption {
+#hzvnlinoxx .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#apjwmogakf .gt_title {
+#hzvnlinoxx .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -759,7 +759,7 @@ Table&nbsp;1: Effectif requis pour différents scénarios de spécificité cible
   border-bottom-width: 0;
 }
 
-#apjwmogakf .gt_subtitle {
+#hzvnlinoxx .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -771,7 +771,7 @@ Table&nbsp;1: Effectif requis pour différents scénarios de spécificité cible
   border-top-width: 0;
 }
 
-#apjwmogakf .gt_heading {
+#hzvnlinoxx .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -783,13 +783,13 @@ Table&nbsp;1: Effectif requis pour différents scénarios de spécificité cible
   border-right-color: #D3D3D3;
 }
 
-#apjwmogakf .gt_bottom_border {
+#hzvnlinoxx .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#apjwmogakf .gt_col_headings {
+#hzvnlinoxx .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -804,7 +804,7 @@ Table&nbsp;1: Effectif requis pour différents scénarios de spécificité cible
   border-right-color: #D3D3D3;
 }
 
-#apjwmogakf .gt_col_heading {
+#hzvnlinoxx .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -824,7 +824,7 @@ Table&nbsp;1: Effectif requis pour différents scénarios de spécificité cible
   overflow-x: hidden;
 }
 
-#apjwmogakf .gt_column_spanner_outer {
+#hzvnlinoxx .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -836,15 +836,15 @@ Table&nbsp;1: Effectif requis pour différents scénarios de spécificité cible
   padding-right: 4px;
 }
 
-#apjwmogakf .gt_column_spanner_outer:first-child {
+#hzvnlinoxx .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#apjwmogakf .gt_column_spanner_outer:last-child {
+#hzvnlinoxx .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#apjwmogakf .gt_column_spanner {
+#hzvnlinoxx .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -856,11 +856,11 @@ Table&nbsp;1: Effectif requis pour différents scénarios de spécificité cible
   width: 100%;
 }
 
-#apjwmogakf .gt_spanner_row {
+#hzvnlinoxx .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#apjwmogakf .gt_group_heading {
+#hzvnlinoxx .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -886,7 +886,7 @@ Table&nbsp;1: Effectif requis pour différents scénarios de spécificité cible
   text-align: left;
 }
 
-#apjwmogakf .gt_empty_group_heading {
+#hzvnlinoxx .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -901,15 +901,15 @@ Table&nbsp;1: Effectif requis pour différents scénarios de spécificité cible
   vertical-align: middle;
 }
 
-#apjwmogakf .gt_from_md > :first-child {
+#hzvnlinoxx .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#apjwmogakf .gt_from_md > :last-child {
+#hzvnlinoxx .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#apjwmogakf .gt_row {
+#hzvnlinoxx .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -928,7 +928,7 @@ Table&nbsp;1: Effectif requis pour différents scénarios de spécificité cible
   overflow-x: hidden;
 }
 
-#apjwmogakf .gt_stub {
+#hzvnlinoxx .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -941,7 +941,7 @@ Table&nbsp;1: Effectif requis pour différents scénarios de spécificité cible
   padding-right: 5px;
 }
 
-#apjwmogakf .gt_stub_row_group {
+#hzvnlinoxx .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -955,15 +955,15 @@ Table&nbsp;1: Effectif requis pour différents scénarios de spécificité cible
   vertical-align: top;
 }
 
-#apjwmogakf .gt_row_group_first td {
+#hzvnlinoxx .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#apjwmogakf .gt_row_group_first th {
+#hzvnlinoxx .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#apjwmogakf .gt_summary_row {
+#hzvnlinoxx .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -973,16 +973,16 @@ Table&nbsp;1: Effectif requis pour différents scénarios de spécificité cible
   padding-right: 5px;
 }
 
-#apjwmogakf .gt_first_summary_row {
+#hzvnlinoxx .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#apjwmogakf .gt_first_summary_row.thick {
+#hzvnlinoxx .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#apjwmogakf .gt_last_summary_row {
+#hzvnlinoxx .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -992,7 +992,7 @@ Table&nbsp;1: Effectif requis pour différents scénarios de spécificité cible
   border-bottom-color: #D3D3D3;
 }
 
-#apjwmogakf .gt_grand_summary_row {
+#hzvnlinoxx .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1002,7 +1002,7 @@ Table&nbsp;1: Effectif requis pour différents scénarios de spécificité cible
   padding-right: 5px;
 }
 
-#apjwmogakf .gt_first_grand_summary_row {
+#hzvnlinoxx .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1012,7 +1012,7 @@ Table&nbsp;1: Effectif requis pour différents scénarios de spécificité cible
   border-top-color: #D3D3D3;
 }
 
-#apjwmogakf .gt_last_grand_summary_row_top {
+#hzvnlinoxx .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1022,11 +1022,11 @@ Table&nbsp;1: Effectif requis pour différents scénarios de spécificité cible
   border-bottom-color: #D3D3D3;
 }
 
-#apjwmogakf .gt_striped {
+#hzvnlinoxx .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#apjwmogakf .gt_table_body {
+#hzvnlinoxx .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1035,7 +1035,7 @@ Table&nbsp;1: Effectif requis pour différents scénarios de spécificité cible
   border-bottom-color: #D3D3D3;
 }
 
-#apjwmogakf .gt_footnotes {
+#hzvnlinoxx .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1049,7 +1049,7 @@ Table&nbsp;1: Effectif requis pour différents scénarios de spécificité cible
   border-right-color: #D3D3D3;
 }
 
-#apjwmogakf .gt_footnote {
+#hzvnlinoxx .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -1058,7 +1058,7 @@ Table&nbsp;1: Effectif requis pour différents scénarios de spécificité cible
   padding-right: 5px;
 }
 
-#apjwmogakf .gt_sourcenotes {
+#hzvnlinoxx .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1072,7 +1072,7 @@ Table&nbsp;1: Effectif requis pour différents scénarios de spécificité cible
   border-right-color: #D3D3D3;
 }
 
-#apjwmogakf .gt_sourcenote {
+#hzvnlinoxx .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1080,72 +1080,72 @@ Table&nbsp;1: Effectif requis pour différents scénarios de spécificité cible
   padding-right: 5px;
 }
 
-#apjwmogakf .gt_left {
+#hzvnlinoxx .gt_left {
   text-align: left;
 }
 
-#apjwmogakf .gt_center {
+#hzvnlinoxx .gt_center {
   text-align: center;
 }
 
-#apjwmogakf .gt_right {
+#hzvnlinoxx .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#apjwmogakf .gt_font_normal {
+#hzvnlinoxx .gt_font_normal {
   font-weight: normal;
 }
 
-#apjwmogakf .gt_font_bold {
+#hzvnlinoxx .gt_font_bold {
   font-weight: bold;
 }
 
-#apjwmogakf .gt_font_italic {
+#hzvnlinoxx .gt_font_italic {
   font-style: italic;
 }
 
-#apjwmogakf .gt_super {
+#hzvnlinoxx .gt_super {
   font-size: 65%;
 }
 
-#apjwmogakf .gt_footnote_marks {
+#hzvnlinoxx .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#apjwmogakf .gt_asterisk {
+#hzvnlinoxx .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#apjwmogakf .gt_indent_1 {
+#hzvnlinoxx .gt_indent_1 {
   text-indent: 5px;
 }
 
-#apjwmogakf .gt_indent_2 {
+#hzvnlinoxx .gt_indent_2 {
   text-indent: 10px;
 }
 
-#apjwmogakf .gt_indent_3 {
+#hzvnlinoxx .gt_indent_3 {
   text-indent: 15px;
 }
 
-#apjwmogakf .gt_indent_4 {
+#hzvnlinoxx .gt_indent_4 {
   text-indent: 20px;
 }
 
-#apjwmogakf .gt_indent_5 {
+#hzvnlinoxx .gt_indent_5 {
   text-indent: 25px;
 }
 
-#apjwmogakf .katex-display {
+#hzvnlinoxx .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#apjwmogakf div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#hzvnlinoxx div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -2644,7 +2644,7 @@ Figure&nbsp;1: Kappa inter-observer agreement for each ultrasound test.
 </div>
 </div>
 <p>NB : <em>Le <strong>DOR</strong> (diagnostic odds ratio) résume en un seul chiffre la capacité globale du score à distinguer les patients <code>G+</code> des <code>G-</code> (se calcule en faisant le rapport entre le LR+ et le LR-), mais il reste ici secondaire car moins intuitif cliniquement que la sensibilité, la spécificité et les rapports de vraisemblance. En plus, les IC du DOR sont ici très larges et se chevauchent largement, donc ils ne sont pas vraiment interprétables.</em></p>
-<p>Pour interpréter ces résultats, on peut raisonner <strong>par addition</strong> (approche de type Shapley) : on calcule la <strong>contribution moyenne</strong> de chaque test au gain de performance du score global.</p>
+<p>Pour interpréter ces résultats, on peut raisonner <strong>par addition</strong> (approche de type Shapley value par permutation de l’ordre d’inclusion des tests et estimation de leur contribution) : on calcule la <strong>contribution moyenne</strong> de chaque test au gain de performance du score global.</p>
 <section id="gain-de-sensibilité" class="level4" data-number="5.6.2.1">
 <h4 data-number="5.6.2.1" class="anchored" data-anchor-id="gain-de-sensibilité"><span class="header-section-number">5.6.2.1</span> Gain de Sensibilité</h4>
 <div class="cell">
