@@ -4497,6 +4497,125 @@ results_by_level_score_plot
 -   Graphique pas très utile et peu interprétable car effectif trop faibles... Globalement, à C6 - C7, les patients ont ≥ 3 tests positifs dans plus de la moitié des cas. 
 
 \newpage
+### Focus sur les cas confirmés (Gold Standard Positif)
+
+Afin d'affiner la compréhension clinique, nous isolons ici les patients confirmés comme étant réellement atteints d'une NCB (Gold Standard positif, N = `r sum(df$Gold_Standard_main == "Positif", na.rm = TRUE)`).
+
+```{r}
+#| label: fig-gs-positive-level
+#| fig-cap: "Répartition des niveaux métamériques uniquement chez les cas confirmés"
+#| echo: false
+
+df_pos <- df %>% filter(Gold_Standard_main == "Positif")
+level_table_pos <- table(factor(df_pos$Niveau, levels = levels(df$Niveau)))
+level_pct_pos <- round(100 * prop.table(level_table_pos), 1)
+
+df_plot_pos <- as.data.frame(level_table_pos)
+names(df_plot_pos) <- c("Niveau", "Effectif")
+df_plot_pos$Pourcentage <- level_pct_pos
+
+ggplot(df_plot_pos, aes(x = Niveau, y = Effectif, fill = Niveau)) +
+    geom_col(width = 0.7, color = "white", linewidth = 0.2) +
+    geom_text(aes(label = paste0(Effectif, " (", Pourcentage, "%)")), vjust = -0.5, size = 3) +
+    scale_fill_manual(values = niveau_colors, guide = "none") +
+    theme_minimal() +
+    labs(title = "Distribution des niveaux chez les patients G+",
+         y = "Nombre de patients", x = "Niveau métamérique") +
+    scale_y_continuous(expand = expansion(mult = c(0, 0.15)))
+```
+
+```{r}
+#| label: fig-gs-positive-score
+#| fig-cap: "Score ULNT par niveau chez les patients confirmés"
+#| echo: false
+
+level_score_pos <- level_analysis_data %>%
+    filter(Gold_Standard_main == "Positif") %>%
+    mutate(Score_ULNT = factor(n_pos, levels = 0:4, ordered = TRUE)) %>%
+    count(Niveau, Score_ULNT, name = "Effectif") %>%
+    complete(
+        Niveau = factor(level_levels, levels = level_levels, ordered = TRUE),
+        Score_ULNT = factor(0:4, levels = 0:4, ordered = TRUE),
+        fill = list(Effectif = 0)
+    )
+
+ggplot(level_score_pos, aes(x = Niveau, y = Effectif, fill = Score_ULNT)) +
+    geom_col(width = 0.7, color = "white", linewidth = 0.2) +
+    scale_fill_manual(
+        values = c(
+            `0` = nord("frost")[1],
+            `1` = nord("frost")[2],
+            `2` = nord("frost")[3],
+            `3` = nord("aurora")[3],
+            `4` = nord("aurora")[4]
+        ),
+        name = "Score ULNT"
+    ) +
+    theme_minimal() +
+    labs(title = "Score ULNT (0-4) par niveau chez les patients G+",
+         x = "Niveau métamérique", y = "Effectif")
+```
+
+### Performance des tests par niveau (VP, FP, FN, VN)
+
+Ce graphique permet de visualiser pour chaque étage métamérique la répartition des résultats pour les 4 tests ULNT.
+
+```{r}
+#| label: fig-level-performance-stacked
+#| fig-cap: "Répartition VP, FP, FN, VN par test et par niveau"
+#| fig-width: 10
+#| fig-height: 8
+#| echo: false
+
+level_test_perf_list <- list()
+level_test_grid <- expand.grid(
+    Niveau = level_levels,
+    Test_Col = names(level_test_labels),
+    stringsAsFactors = FALSE
+)
+
+for (i in 1:nrow(level_test_grid)) {
+    lvl <- level_test_grid$Niveau[i]
+    t_col <- level_test_grid$Test_Col[i]
+    
+    data_tmp <- level_analysis_data %>%
+        filter(Niveau == lvl, !is.na(.data[[t_col]]))
+    
+    tp <- sum(data_tmp[[t_col]] == "Positif" & data_tmp$Gold_Standard_main == "Positif")
+    fn <- sum(data_tmp[[t_col]] == "Negatif" & data_tmp$Gold_Standard_main == "Positif")
+    fp <- sum(data_tmp[[t_col]] == "Positif" & data_tmp$Gold_Standard_main == "Negatif")
+    vn <- sum(data_tmp[[t_col]] == "Negatif" & data_tmp$Gold_Standard_main == "Negatif")
+    
+    level_test_perf_list[[i]] <- data.frame(
+        Niveau = lvl,
+        Test = level_test_labels[t_col],
+        VP = tp,
+        FN = fn,
+        FP = fp,
+        VN = vn
+    )
+}
+
+level_test_perf <- bind_rows(level_test_perf_list) %>%
+    pivot_longer(cols = c(VP, FN, FP, VN), names_to = "Cellule", values_to = "Effectif") %>%
+    mutate(Cellule = factor(Cellule, levels = c("VP", "FN", "FP", "VN")))
+
+ggplot(level_test_perf, aes(x = Test, y = Effectif, fill = Cellule)) +
+    geom_col(position = "stack", width = 0.7, color = "white", linewidth = 0.2) +
+    facet_wrap(~Niveau) +
+    scale_fill_manual(
+        values = c(VP = nord("aurora")[4], FN = nord("aurora")[1], FP = nord("aurora")[2], VN = nord("frost")[4]),
+        labels = c(VP = "Vrai positif (VP)", FN = "Faux négatif (FN)", 
+                  FP = "Faux positif (FP)", VN = "Vrai négatif (VN)"),
+        name = "Résultat"
+    ) +
+    theme_minimal() +
+    theme(legend.position = "bottom") +
+    labs(title = "Performance des 4 tests ULNT par niveau",
+         x = "Test", y = "Nombre de cas")
+```
+
+\newpage
 ### Détail exploratoire test par test et niveau par niveau
 ```{r}
 #| label: diagnostic-by-level-detail-table
