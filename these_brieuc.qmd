@@ -4562,11 +4562,12 @@ Ce graphique permet de visualiser pour chaque étage métamérique la répartiti
 
 ```{r}
 #| label: fig-level-performance-stacked
+#| echo: false
 #| fig-cap: "Répartition VP, FP, FN, VN par test et par niveau"
 #| fig-width: 10
-#| fig-height: 8
-#| echo: false
+#| fig-height: 10
 
+# Préparation des données
 level_test_perf_list <- list()
 level_test_grid <- expand.grid(
     Niveau = level_levels,
@@ -4602,7 +4603,7 @@ level_test_perf <- bind_rows(level_test_perf_list) %>%
 
 ggplot(level_test_perf, aes(x = Test, y = Effectif, fill = Cellule)) +
     geom_col(position = "stack", width = 0.7, color = "white", linewidth = 0.2) +
-    facet_wrap(~Niveau) +
+    facet_wrap(~Niveau, ncol = 2) +
     scale_fill_manual(
         values = c(VP = nord("aurora")[4], FN = nord("aurora")[1], FP = nord("aurora")[2], VN = nord("frost")[4]),
         labels = c(VP = "Vrai positif (VP)", FN = "Faux négatif (FN)", 
