@@ -4561,11 +4561,10 @@ ggplot(level_score_pos, aes(x = Niveau, y = Effectif, fill = Score_ULNT)) +
 Ce graphique permet de visualiser pour chaque étage métamérique la répartition des résultats pour les 4 tests ULNT.
 
 ```{r}
-#| label: fig-level-performance-stacked
+#| label: fig-level-performance-individual
 #| echo: false
-#| fig-cap: "Répartition VP, FP, FN, VN par test et par niveau"
 #| fig-width: 10
-#| fig-height: 10
+#| fig-height: 14
 
 # Préparation des données
 level_test_perf_list <- list()
@@ -4601,19 +4600,34 @@ level_test_perf <- bind_rows(level_test_perf_list) %>%
     pivot_longer(cols = c(VP, FN, FP, VN), names_to = "Cellule", values_to = "Effectif") %>%
     mutate(Cellule = factor(Cellule, levels = c("VP", "FN", "FP", "VN")))
 
-ggplot(level_test_perf, aes(x = Test, y = Effectif, fill = Cellule)) +
-    geom_col(position = "stack", width = 0.7, color = "white", linewidth = 0.2) +
-    facet_wrap(~Niveau, ncol = 2) +
-    scale_fill_manual(
-        values = c(VP = nord("aurora")[4], FN = nord("aurora")[1], FP = nord("aurora")[2], VN = nord("frost")[4]),
-        labels = c(VP = "Vrai positif (VP)", FN = "Faux négatif (FN)", 
-                  FP = "Faux positif (FP)", VN = "Vrai négatif (VN)"),
-        name = "Résultat"
-    ) +
-    theme_minimal() +
-    theme(legend.position = "bottom") +
-    labs(title = "Performance des 4 tests ULNT par niveau",
-         x = "Test", y = "Nombre de cas")
+# Calcul de l'échelle Y commune pour la cohérence
+max_y_perf <- level_test_perf %>%
+    group_by(Niveau, Test) %>%
+    summarise(Total = sum(Effectif), .groups = "drop") %>%
+    pull(Total) %>%
+    max()
+
+plot_list <- list()
+for (lvl in level_levels) {
+    p <- ggplot(filter(level_test_perf, Niveau == lvl), aes(x = Test, y = Effectif, fill = Cellule)) +
+        geom_col(position = "stack", width = 0.7, color = "white", linewidth = 0.2) +
+        scale_fill_manual(
+            values = c(VP = nord("aurora")[4], FN = nord("aurora")[1], FP = nord("aurora")[2], VN = nord("frost")[4]),
+            labels = c(VP = "Vrai positif (VP)", FN = "Faux négatif (FN)", 
+                      FP = "Faux positif (FP)", VN = "Vrai négatif (VN)"),
+            name = "Résultat"
+        ) +
+        scale_y_continuous(limits = c(0, max_y_perf * 1.05)) +
+        theme_minimal() +
+        labs(title = paste("Niveau", lvl),
+             x = "Test", y = "Nombre de cas")
+    plot_list[[lvl]] <- p
+}
+
+# Combinaison patchwork : garde les axes X et Y sur chaque graphique
+wrap_plots(plot_list, ncol = 2) + 
+    plot_layout(guides = "collect") & 
+    theme(legend.position = "bottom")
 ```
 
 \newpage
