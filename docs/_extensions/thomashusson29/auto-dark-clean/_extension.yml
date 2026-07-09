@@ -1,0 +1,51 @@
+title: Auto Dark Clean
+author: Thomas Husson
+version: 0.2.0
+quarto-required: ">=1.7.0"
+
+# This extension is a thin RevealJS wrapper around the auto-dark extension.
+# It re-uses CSS and JS from _extensions/auto-dark/ via relative paths.
+#
+# IMPORTANT: both auto-dark and auto-dark-clean must be installed in the same
+# _extensions/ folder. If you install auto-dark-clean without auto-dark, the
+# relative paths below will fail.
+#
+# The shared files are:
+#   ../auto-dark/auto-dark.css           — One Dark palette + core dark styles
+#   ../auto-dark/auto-dark-reveal.css    — RevealJS-specific dark styles
+#   ../auto-dark/auto-dark-plot-filter.css — fallback CSS filter for plots
+#   ../auto-dark/auto-dark-gt-reveal.css — gt table sizing in RevealJS
+#   ../auto-dark/auto-dark-switch.css    — ☾/☀ button styles
+#   ../auto-dark/auto-dark-reveal-init.js — early theme class injection (<head>)
+#   ../auto-dark/auto-dark-reveal.js     — RevealJS theme switch + image pairs
+#   ../auto-dark/auto-dark-renderings.js — companion image injection
+
+contributes:
+  formats:
+    revealjs:
+      theme: [default, auto-dark-clean.scss]
+      menu:
+        side: left
+      slide-number: true
+      date-format: long
+      html-math-method:
+        method: mathjax
+        url: "https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"
+      css:
+        - ../auto-dark/auto-dark.css
+        - ../auto-dark/auto-dark-reveal.css
+        - ../auto-dark/auto-dark-plot-filter.css
+        - ../auto-dark/auto-dark-gt-reveal.css
+        - ../auto-dark/auto-dark-switch.css
+      include-in-header:
+        - text: |
+            <script src="auto-dark-reveal-init.js"></script>
+      include-after-body:
+        - text: |
+            <script src="auto-dark-reveal.js"></script>
+        - text: |
+            <script src="auto-dark-renderings.js"></script>
+      format-resources:
+        - ../auto-dark/auto-dark-reveal-init.js
+        - ../auto-dark/auto-dark-reveal.js
+        - ../auto-dark/auto-dark-renderings.js

@@ -1,18 +1,19 @@
 ---
 title: "Stats Thèse Brieuc"
-author: "Thomas Husson"
+author: 
+    - name : "Thomas Husson"
+      email : "thomas.husson@aphp.fr"
 bibliography: biblio.bib
 prefer-pdf: true
 prefer-html: true
 format:
-    html:
+    auto-dark-html:
         toc: true
         toc-depth: 5
         toc-title: "Table des matières"
         toc-location: left
         toc-sticky: true
         number-sections: true
-        theme: default
         code-fold: true
         code-summary: "Afficher le code"
 
@@ -304,6 +305,11 @@ plot_post_test_prob <- function(prev, lr_pos, lr_neg, test_name) {
 }
 ```
 
+```{r}
+#| include: false
+source("_extensions/thomashusson29/auto-dark/auto-dark-setup.R")
+auto_dark_on()
+```
 
 \newpage
 ```{r}
@@ -5140,3 +5146,10 @@ kable(comp_score_a2, booktabs = TRUE, align = "c", row.names = FALSE) %>%
 
 
 \newpage
+# 2e partie : avec le nouveau fichier du 09-08-2926
+
+```{r}
+#read /Users/thomashusson/Documents/Projets/These_Brieuc/recueil_dernier_avec_sexe.csv dans df_2
+df_2 <- read.csv("/Users/thomashusson/Documents/Projets/These_Brieuc/recueil_dernier_avec_sexe.csv", header = TRUE, sep = ",")
+```
+

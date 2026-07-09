@@ -52,10 +52,14 @@ div.csl-indent {
 <script src="these_brieuc_files/libs/quarto-html/tippy.umd.min.js"></script>
 <script src="these_brieuc_files/libs/quarto-html/anchor.min.js"></script>
 <link href="these_brieuc_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="these_brieuc_files/libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="these_brieuc_files/libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="these_brieuc_files/libs/quarto-html/quarto-syntax-highlighting-dark-b758ccaa5987ceb1b75504551e579abf.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="these_brieuc_files/libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="these_brieuc_files/libs/bootstrap/bootstrap.min.js"></script>
 <link href="these_brieuc_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="these_brieuc_files/libs/bootstrap/bootstrap-d6a003b94517c951b2d65075d42fb01b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="these_brieuc_files/libs/bootstrap/bootstrap-a74871fe4945b66d259aafc266475145.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="these_brieuc_files/libs/bootstrap/bootstrap-dark-534f9e6eb4fde8fa3495dc6c45b1673d.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="these_brieuc_files/libs/bootstrap/bootstrap-a74871fe4945b66d259aafc266475145.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script src="these_brieuc_files/libs/kePrint-0.0.1/kePrint.js"></script>
 <link href="these_brieuc_files/libs/lightable-0.0.1/lightable.css" rel="stylesheet">
 
@@ -89,9 +93,182 @@ window.Quarto = {
 };
 </script>
 
+<link rel="stylesheet" href="_extensions/thomashusson29/auto-dark/auto-dark.css">
+<link rel="stylesheet" href="_extensions/thomashusson29/auto-dark/auto-dark-plot-filter.css">
 </head>
 
-<body class="quarto-light">
+<body class="quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+      // Hack to workaround the fact that safari doesn't
+      // properly recolor the scrollbar when toggling (#1455)
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        window.scrollTo(0, 1);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = false;
+    const queryPrefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+    const darkModeDefault = queryPrefersDark.matches;
+      document.querySelector('link#quarto-text-highlighting-styles.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+      document.querySelector('link#quarto-bootstrap.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    queryPrefersDark.addEventListener("change", e => {
+      if(window.localStorage.getItem("quarto-color-scheme") !== null)
+        return;
+      const alternate = e.matches
+      toggleColorMode(alternate);
+      localAlternateSentinel = e.matches ? 'alternate' : 'default'; // this is used alongside local storage!
+      toggleGiscusIfUsed(alternate, darkModeDefault);
+    });
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
 
 <div id="quarto-content" class="page-columns page-rows-contents page-layout-article toc-left">
 <div id="quarto-sidebar-toc-left" class="sidebar toc-left">
@@ -188,12 +365,14 @@ window.Quarto = {
   </ul></li>
   </ul></li>
   </ul></li>
+  <li><a href="#e-partie-avec-le-nouveau-fichier-du-09-08-2926" id="toc-e-partie-avec-le-nouveau-fichier-du-09-08-2926" class="nav-link" data-scroll-target="#e-partie-avec-le-nouveau-fichier-du-09-08-2926"><span class="header-section-number">6</span> 2e partie : avec le nouveau fichier du 09-08-2926</a></li>
   </ul>
 <div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="these_brieuc.docx"><i class="bi bi-file-word"></i>MS Word</a></li><li><a href="these_brieuc.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
 </div>
 <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
 </div>
 <main class="content" id="quarto-document-content">
+
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
@@ -207,7 +386,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Author</div>
     <div class="quarto-title-meta-contents">
-             <p>Thomas Husson </p>
+             <p>Thomas Husson <a href="mailto:thomas.husson@aphp.fr" class="quarto-title-author-email"><i class="bi bi-envelope"></i></a> </p>
           </div>
   </div>
     
@@ -702,23 +881,23 @@ Table&nbsp;1: Effectif requis pour différents scénarios de spécificité cible
 </section>
 <section id="tableau-de-caractéristiques-initiales" class="level4" data-number="5.1.2.7">
 <h4 data-number="5.1.2.7" class="anchored" data-anchor-id="tableau-de-caractéristiques-initiales"><span class="header-section-number">5.1.2.7</span> Tableau de caractéristiques initiales</h4>
-<div id="dwjdvrptya" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#dwjdvrptya table {
+<div id="tdjwxdmtcx" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#tdjwxdmtcx table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#dwjdvrptya thead, #dwjdvrptya tbody, #dwjdvrptya tfoot, #dwjdvrptya tr, #dwjdvrptya td, #dwjdvrptya th {
+#tdjwxdmtcx thead, #tdjwxdmtcx tbody, #tdjwxdmtcx tfoot, #tdjwxdmtcx tr, #tdjwxdmtcx td, #tdjwxdmtcx th {
   border-style: none;
 }
 
-#dwjdvrptya p {
+#tdjwxdmtcx p {
   margin: 0;
   padding: 0;
 }
 
-#dwjdvrptya .gt_table {
+#tdjwxdmtcx .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -744,12 +923,12 @@ Table&nbsp;1: Effectif requis pour différents scénarios de spécificité cible
   border-left-color: #D3D3D3;
 }
 
-#dwjdvrptya .gt_caption {
+#tdjwxdmtcx .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#dwjdvrptya .gt_title {
+#tdjwxdmtcx .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -761,7 +940,7 @@ Table&nbsp;1: Effectif requis pour différents scénarios de spécificité cible
   border-bottom-width: 0;
 }
 
-#dwjdvrptya .gt_subtitle {
+#tdjwxdmtcx .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -773,7 +952,7 @@ Table&nbsp;1: Effectif requis pour différents scénarios de spécificité cible
   border-top-width: 0;
 }
 
-#dwjdvrptya .gt_heading {
+#tdjwxdmtcx .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -785,13 +964,13 @@ Table&nbsp;1: Effectif requis pour différents scénarios de spécificité cible
   border-right-color: #D3D3D3;
 }
 
-#dwjdvrptya .gt_bottom_border {
+#tdjwxdmtcx .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#dwjdvrptya .gt_col_headings {
+#tdjwxdmtcx .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -806,7 +985,7 @@ Table&nbsp;1: Effectif requis pour différents scénarios de spécificité cible
   border-right-color: #D3D3D3;
 }
 
-#dwjdvrptya .gt_col_heading {
+#tdjwxdmtcx .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -826,7 +1005,7 @@ Table&nbsp;1: Effectif requis pour différents scénarios de spécificité cible
   overflow-x: hidden;
 }
 
-#dwjdvrptya .gt_column_spanner_outer {
+#tdjwxdmtcx .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -838,15 +1017,15 @@ Table&nbsp;1: Effectif requis pour différents scénarios de spécificité cible
   padding-right: 4px;
 }
 
-#dwjdvrptya .gt_column_spanner_outer:first-child {
+#tdjwxdmtcx .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#dwjdvrptya .gt_column_spanner_outer:last-child {
+#tdjwxdmtcx .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#dwjdvrptya .gt_column_spanner {
+#tdjwxdmtcx .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -858,11 +1037,11 @@ Table&nbsp;1: Effectif requis pour différents scénarios de spécificité cible
   width: 100%;
 }
 
-#dwjdvrptya .gt_spanner_row {
+#tdjwxdmtcx .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#dwjdvrptya .gt_group_heading {
+#tdjwxdmtcx .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -888,7 +1067,7 @@ Table&nbsp;1: Effectif requis pour différents scénarios de spécificité cible
   text-align: left;
 }
 
-#dwjdvrptya .gt_empty_group_heading {
+#tdjwxdmtcx .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -903,15 +1082,15 @@ Table&nbsp;1: Effectif requis pour différents scénarios de spécificité cible
   vertical-align: middle;
 }
 
-#dwjdvrptya .gt_from_md > :first-child {
+#tdjwxdmtcx .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#dwjdvrptya .gt_from_md > :last-child {
+#tdjwxdmtcx .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#dwjdvrptya .gt_row {
+#tdjwxdmtcx .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -930,7 +1109,7 @@ Table&nbsp;1: Effectif requis pour différents scénarios de spécificité cible
   overflow-x: hidden;
 }
 
-#dwjdvrptya .gt_stub {
+#tdjwxdmtcx .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -943,7 +1122,7 @@ Table&nbsp;1: Effectif requis pour différents scénarios de spécificité cible
   padding-right: 5px;
 }
 
-#dwjdvrptya .gt_stub_row_group {
+#tdjwxdmtcx .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -957,15 +1136,15 @@ Table&nbsp;1: Effectif requis pour différents scénarios de spécificité cible
   vertical-align: top;
 }
 
-#dwjdvrptya .gt_row_group_first td {
+#tdjwxdmtcx .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#dwjdvrptya .gt_row_group_first th {
+#tdjwxdmtcx .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#dwjdvrptya .gt_summary_row {
+#tdjwxdmtcx .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -975,16 +1154,16 @@ Table&nbsp;1: Effectif requis pour différents scénarios de spécificité cible
   padding-right: 5px;
 }
 
-#dwjdvrptya .gt_first_summary_row {
+#tdjwxdmtcx .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#dwjdvrptya .gt_first_summary_row.thick {
+#tdjwxdmtcx .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#dwjdvrptya .gt_last_summary_row {
+#tdjwxdmtcx .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -994,7 +1173,7 @@ Table&nbsp;1: Effectif requis pour différents scénarios de spécificité cible
   border-bottom-color: #D3D3D3;
 }
 
-#dwjdvrptya .gt_grand_summary_row {
+#tdjwxdmtcx .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1004,7 +1183,7 @@ Table&nbsp;1: Effectif requis pour différents scénarios de spécificité cible
   padding-right: 5px;
 }
 
-#dwjdvrptya .gt_first_grand_summary_row {
+#tdjwxdmtcx .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1014,7 +1193,7 @@ Table&nbsp;1: Effectif requis pour différents scénarios de spécificité cible
   border-top-color: #D3D3D3;
 }
 
-#dwjdvrptya .gt_last_grand_summary_row_top {
+#tdjwxdmtcx .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1024,11 +1203,11 @@ Table&nbsp;1: Effectif requis pour différents scénarios de spécificité cible
   border-bottom-color: #D3D3D3;
 }
 
-#dwjdvrptya .gt_striped {
+#tdjwxdmtcx .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#dwjdvrptya .gt_table_body {
+#tdjwxdmtcx .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1037,7 +1216,7 @@ Table&nbsp;1: Effectif requis pour différents scénarios de spécificité cible
   border-bottom-color: #D3D3D3;
 }
 
-#dwjdvrptya .gt_footnotes {
+#tdjwxdmtcx .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1051,7 +1230,7 @@ Table&nbsp;1: Effectif requis pour différents scénarios de spécificité cible
   border-right-color: #D3D3D3;
 }
 
-#dwjdvrptya .gt_footnote {
+#tdjwxdmtcx .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -1060,7 +1239,7 @@ Table&nbsp;1: Effectif requis pour différents scénarios de spécificité cible
   padding-right: 5px;
 }
 
-#dwjdvrptya .gt_sourcenotes {
+#tdjwxdmtcx .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1074,7 +1253,7 @@ Table&nbsp;1: Effectif requis pour différents scénarios de spécificité cible
   border-right-color: #D3D3D3;
 }
 
-#dwjdvrptya .gt_sourcenote {
+#tdjwxdmtcx .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1082,72 +1261,72 @@ Table&nbsp;1: Effectif requis pour différents scénarios de spécificité cible
   padding-right: 5px;
 }
 
-#dwjdvrptya .gt_left {
+#tdjwxdmtcx .gt_left {
   text-align: left;
 }
 
-#dwjdvrptya .gt_center {
+#tdjwxdmtcx .gt_center {
   text-align: center;
 }
 
-#dwjdvrptya .gt_right {
+#tdjwxdmtcx .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#dwjdvrptya .gt_font_normal {
+#tdjwxdmtcx .gt_font_normal {
   font-weight: normal;
 }
 
-#dwjdvrptya .gt_font_bold {
+#tdjwxdmtcx .gt_font_bold {
   font-weight: bold;
 }
 
-#dwjdvrptya .gt_font_italic {
+#tdjwxdmtcx .gt_font_italic {
   font-style: italic;
 }
 
-#dwjdvrptya .gt_super {
+#tdjwxdmtcx .gt_super {
   font-size: 65%;
 }
 
-#dwjdvrptya .gt_footnote_marks {
+#tdjwxdmtcx .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#dwjdvrptya .gt_asterisk {
+#tdjwxdmtcx .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#dwjdvrptya .gt_indent_1 {
+#tdjwxdmtcx .gt_indent_1 {
   text-indent: 5px;
 }
 
-#dwjdvrptya .gt_indent_2 {
+#tdjwxdmtcx .gt_indent_2 {
   text-indent: 10px;
 }
 
-#dwjdvrptya .gt_indent_3 {
+#tdjwxdmtcx .gt_indent_3 {
   text-indent: 15px;
 }
 
-#dwjdvrptya .gt_indent_4 {
+#tdjwxdmtcx .gt_indent_4 {
   text-indent: 20px;
 }
 
-#dwjdvrptya .gt_indent_5 {
+#tdjwxdmtcx .gt_indent_5 {
   text-indent: 25px;
 }
 
-#dwjdvrptya .katex-display {
+#tdjwxdmtcx .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#dwjdvrptya div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#tdjwxdmtcx div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -4493,13 +4672,16 @@ Table&nbsp;13: Approche 2 - Comparaison du Score Global (Se &amp; Sp) : GS princ
 </div>
 </div>
 <div style="page-break-after: always;"></div>
+</section>
+</section>
+</section>
+</section>
+<section id="e-partie-avec-le-nouveau-fichier-du-09-08-2926" class="level1 unnumbered" data-number="6">
+
 
 </section>
-</section>
-</section>
-</section>
 
-<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">6 2e partie : avec le nouveau fichier du 09-08-2926</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
 <div id="ref-landisMeasurementObserverAgreement1977" class="csl-entry" role="listitem">
 Landis, J. R., and G. G. Koch. 1977. <span>“<a href="https://www.ncbi.nlm.nih.gov/pubmed/843571">The Measurement of Observer Agreement for Categorical Data</a>.”</span> <em>Biometrics</em> 33 (1): 159–74.
 </div>
@@ -4507,6 +4689,19 @@ Landis, J. R., and G. G. Koch. 1977. <span>“<a href="https://www.ncbi.nlm.nih.
 <!-- /main column -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const a = window.document.createElement('a');
+      a.classList.add('top-right');
+      a.classList.add('quarto-color-scheme-toggle');
+      a.href = "";
+      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      a.appendChild(i);
+      window.document.body.appendChild(a);
+    }
+    setColorSchemeToggle(hasAlternateSentinel())
     const icon = "";
     const anchorJS = new window.AnchorJS();
     anchorJS.options = {
@@ -4906,6 +5101,7 @@ Landis, J. R., and G. G. Koch. 1977. <span>“<a href="https://www.ncbi.nlm.nih.
   });
   </script>
 </div> <!-- /content -->
+<script src="auto-dark-renderings.js"></script>
 
 
 

@@ -42,6 +42,16 @@
       color: var(--muted);
       line-height: 1.5;
     }
+    section + section {
+      margin-top: 24px;
+      padding-top: 24px;
+      border-top: 1px solid var(--line);
+    }
+    h2 {
+      margin: 0 0 12px;
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
     nav {
       display: grid;
       gap: 12px;
@@ -69,12 +79,24 @@
   <main>
     <h1>Stats Thèse Brieuc</h1>
     <p>Choisissez le format à consulter ou à télécharger.</p>
-    <nav aria-label="Formats du rapport">
-      <a href="these_brieuc.html">Affichage web (HTML)</a>
-      <a href="these_brieuc.pdf" download="these_brieuc.pdf">Fichier PDF</a>
-      <a href="these_brieuc.docx" download="these_brieuc.docx">Fichier DOCX</a>
-      <a href="these_brieuc.qmd" download="these_brieuc.qmd">Code R source</a>
-    </nav>
+    <section>
+      <h2>Version principale</h2>
+      <nav aria-label="Formats du rapport principal">
+        <a href="these_brieuc.html">Affichage web (HTML)</a>
+        <a href="these_brieuc.pdf" download="these_brieuc.pdf">Fichier PDF</a>
+        <a href="these_brieuc.docx" download="these_brieuc.docx">Fichier DOCX</a>
+        <a href="these_brieuc.qmd" download="these_brieuc.qmd">Code R source</a>
+      </nav>
+    </section>
+    <section>
+      <h2>Version dernier recueil</h2>
+      <nav aria-label="Formats du rapport avec dernier recueil">
+        <a href="these_brieuc_last_recueil.html">Affichage web (HTML)</a>
+        <a href="these_brieuc_last_recueil.pdf" download="these_brieuc_last_recueil.pdf">Fichier PDF</a>
+        <a href="these_brieuc_last_recueil.docx" download="these_brieuc_last_recueil.docx">Fichier DOCX</a>
+        <a href="these_brieuc_last_recueil.qmd" download="these_brieuc_last_recueil.qmd">Code R source</a>
+      </nav>
+    </section>
   </main>
 </body>
 </html>
