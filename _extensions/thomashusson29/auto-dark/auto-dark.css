@@ -21,6 +21,10 @@
 /* ── 1. CSS custom properties (One Dark palette) ─────────────────────────── */
 
 :root {
+  --auto-dark-font-sans:     "Source Sans Pro", -apple-system, BlinkMacSystemFont,
+                             "Segoe UI", Roboto, "Helvetica Neue", Arial,
+                             sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+                             "Segoe UI Symbol";
   --auto-dark-bg:            #282c34;
   --auto-dark-bg-soft:       #2c313a;
   --auto-dark-panel:         #21252b;
@@ -40,10 +44,15 @@
 
 body.quarto-dark,
 body.auto-dark-theme-dark,
-html.auto-dark-theme-dark {
+html.auto-dark-theme-dark,
+html.auto-dark-theme-dark body {
+  --bs-font-sans-serif:  var(--auto-dark-font-sans);
+  --bs-body-font-family: var(--auto-dark-font-sans);
+
   color-scheme:     dark;
   background-color: var(--auto-dark-bg);
   color:            var(--auto-dark-text);
+  font-family:      var(--auto-dark-font-sans);
 }
 
 body.quarto-dark a,
