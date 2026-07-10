@@ -341,7 +341,7 @@ normalize_names <- function(x) {
     x
 }
 
-parse_excel_date <- function(x) {
+parse_excel_date <- function(x, fix_future_century = FALSE) {
     x_chr <- trimws(as.character(x))
     x_chr[x_chr %in% c("", "NA", "N/A")] <- NA
     x_num <- suppressWarnings(as.numeric(x_chr))
@@ -350,11 +350,22 @@ parse_excel_date <- function(x) {
     out[is_excel_num] <- as.Date(x_num[is_excel_num], origin = "1899-12-30")
 
     is_text_date <- !is_excel_num & !is.na(x_chr)
-    parsed <- lubridate::ymd(x_chr[is_text_date], quiet = TRUE)
+    text_dates <- x_chr[is_text_date]
+    parsed <- as.Date(rep(NA_character_, length(text_dates)))
+
+    is_us_short_date <- grepl("^[0-9]{1,2}[-/][0-9]{1,2}[-/][0-9]{2,4}$", text_dates)
+    parsed[is_us_short_date] <- lubridate::mdy(text_dates[is_us_short_date], quiet = TRUE)
+
     missing <- is.na(parsed)
-    parsed[missing] <- lubridate::mdy(x_chr[is_text_date][missing], quiet = TRUE)
+    parsed[missing] <- lubridate::ymd(text_dates[missing], quiet = TRUE)
     missing <- is.na(parsed)
-    parsed[missing] <- lubridate::dmy(x_chr[is_text_date][missing], quiet = TRUE)
+    parsed[missing] <- lubridate::dmy(text_dates[missing], quiet = TRUE)
+
+    if (fix_future_century) {
+        future_dates <- !is.na(parsed) & parsed > Sys.Date()
+        parsed[future_dates] <- parsed[future_dates] %m-% lubridate::years(100)
+    }
+
     out[is_text_date] <- as.Date(parsed)
     out
 }
@@ -405,7 +416,7 @@ df_sensi <- df %>% filter(Gold_Standard %in% c("Positif", "Negatif"))
 #| include: true
 #| results: "hide"
 # Convertir les colonnes de dates au format Date
-df$DDN <- parse_excel_date(df$DDN)
+df$DDN <- parse_excel_date(df$DDN, fix_future_century = TRUE)
 df$Date_de_recueil <- parse_excel_date(df$Date_de_recueil)
 ```
 
@@ -1154,8 +1165,10 @@ u1_LR_pos <- u1_Se / (1 - u1_Sp)
 u1_LR_neg <- (1 - u1_Se) / u1_Sp
 u1_Youden <- u1_Se + u1_Sp - 1
 roc_u1 <- roc(
-    response = as.numeric(u1_data$Gold_Standard_main == "Positif"),
+    response = factor(u1_data$Gold_Standard_main, levels = c("Negatif", "Positif")),
     predictor = as.numeric(u1_data$U1_E1 == "Positif"),
+    levels = c("Negatif", "Positif"),
+    direction = "<",
     quiet = TRUE
 )
 u1_AUC <- as.numeric(auc(roc_u1))
@@ -1429,8 +1442,10 @@ u2a_LR_pos <- u2a_Se / (1 - u2a_Sp)
 u2a_LR_neg <- (1 - u2a_Se) / u2a_Sp
 u2a_Youden <- u2a_Se + u2a_Sp - 1
 roc_u2a <- roc(
-    response = as.numeric(u2a_data$Gold_Standard_main == "Positif"),
+    response = factor(u2a_data$Gold_Standard_main, levels = c("Negatif", "Positif")),
     predictor = as.numeric(u2a_data$U2a_E1 == "Positif"),
+    levels = c("Negatif", "Positif"),
+    direction = "<",
     quiet = TRUE
 )
 u2a_AUC <- as.numeric(auc(roc_u2a))
@@ -1706,8 +1721,10 @@ u2b_LR_pos <- u2b_Se / (1 - u2b_Sp)
 u2b_LR_neg <- (1 - u2b_Se) / u2b_Sp
 u2b_Youden <- u2b_Se + u2b_Sp - 1
 roc_u2b <- roc(
-    response = as.numeric(u2b_data$Gold_Standard_main == "Positif"),
+    response = factor(u2b_data$Gold_Standard_main, levels = c("Negatif", "Positif")),
     predictor = as.numeric(u2b_data$U2b_E1 == "Positif"),
+    levels = c("Negatif", "Positif"),
+    direction = "<",
     quiet = TRUE
 )
 u2b_AUC <- as.numeric(auc(roc_u2b))
@@ -1935,8 +1952,10 @@ u3_LR_pos <- u3_Se / (1 - u3_Sp)
 u3_LR_neg <- (1 - u3_Se) / u3_Sp
 u3_Youden <- u3_Se + u3_Sp - 1
 roc_u3 <- roc(
-    response = as.numeric(u3_data$Gold_Standard_main == "Positif"),
+    response = factor(u3_data$Gold_Standard_main, levels = c("Negatif", "Positif")),
     predictor = as.numeric(u3_data$U3_E1 == "Positif"),
+    levels = c("Negatif", "Positif"),
+    direction = "<",
     quiet = TRUE
 )
 u3_AUC <- as.numeric(auc(roc_u3))
@@ -2991,8 +3010,15 @@ score_model <- glm(I(Gold_Standard_main == "Positif") ~ n_pos, family = binomial
 score_model_or <- exp(coef(score_model)[["n_pos"]])
 score_model_or_ci <- exp(confint.default(score_model)["n_pos", ])
 score_model_p <- coef(summary(score_model))["n_pos", "Pr(>|z|)"]
-score_auc <- as.numeric(auc(roc(response = as.numeric(score_data$Gold_Standard_main == "Positif"), predictor = score_data$n_pos, quiet = TRUE)))
-score_auc_ci <- ci.auc(roc(response = as.numeric(score_data$Gold_Standard_main == "Positif"), predictor = score_data$n_pos, quiet = TRUE))
+score_roc_model <- roc(
+    response = factor(score_data$Gold_Standard_main, levels = c("Negatif", "Positif")),
+    predictor = score_data$n_pos,
+    levels = c("Negatif", "Positif"),
+    direction = "<",
+    quiet = TRUE
+)
+score_auc <- as.numeric(auc(score_roc_model))
+score_auc_ci <- ci.auc(score_roc_model)
 score_model_pred <- data.frame(n_pos = 0:4)
 score_model_pred$Probabilite_modele <- predict(score_model, newdata = score_model_pred, type = "response")
 
@@ -4483,8 +4509,10 @@ ggplot(threshold_data, aes(x = Seuil, y = Val, color = Metric, group = Metric)) 
 
 # Calcul de la ROC pour le score ordinal (0-4)
 roc_score <- roc(
-    response = as.numeric(score_data$Gold_Standard_main == "Positif"),
+    response = factor(score_data$Gold_Standard_main, levels = c("Negatif", "Positif")),
     predictor = score_data$n_pos,
+    levels = c("Negatif", "Positif"),
+    direction = "<",
     quiet = TRUE
 )
 
@@ -4901,6 +4929,10 @@ L'analyse de ces chiffres permet de nuancer les conclusions :
 3.  **La réalité de la performance** : La difficulté à atteindre la précision cible vient moins du nombre de sujets que de la performance réelle des tests. Avec une spécificité observée de `r round(sp_obs, 3)`, il aurait fallu `r n_neg_requis_sp_obs` sujets négatifs (soit environ `r n_total_requis_sp_obs` patients au total avec la prévalence observée) pour stabiliser l'estimation avec la marge de `r sprintf("%.3f", marge_target)` initialement souhaitée.
 
 **Conclusion pour la discussion :** Cette étude doit être considérée comme une étape exploratoire robuste. Elle démontre une hiérarchie claire entre les tests, mais confirme qu'une étude de confirmation visant une précision étroite nécessiterait une cohorte plus large, d'environ `r n_total_requis_sp_obs` patients avec la prévalence observée, pour compenser une spécificité plus faible qu'attendu.
+
+### Point spécifique sur la cible de spécificité
+
+Le protocole visait `r n_neg_target` patients négatifs dans le scénario de référence retenu pour la précision de la spécificité. La cohorte finale en compte `r n_neg_obs`, soit un écart très limité d'un seul patient négatif. Cet écart d'effectif ne suffit pas, à lui seul, à expliquer l'écart avec l'objectif initial : la spécificité observée de la combinaison la plus spécifique (`r combination_most_specific_row$Combinaison`) est de `r round(sp_obs, 3)`, donc inférieure à la spécificité cible de `r sprintf("%.2f", sp_target)`. Autrement dit, la limite principale tient davantage à la spécificité réellement observée des tests dans cette cohorte qu'au seul fait d'avoir inclus `r n_neg_obs` négatifs au lieu des `r n_neg_target` attendus.
 
 
 \newpage

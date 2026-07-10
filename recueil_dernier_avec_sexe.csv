@@ -1,72 +1,72 @@
 ﻿Nom,prenom,DDN,Date_de_recueil,Age,Cote,Niveau,Examen_Clinique,IRM,Infiltrations,Resultat_Inf,Chirurgie,diagnotic validé,Gold_Standard,U1_E1,U2a_E1,U2b_E1,U3_E1,U1_E2,U2a_E2,U2b_E2,U3_E2,BMI,Tabac,Diag Diff,Colonne1,Sexe
-Le goff,gwenola,12-06-76,10-07-24,47,G,C7,Positif,Positif,non,,Positif,positif fort,Positif,Positif,Positif,Positif,Positif,Positif,Positif,Positif,Positif,30,oui,,,F
-SALAUN,virginie,09-29-77,06-10-24,46,G,C6,Positif,Negatif,non,,,negatif fort,Negatif,Positif,Positif,Negatif,Positif,Positif,Positif,Positif,Positif,24,oui,Tendinopathie épaule + rhizarthrose,,F
-OGIER,Fabienne,04-24-73,10-07-24,51,D,C5,Positif,Positif,oui,Negatif,Positif,positif fort,Positif,Positif,Positif,Positif,Positif,Positif,Positif,Positif,Positif,25,non,,,F
-BOUIN,Pascale,09-13-59,06-10-24,64,D,C6,Positif,Positif,oui,Positif,,positif fort,Positif,Positif,Positif,Positif,Positif,Positif,Positif,Positif,Positif,20,non,,,F
-OLLIVIER,Sandrine,07-30-76,11-04-24,48,G,C7,Negatif,Positif,oui,Positif,,positif fort,Positif,Positif,Positif,Positif,Negatif,Positif,Positif,Positif,Positif,30,non,,,F
+Le goff,gwenola,06-12-76,07-10-24,47,G,C7,Positif,Positif,non,,Positif,positif fort,Positif,Positif,Positif,Positif,Positif,Positif,Positif,Positif,Positif,30,oui,,,F
+SALAUN,virginie,09-29-77,10-06-24,46,G,C6,Positif,Negatif,non,,,negatif fort,Negatif,Positif,Positif,Negatif,Positif,Positif,Positif,Positif,Positif,24,oui,Tendinopathie épaule + rhizarthrose,,F
+OGIER,Fabienne,04-24-73,07-10-24,51,D,C5,Positif,Positif,oui,Negatif,Positif,positif fort,Positif,Positif,Positif,Positif,Positif,Positif,Positif,Positif,Positif,25,non,,,F
+BOUIN,Pascale,09-13-59,10-06-24,64,D,C6,Positif,Positif,oui,Positif,,positif fort,Positif,Positif,Positif,Positif,Positif,Positif,Positif,Positif,Positif,20,non,,,F
+OLLIVIER,Sandrine,07-30-76,04-11-24,48,G,C7,Negatif,Positif,oui,Positif,,positif fort,Positif,Positif,Positif,Positif,Negatif,Positif,Positif,Positif,Positif,30,non,,,F
 HOUSSIN,Melinda,12-30-85,10-14-24,38,G,C7,Positif,Positif,oui,Positif,,positif fort,Positif,Positif,Negatif,Negatif,Negatif,Positif,Positif,Positif,Positif,22,non,,,F
-GUERN RIOU,Laurence,09-26-70,10-07-24,54,D,C7,Positif,Positif,non,,,positif faible,Positif,Positif,Positif,Positif,Positif,Negatif,Positif,Positif,Negatif,30,oui,Tendinopathie épaule bilat,,F
-GUERN RIOU,Laurence,09-26-70,10-07-24,54,G,C7,Negatif,Negatif,non,,,negatif fort,Negatif,Negatif,Negatif,Positif,Negatif,Positif,Negatif,Positif,Negatif,30,oui,tendinopathie épaule,,F
-MASSET,Cedric,02-04-77,08-09-24,47,D,C7,Positif,Positif,oui,Negatif,Positif,positif fort,Positif,Negatif,Positif,Positif,Negatif,Positif,Positif,Positif,Positif,23,oui,,,M
-MASSET,Cedric,02-04-77,08-09-24,47,G,C7,Positif,Positif,oui,Negatif,Positif,positif fort,Positif,Negatif,Positif,Positif,Negatif,Positif,Positif,Positif,Positif,23,oui,,,M
-LAUNEY,Floriane,09-19-88,08-04-24,35,D,C5,Positif,Positif,non,,Positif,positif fort,Positif,Positif,Positif,Positif,Negatif,Positif,Negatif,Positif,Negatif,26,non,,,F
+GUERN RIOU,Laurence,09-26-70,07-10-24,54,D,C7,Positif,Positif,non,,,positif faible,Positif,Positif,Positif,Positif,Positif,Negatif,Positif,Positif,Negatif,30,oui,Tendinopathie épaule bilat,,F
+GUERN RIOU,Laurence,09-26-70,07-10-24,54,G,C7,Negatif,Negatif,non,,,negatif fort,Negatif,Negatif,Negatif,Positif,Negatif,Positif,Negatif,Positif,Negatif,30,oui,tendinopathie épaule,,F
+MASSET,Cedric,04-02-77,09-08-24,47,D,C7,Positif,Positif,oui,Negatif,Positif,positif fort,Positif,Negatif,Positif,Positif,Negatif,Positif,Positif,Positif,Positif,23,oui,,,M
+MASSET,Cedric,04-02-77,09-08-24,47,G,C7,Positif,Positif,oui,Negatif,Positif,positif fort,Positif,Negatif,Positif,Positif,Negatif,Positif,Positif,Positif,Positif,23,oui,,,M
+LAUNEY,Floriane,09-19-88,04-08-24,35,D,C5,Positif,Positif,non,,Positif,positif fort,Positif,Positif,Positif,Positif,Negatif,Positif,Negatif,Positif,Negatif,26,non,,,F
 LEFORT,Erick,10-21-67,06-17-24,56,D,C6,Positif,Positif,oui,Positif,,positif fort,Positif,Positif,Positif,Positif,Positif,Positif,Positif,Negatif,Positif,35,non,,,M
 NEVEU,Marie Therese,01-30-60,06-17-24,64,G,C6,Positif,Positif,oui,Positif,,positif fort,Positif,Negatif,Positif,Positif,Positif,Positif,Positif,Negatif,Positif,26,non,,,F
-COLLIOT,Marie Françoise,12-19-59,12-02-24,65,G,C7,Positif,Positif,non,,,positif faible,Positif,Positif,Positif,Negatif,Negatif,Positif,Negatif,Negatif,Negatif,27,non,,,F
+COLLIOT,Marie Françoise,12-19-59,02-12-24,65,G,C7,Positif,Positif,non,,,positif faible,Positif,Positif,Positif,Negatif,Negatif,Positif,Negatif,Negatif,Negatif,27,non,,,F
 FAUCHEUX,MICKAEL,03-17-82,10-18-24,42,G,C7,Positif,Positif,oui,Positif,Positif,positif fort,Positif,Positif,Negatif,Positif,Negatif,Positif,Negatif,Positif,Negatif,25,oui,,,M
 PETAUT,Marc,02-21-68,06-17-24,56,G,C7,Positif,Positif,oui,Positif,Positif,positif fort,Positif,Positif,Positif,Positif,Negatif,Positif,Positif,Positif,Positif,22,non,,,M
 FOUCHER,Coralie,10-26-87,05-27-24,36,D,C6,Positif,Negatif,non,,,negatif fort,Negatif,Positif,Positif,Positif,Positif,Positif,Positif,Positif,Positif,26,oui,Nerf médian,,F
-LE GRAS,Valerie,01-10-66,05-27-24,58,G,C7,Positif,Positif,oui,Positif,,positif fort,Positif,Positif,Positif,Positif,Positif,Positif,Positif,Positif,Positif,30,non,,,F
+LE GRAS,Valerie,10-01-66,05-27-24,58,G,C7,Positif,Positif,oui,Positif,,positif fort,Positif,Positif,Positif,Positif,Positif,Positif,Positif,Positif,Positif,30,non,,,F
 BURBAN,Marie Armelle,05-24-67,05-24-24,57,G,C7,Positif,Positif,non,,,positif fort,Positif,Positif,Positif,Positif,Negatif,Positif,Positif,Positif,Negatif,32,non,Pas d'infiltration mais va mieux,,F
 EUZENOT,Katia,09-21-73,01-20-25,51,D,C7,Positif,Positif,oui,Positif,,positif fort,Positif,Positif,Positif,Positif,Negatif,Positif,Positif,Negatif,Negatif,37,oui,,,F
 DUVAL,Jeannine,03-18-51,01-13-25,73,D,C6,Positif,Positif,oui,Positif,,positif fort,Positif,Positif,Positif,Negatif,Positif,Positif,Negatif,Positif,Positif,34,non,,,F
-Common,Bruno,03-02-59,01-10-25,65,G,C4,Positif,Positif,non,,,positif fort,Positif,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,26,non,,,M
+Common,Bruno,02-03-59,10-01-25,65,G,C4,Positif,Positif,non,,,positif fort,Positif,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,26,non,,,M
 KALYN,Anthony,06-21-88,12-24-24,36,D,C5,Negatif,Negatif,non,,,negatif fort,Negatif,Negatif,Negatif,Negatif,Negatif,Positif,Negatif,Negatif,Negatif,25,oui,Nerf ulnaire,,M
 DEAN,Jean Malo,12-24-95,12-24-24,29,D,C8,Negatif,Negatif,non,,,negatif fort,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,,,Nerf ulnaire,,M
 TAJ,KHADIJA,06-23-79,02-24-25,45,G,C6,Positif,Positif,oui,Positif,,positif fort,Positif,Positif,Positif,Negatif,Positif,Positif,Positif,Positif,Positif,24,non,,,F
-VALET,Danielle,10-14-56,02-05-25,68,D,C7,Positif,Douteux,non,,,negatif fort,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,31,non,coiffe,,F
+VALET,Danielle,10-14-56,05-02-25,68,D,C7,Positif,Douteux,non,,,negatif fort,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,31,non,coiffe,,F
 ISIDORE,Martine,04-21-53,03-03-25,71,D,C6,Positif,Positif,oui,Positif,,positif fort,Positif,Positif,Positif,Negatif,Negatif,Positif,Positif,Negatif,Negatif,36,oui,,,F
 ISIDORE,Martine,04-21-53,03-03-25,71,G,C6,Positif,Positif,oui,Positif,,positif fort,Positif,Positif,Positif,Positif,Negatif,Positif,Positif,Positif,Negatif,36,oui,,,F
 MARTIN,Nicolas,09-21-90,03-03-25,34,D,C8,Positif,Positif,non,,Positif,positif fort,Positif,Positif,Positif,Positif,Negatif,Positif,Positif,Positif,Negatif,25,oui,,,M
 MARTIN,Nicolas,09-21-90,03-03-25,34,G,C8,Positif,Positif,non,,Positif,positif fort,Positif,Positif,Positif,Positif,Negatif,Positif,Positif,Positif,Negatif,25,oui,,,M
 MARTINS,Frederic,05-17-77,02-24-25,47,G,C8,Positif,Positif,non,,Positif,positif fort,Positif,Positif,Negatif,Negatif,Negatif,Positif,Positif,Negatif,Negatif,29,non,,,M
-MTIMET,Laura,04-05-95,02-03-25,29,D,C8,Positif,Negatif,non,,,negatif fort,Negatif,Positif,Positif,Positif,Positif,Positif,Positif,Positif,Negatif,32,non,sep,,F
-GURY,Mathieu,03-22-83,02-03-25,41,D,C6,Positif,Negatif,oui,Negatif,,negatif fort,Negatif,Positif,Positif,Positif,Positif,Positif,Positif,Positif,Positif,25,non,Sd canalaire,,M
-GURY,Mathieu,03-22-83,02-03-25,41,G,C6,Positif,Negatif,oui,Negatif,,negatif fort,Negatif,Positif,Positif,Positif,Positif,Positif,Positif,Positif,Positif,25,non,Sd canalaire,,M
-BRIAND,anne,09-30-74,04-02-25,50,D,C8,Positif,Positif,oui,Positif,,positif fort,Positif,Positif,Negatif,Positif,Negatif,Positif,Negatif,Positif,Negatif,24,oui,,,F
-GERMON,Sandrine,06-12-72,03-13-25,52,D,C6,Positif,Douteux,oui,Positif,,positif fort,Positif,Negatif,Positif,Positif,Negatif,Negatif,Positif,Positif,Negatif,28,oui,,,F
+MTIMET,Laura,05-04-95,03-02-25,29,D,C8,Positif,Negatif,non,,,negatif fort,Negatif,Positif,Positif,Positif,Positif,Positif,Positif,Positif,Negatif,32,non,sep,,F
+GURY,Mathieu,03-22-83,03-02-25,41,D,C6,Positif,Negatif,oui,Negatif,,negatif fort,Negatif,Positif,Positif,Positif,Positif,Positif,Positif,Positif,Positif,25,non,Sd canalaire,,M
+GURY,Mathieu,03-22-83,03-02-25,41,G,C6,Positif,Negatif,oui,Negatif,,negatif fort,Negatif,Positif,Positif,Positif,Positif,Positif,Positif,Positif,Positif,25,non,Sd canalaire,,M
+BRIAND,anne,09-30-74,02-04-25,50,D,C8,Positif,Positif,oui,Positif,,positif fort,Positif,Positif,Negatif,Positif,Negatif,Positif,Negatif,Positif,Negatif,24,oui,,,F
+GERMON,Sandrine,12-06-72,03-13-25,52,D,C6,Positif,Douteux,oui,Positif,,positif fort,Positif,Negatif,Positif,Positif,Negatif,Negatif,Positif,Positif,Negatif,28,oui,,,F
 RETIF,Elodie,07-19-91,03-24-25,33,G,C6,Positif,Negatif,oui,Negatif,,negatif fort,Negatif,Positif,Positif,Positif,Negatif,Positif,Positif,Positif,Positif,22,non,Nerf ulnaire,,F
 ARRAS,Drissia,12-31-68,03-24-25,56,G,C6,Positif,Positif,non,,,positif fort,Positif,Positif,Positif,Positif,Negatif,Positif,Positif,Positif,Negatif,28,non,hernie résorbée,,F
 VASILE,Ionel,12-12-74,03-24-25,50,D,C6,Positif,Positif,oui,Positif,Positif,positif fort,Positif,Positif,Positif,Positif,Negatif,Positif,Negatif,Positif,Negatif,17,oui,,,M
 VASILE,Ionel,12-12-74,03-24-25,50,G,C6,Positif,Positif,oui,Positif,Positif,positif fort,Positif,Positif,Negatif,Positif,Negatif,Positif,Positif,Positif,Negatif,17,oui,,,M
-BUZARE,Christelle,04-05-73,03-19-25,51,D,C6,Positif,Positif,oui,Positif,,positif fort,Positif,Positif,Positif,Positif,Negatif,Positif,Positif,Positif,Negatif,,non,,,F
+BUZARE,Christelle,05-04-73,03-19-25,51,D,C6,Positif,Positif,oui,Positif,,positif fort,Positif,Positif,Positif,Positif,Negatif,Positif,Positif,Positif,Negatif,,non,,,F
 POIRIER,Pascale,04-15-74,03-28-25,50,G,C8,Positif,Negatif,non,,,negatif fort,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,,,douleurs neuropathiques,,F
-CLOLUS,Laurent,05-28-68,04-07-25,56,G,C8,Positif,Positif,non,,,positif faible,Positif,Negatif,Negatif,Negatif,Negatif,NT,NT,NT,NT,,,,,M
-AUSSANT,Daniele,12-02-48,04-15-25,76,G,C6,Positif,Positif,oui,Positif,,positif fort,Positif,Positif,Negatif,Negatif,Negatif,NT,NT,NT,NT,20,non,,,F
-LE LAUSQUE,Angelique,11-09-82,04-28-25,42,D,C5,Positif,Positif,non,,,positif faible,Positif,Positif,Positif,Positif,Positif,Positif,Positif,Negatif,Negatif,33,non,,,F
+CLOLUS,Laurent,05-28-68,07-04-25,56,G,C8,Positif,Positif,non,,,positif faible,Positif,Negatif,Negatif,Negatif,Negatif,NT,NT,NT,NT,,,,,M
+AUSSANT,Daniele,02-12-48,04-15-25,76,G,C6,Positif,Positif,oui,Positif,,positif fort,Positif,Positif,Negatif,Negatif,Negatif,NT,NT,NT,NT,20,non,,,F
+LE LAUSQUE,Angelique,09-11-82,04-28-25,42,D,C5,Positif,Positif,non,,,positif faible,Positif,Positif,Positif,Positif,Positif,Positif,Positif,Negatif,Negatif,33,non,,,F
 BUSNEL,Herve,01-18-69,05-19-25,56,D,C6,Positif,Positif,oui,Positif,,positif fort,Positif,Positif,Positif,Negatif,Positif,Positif,Negatif,Positif,Positif,22,,,,M
 MACE,Canelle,05-23-98,05-19-25,27,G,C5,Negatif,Negatif,non,,,negatif fort,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,19,non,STT,,F
-MAGOMADOVA,Baneta,04-07-78,05-19-25,47,D,C8,Douteux,Negatif,non,,,negatif fort,Negatif,Positif,Positif,Positif,Positif,Positif,Positif,Positif,Positif,45,non,STT,,F
-BIENASSIS,Martine,01-15-53,05-07-25,72,D,C5,Negatif,Negatif,non,,,negatif fort,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,Positif,Negatif,27,non,Epaule,,F
-BIENASSIS,Martine,01-15-53,05-07-25,72,G,C5,Negatif,Negatif,non,,,negatif fort,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,27,non,Epaule,,F
+MAGOMADOVA,Baneta,07-04-78,05-19-25,47,D,C8,Douteux,Negatif,non,,,negatif fort,Negatif,Positif,Positif,Positif,Positif,Positif,Positif,Positif,Positif,45,non,STT,,F
+BIENASSIS,Martine,01-15-53,07-05-25,72,D,C5,Negatif,Negatif,non,,,negatif fort,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,Positif,Negatif,27,non,Epaule,,F
+BIENASSIS,Martine,01-15-53,07-05-25,72,G,C5,Negatif,Negatif,non,,,negatif fort,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,27,non,Epaule,,F
 CHESNAIS,Françoise,08-14-65,06-30-25,59,D,C6,Douteux,Positif,oui,Negatif,,negatif fort,Negatif,Positif,Positif,Negatif,Positif,Positif,Negatif,Negatif,Positif,31,non,rhumatisme inflammatoire,,F
 FEREY,Emmanuel,12-20-67,06-30-25,57,G,C7,Positif,Positif,non,,Positif,positif fort,Positif,Positif,Positif,Positif,Positif,Positif,Positif,Positif,Positif,39,non,,,M
-DESCHAMPS,Emeline,01-01-75,06-02-25,50,G,C7,Negatif,Negatif,non,,,negatif fort,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,Positif,Negatif,Negatif,25,non,hernie résorbée,,F
+DESCHAMPS,Emeline,01-01-75,02-06-25,50,G,C7,Negatif,Negatif,non,,,negatif fort,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,Positif,Negatif,Negatif,25,non,hernie résorbée,,F
 BOREY,Christine,06-26-65,04-28-25,59,D,C7,Positif,Positif,non,,Positif,positif fort,Positif,Positif,Positif,Positif,Positif,Negatif,Positif,Negatif,Negatif,23,oui,,,F
 BULEON,Annie,12-30-67,08-18-25,57,D,C7,Negatif,Negatif,non,,,negatif fort,Negatif,Positif,Positif,Positif,Positif,Positif,Positif,Positif,Positif,24,non,cérébral,,F
 LELANDAIS,Mickael,11-29-88,09-15-25,36,D,C6,Positif,Positif,oui,Negatif,Positif,positif fort,Positif,Positif,Positif,Positif,Positif,Positif,Positif,Positif,Positif,34,non,,,M
-GUEGAN,Morgane,08-10-79,11-24-25,46,D,C7,Positif,Douteux,oui,Positif,,positif fort,Positif,Positif,Positif,Positif,Negatif,Positif,Positif,Positif,Negatif,20,non,,,F
-BIARD,Gisele,08-23-57,01-12-26,68,D,C7,Negatif,Douteux,non,,,negatif faible,Negatif,Negatif,Negatif,Negatif,Negatif,NT,NT,NT,NT,19,oui,,,F
-KERBRAT,Nelly,11-09-71,01-23-26,54,D,C6,Negatif,Douteux,oui,Positif,,positif fort,Positif,Negatif,Negatif,Positif,Negatif,Negatif,Negatif,Positif,Negatif,19,non,cérébral,,F
-ALBERINI,laurence,08-26-68,01-26-26,57,G,C7,Negatif,Positif,Positif,Positif,,negatif fort,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,25,non,ncb guérie,,F
-VEILLAUX,Claudia,03-07-89,01-26-26,36,G,C5,Negatif,Negatif,Negatif,,,negatif fort,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,20,oui,neurologique,,F
-DERAY,ODILE,09-03-48,02-09-26,77,D,C7,Negatif,Positif,Negatif,,,negatif fort,Negatif,Negatif,Negatif,Negatif,Negatif,NT,NT,NT,NT,,,hernie résorbée,,F
-AZZOUZI,Hicham,11-30-77,03-13-26,48,D,C5,Positif,Douteux,Negatif,,,negatif faible,Negatif,Positif,Positif,Negatif,Negatif,NT,NT,NT,NT,30,oui,01/09/2026 épaule,,M
-MESLE,Marie Armelle,02-04-55,03-13-26,71,G,C6,Douteux,Positif,Positif,Positif,,Positif fort,Positif,Positif,Negatif,Negatif,Negatif,NT,NT,NT,NT,23,non,,,F
-DELALANDE,Denis,11-20-59,04-13-26,66,G,C6,Douteux,Douteux,Negatif,,,negatif fort,Negatif,Negatif,Negatif,Negatif,Negatif,NT,NT,NT,NT,20,oui,cervicalgies,,M
-LE CORVAISIER,Thibault,02-20-85,04-27-26,41,G,C6,Positif,Positif,Negatif,,,Positif fort,Positif,Positif,Positif,Negatif,Negatif,NT,NT,NT,NT,26,oui,,,M
-MAUDET,Romuald,10-19-79,04-27-26,46,G,C8,Negatif,Negatif,Negatif,,,negatif fort,Negatif,Negatif,Positif,Negatif,Negatif,NT,NT,NT,NT,25,oui,psychiatrique,,M
-MONNIER,Marie,04-15-66,04-28-26,60,D,C6,Positif,Positif,Positif,Positif,Positif,positif fort,Positif,Positif,Positif,Negatif,Positif,Positif,Positif,Negatif,Positif,22,oui,,,F
-MONNIER,Marie,04-15-66,04-28-26,60,G,C6,Positif,Positif,Positif,Positif,Positif,positif fort,Positif,Positif,Positif,Negatif,Positif,Positif,Positif,Negatif,Negatif,22,oui,,,F
-COURRIER,Catherine,12-28-70,05-22-26,55,G,C8,Negatif,Negatif,Negatif,,,negatif fort,Negatif,Negatif,Negatif,Negatif,Negatif,NT,NT,NT,NT,27,non,sd canalaire,,
-POINTEAU,Valentin,02-12-96,05-30-26,30,G,C7,Positif,Positif,Positif,Positif,,positif fort,Positif,Positif,Positif,Positif,Positif,Positif,Positif,Positif,Positif,23
+GUEGAN,Morgane,10-08-79,11-24-25,46,D,C7,Positif,Douteux,oui,Positif,,positif fort,Positif,Positif,Positif,Positif,Negatif,Positif,Positif,Positif,Negatif,20,non,,,F
+BIARD,Gisele,08-23-57,12-01-26,68,D,C7,Negatif,Douteux,non,,,negatif faible,Negatif,Negatif,Negatif,Negatif,Negatif,NT,NT,NT,NT,19,oui,,,F
+KERBRAT,Nelly,09-11-71,01-23-26,54,D,C6,Negatif,Douteux,oui,Positif,,positif fort,Positif,Negatif,Negatif,Positif,Negatif,Negatif,Negatif,Positif,Negatif,19,non,cérébral,,F
+ALBERINI,laurence,08-26-68,01-26-26,57,G,C7,Negatif,Positif,oui,Positif,,negatif fort,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,25,non,ncb guérie,,F
+VEILLAUX,Claudia,07-03-89,01-26-26,36,G,C5,Negatif,Negatif,non,,,negatif fort,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,Negatif,20,oui,neurologique,,F
+DERAY,ODILE,03-09-48,09-02-26,77,D,C7,Negatif,Positif,non,,,negatif fort,Negatif,Negatif,Negatif,Negatif,Negatif,NT,NT,NT,NT,,,hernie résorbée,,F
+AZZOUZI,Hicham,11-30-77,03-13-26,48,D,C5,Positif,Douteux,non,,,negatif faible,Negatif,Positif,Positif,Negatif,Negatif,NT,NT,NT,NT,30,oui,01/09/2026 épaule,,M
+MESLE,Marie Armelle,04-02-55,03-13-26,71,G,C6,Douteux,Positif,oui,Positif,,Positif fort,Positif,Positif,Negatif,Negatif,Negatif,NT,NT,NT,NT,23,non,,,F
+DELALANDE,Denis,11-20-59,04-13-26,66,G,C6,Douteux,Douteux,non,,,negatif fort,Negatif,Negatif,Negatif,Negatif,Negatif,NT,NT,NT,NT,20,oui,cervicalgies,,M
+LE CORVAISIER,Thibault,02-20-85,04-27-26,41,G,C6,Positif,Positif,non,,,Positif fort,Positif,Positif,Positif,Negatif,Negatif,NT,NT,NT,NT,26,oui,,,M
+MAUDET,Romuald,10-19-79,04-27-26,46,G,C8,Negatif,Negatif,non,,,negatif fort,Negatif,Negatif,Positif,Negatif,Negatif,NT,NT,NT,NT,25,oui,psychiatrique,,M
+MONNIER,Marie,04-15-66,04-28-26,60,D,C6,Positif,Positif,oui,Positif,Positif,positif fort,Positif,Positif,Positif,Negatif,Positif,Positif,Positif,Negatif,Positif,22,oui,,,F
+MONNIER,Marie,04-15-66,04-28-26,60,G,C6,Positif,Positif,oui,Positif,Positif,positif fort,Positif,Positif,Positif,Negatif,Positif,Positif,Positif,Negatif,Negatif,22,oui,,,F
+COURRIER,Catherine,12-28-70,05-22-26,55,G,C8,Negatif,Negatif,non,,,negatif fort,Negatif,Negatif,Negatif,Negatif,Negatif,NT,NT,NT,NT,27,non,sd canalaire,,
+POINTEAU,Valentin,12-02-96,05-30-26,30,G,C7,Positif,Positif,oui,Positif,,positif fort,Positif,Positif,Positif,Positif,Positif,Positif,Positif,Positif,Positif,23
