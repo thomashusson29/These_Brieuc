@@ -1173,7 +1173,6 @@ roc_u1 <- roc(
 )
 u1_AUC <- as.numeric(auc(roc_u1))
 u1_AUC_IC <- ci.auc(roc_u1)
-u1_Fisher_p <- fisher.test(table(u1_data$U1_E1, u1_data$Gold_Standard_main))$p.value
 
 u1_effectifs <- data.frame(
     Test = "U1",
@@ -1204,8 +1203,7 @@ u1_performance <- data.frame(
     LR_neg = round(u1_LR_neg, 2),
     Youden = round(u1_Youden, 3),
     AUC = round(u1_AUC, 3),
-    AUC_IC95 = paste0("[", round(u1_AUC_IC[1], 3), " ; ", round(u1_AUC_IC[3], 3), "]"),
-    Fisher_p = signif(u1_Fisher_p, 3)
+    AUC_IC95 = paste0("[", round(u1_AUC_IC[1], 3), " ; ", round(u1_AUC_IC[3], 3), "]")
 )
 
 u1_performance_table <- kable(
@@ -1222,7 +1220,7 @@ u1_performance_table <- kable(
     caption = "Diagnostic performance of U1 compared with the reference standard",
     col.names = c(
         "Test", "N", "VP", "FN", "FP", "VN", "Se", "Se 95% CI", "Sp", "Sp 95% CI",
-        "PPV", "PPV 95% CI", "NPV", "NPV 95% CI", "LR+", "LR-", "Youden", "AUC", "AUC 95% CI", "Fisher p"
+        "PPV", "PPV 95% CI", "NPV", "NPV 95% CI", "LR+", "LR-", "Youden", "AUC", "AUC 95% CI"
     )
 )
 if (knitr::is_latex_output()) {
@@ -1399,12 +1397,6 @@ if (u1_AUC < 0.5) {
     u1_auc_text <- "cela correspond à une bonne discrimination."
 }
 
-if (u1_Fisher_p < 0.05) {
-    u1_fisher_text <- "la p-value est inférieure à 0,05, ce qui suggère une association statistiquement significative entre U1 et le gold standard."
-} else {
-    u1_fisher_text <- "la p-value n'est pas inférieure à 0,05, ce qui ne permet pas de conclure à une association statistiquement significative entre U1 et le gold standard."
-}
-
 plot_roc_u1 <- function() {
     plot(roc_u1, main = "Courbe ROC de U1 par rapport au gold standard", col = "blue", lwd = 2)
 }
@@ -1450,7 +1442,6 @@ roc_u2a <- roc(
 )
 u2a_AUC <- as.numeric(auc(roc_u2a))
 u2a_AUC_IC <- ci.auc(roc_u2a)
-u2a_Fisher_p <- fisher.test(table(u2a_data$U2a_E1, u2a_data$Gold_Standard_main))$p.value
 
 u2a_effectifs <- data.frame(
     Test = "U2a",
@@ -1481,8 +1472,7 @@ u2a_performance <- data.frame(
     LR_neg = round(u2a_LR_neg, 2),
     Youden = round(u2a_Youden, 3),
     AUC = round(u2a_AUC, 3),
-    AUC_IC95 = paste0("[", round(u2a_AUC_IC[1], 3), " ; ", round(u2a_AUC_IC[3], 3), "]"),
-    Fisher_p = signif(u2a_Fisher_p, 3)
+    AUC_IC95 = paste0("[", round(u2a_AUC_IC[1], 3), " ; ", round(u2a_AUC_IC[3], 3), "]")
 )
 
 u2a_performance_table <- kable(
@@ -1499,7 +1489,7 @@ u2a_performance_table <- kable(
     caption = "Diagnostic performance of U2a compared with the reference standard",
     col.names = c(
         "Test", "N", "VP", "FN", "FP", "VN", "Se", "Se 95% CI", "Sp", "Sp 95% CI",
-        "PPV", "PPV 95% CI", "NPV", "NPV 95% CI", "LR+", "LR-", "Youden", "AUC", "AUC 95% CI", "Fisher p"
+        "PPV", "PPV 95% CI", "NPV", "NPV 95% CI", "LR+", "LR-", "Youden", "AUC", "AUC 95% CI"
     )
 )
 if (knitr::is_latex_output()) {
@@ -1678,12 +1668,6 @@ if (u2a_AUC < 0.5) {
     u2a_auc_text <- "cela correspond à une bonne discrimination."
 }
 
-if (u2a_Fisher_p < 0.05) {
-    u2a_fisher_text <- "la p-value est inférieure à 0,05, ce qui suggère une association statistiquement significative entre U2a et le gold standard."
-} else {
-    u2a_fisher_text <- "la p-value n'est pas inférieure à 0,05, ce qui ne permet pas de conclure à une association statistiquement significative entre U2a et le gold standard."
-}
-
 plot_roc_u2a <- function() {
     plot(roc_u2a, main = "Courbe ROC de U2a par rapport au gold standard", col = "blue", lwd = 2)
 }
@@ -1729,7 +1713,6 @@ roc_u2b <- roc(
 )
 u2b_AUC <- as.numeric(auc(roc_u2b))
 u2b_AUC_IC <- ci.auc(roc_u2b)
-u2b_Fisher_p <- fisher.test(table(u2b_data$U2b_E1, u2b_data$Gold_Standard_main))$p.value
 
 u2b_effectifs <- data.frame(
     Test = "U2b",
@@ -1909,12 +1892,6 @@ if (u2b_AUC < 0.5) {
     u2b_auc_text <- "cela correspond à une bonne discrimination."
 }
 
-if (u2b_Fisher_p < 0.05) {
-    u2b_fisher_text <- "la p-value est inférieure à 0,05, ce qui suggère une association statistiquement significative entre U2b et le gold standard."
-} else {
-    u2b_fisher_text <- "la p-value n'est pas inférieure à 0,05, ce qui ne permet pas de conclure à une association statistiquement significative entre U2b et le gold standard."
-}
-
 plot_roc_u2b <- function() {
     plot(roc_u2b, main = "Courbe ROC de U2b par rapport au gold standard", col = "blue", lwd = 2)
 }
@@ -1960,7 +1937,6 @@ roc_u3 <- roc(
 )
 u3_AUC <- as.numeric(auc(roc_u3))
 u3_AUC_IC <- ci.auc(roc_u3)
-u3_Fisher_p <- fisher.test(table(u3_data$U3_E1, u3_data$Gold_Standard_main))$p.value
 
 u3_effectifs <- data.frame(
     Test = "U3",
@@ -2138,12 +2114,6 @@ if (u3_AUC < 0.5) {
     u3_auc_text <- "cela correspond à une discrimination modérée."
 } else {
     u3_auc_text <- "cela correspond à une bonne discrimination."
-}
-
-if (u3_Fisher_p < 0.05) {
-    u3_fisher_text <- "la p-value est inférieure à 0,05, ce qui suggère une association statistiquement significative entre U3 et le gold standard."
-} else {
-    u3_fisher_text <- "la p-value n'est pas inférieure à 0,05, ce qui ne permet pas de conclure à une association statistiquement significative entre U3 et le gold standard."
 }
 
 plot_roc_u3 <- function() {
@@ -2647,18 +2617,6 @@ format_prop_ci <- function(est, low, high) {
     )
 }
 
-format_fisher_p <- function(p) {
-    out <- rep(NA_character_, length(p))
-    out[!is.na(p)] <- vapply(
-        p[!is.na(p)],
-        function(x) {
-            format.pval(x, digits = 3, eps = 0.001)
-        },
-        character(1)
-    )
-    out
-}
-
 level_test_labels <- c(U1_E1 = "U1", U2a_E1 = "U2a", U2b_E1 = "U2b", U3_E1 = "U3")
 
 compute_level_test_metrics <- function(level_value, test_col, test_label) {
@@ -2692,12 +2650,6 @@ compute_level_test_metrics <- function(level_value, test_col, test_label) {
     } else {
         c(NA_real_, NA_real_)
     }
-    fisher_p <- if ((tp + fn) > 0 && (fp + tn) > 0 && (tp + fp) > 0 && (fn + tn) > 0) {
-        fisher.test(matrix(c(tp, fn, fp, tn), nrow = 2, byrow = TRUE))$p.value
-    } else {
-        NA_real_
-    }
-
     data.frame(
         Niveau = as.character(level_value),
         Test = test_label,
@@ -2712,7 +2664,6 @@ compute_level_test_metrics <- function(level_value, test_col, test_label) {
         Sp = sp,
         Sp_low = sp_ci[1],
         Sp_high = sp_ci[2],
-        Fisher_p = fisher_p,
         stringsAsFactors = FALSE
     )
 }
@@ -3474,7 +3425,7 @@ Les critères de jugement secondaires comprenaient la comparaison appariée des 
 
 Les variables qualitatives ont été décrites par leurs effectifs et pourcentages. Les variables quantitatives ont été décrites par des paramètres de position et de dispersion adaptés à leur distribution. Les données manquantes n'ont pas été imputées.
 
-Les performances diagnostiques des quatre ULNT réalisés par l'évaluateur 1 ont été évaluées par rapport au gold standard final corrigé par senior. Pour chaque test, des tableaux de contingence 2 x 2 ont permis d'estimer la sensibilité, la spécificité, les valeurs prédictives positive et négative, les rapports de vraisemblance positif et négatif, l'indice de Youden et l'aire sous la courbe ROC. Les intervalles de confiance à 95 % des proportions ont été calculés par la méthode binomiale exacte de Clopper-Pearson. L'association entre chaque ULNT et le gold standard final a été étudiée par le test exact de Fisher.
+Les performances diagnostiques des quatre ULNT réalisés par l'évaluateur 1 ont été évaluées par rapport au gold standard final corrigé par senior. Pour chaque test, des tableaux de contingence 2 x 2 ont permis d'estimer la sensibilité, la spécificité, les valeurs prédictives positive et négative, les rapports de vraisemblance positif et négatif, l'indice de Youden et l'aire sous la courbe ROC. Les intervalles de confiance à 95 % des proportions ont été calculés par la méthode binomiale exacte de Clopper-Pearson.
 
 Les performances des différents ULNT ont été comparées entre elles à l'aide du test de McNemar ($\chi^2$ pour données appariées). La reproductibilité inter-évaluateurs a été évaluée par le coefficient kappa de Cohen.
 
@@ -3855,6 +3806,12 @@ kable(
 -   Interprétation : 
     -   Sensibilité élevée (`r round(u1_Se, 3)`) : repère bien les patients avec NCB
     -   LR- bas (`r round(u1_LR_neg, 2)`) : un test négatif rend la NCB moins probable (probabilité post-test = probabilité pré-test x LR-). 
+
+::: {.callout-important title="Courbe ROC / AUC"}
+Globalement, pour des variables binaires, la courbe ROC et l'AUC est redondante avec la sensibilité et la spécificité, donc pas vraiment utile. 
+
+C'est plus utile pour des variables continues, où on peut faire varier le seuil de positivité et donc obtenir une courbe ROC plus informative.
+:::
 
 \newpage
 ### ULNT2a
@@ -4527,6 +4484,14 @@ plot(roc_score, main = "Performance globale du score (Tracé en escalier)",
      print.thres.col = "red",
      print.thres.cex = 0.8)
 ```
+
+::: {. callout-important title="ATTENTION BRIEUC"}
+-   Les courbes ROC c'est vraiment pas terrible pour un score discret (c'est à dire uniquement des nombres entiers)
+
+-   Donc pas très joli : je le mettrais pas
+
+-   ÇA VA C'EST ÉCRIT ASSEZ GROS ??
+:::
 
 
 \newpage
