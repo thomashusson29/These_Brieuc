@@ -1,2 +1,8 @@
 /.quarto/
 **/*.quarto_ipynb
+
+# Donnees patients - conserver uniquement hors de Git
+.Rhistory
+recueil*.csv
+recueil*.xlsx
+~$*.xlsx
