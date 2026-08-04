@@ -240,7 +240,78 @@ library(psy)
 library(reshape2)
 library(patchwork) # Pour combiner les graphiques si besoin
 
+# Mode d'export noir et blanc pour l'impression et la galerie publique.
+# Activer avec FIGURES_MONOCHROME=1 lors du rendu Quarto.
+figures_monochrome <- identical(Sys.getenv("FIGURES_MONOCHROME"), "1")
+if (figures_monochrome) {
+    library(ggpattern)
+}
+
+mono_gray <- c("#F2F2F2", "#D2D2D2", "#A8A8A8", "#777777", "#353535")
+mono_patterns <- c("none", "stripe", "circle", "crosshatch", "wave")
+
+contrast_values <- function(keys, colour_values) {
+    if (figures_monochrome) {
+        setNames(rep(mono_gray, length.out = length(keys)), keys)
+    } else {
+        colour_values
+    }
+}
+
+contrast_geom_col <- function(mapping = NULL, ..., colour = NULL) {
+    if (figures_monochrome) {
+        ggpattern::geom_col_pattern(
+            mapping = mapping,
+            ...,
+            colour = "black",
+            pattern_colour = "black",
+            pattern_fill = "black",
+            pattern_density = 0.12,
+            pattern_spacing = 0.035,
+            pattern_key_scale_factor = 0.55
+        )
+    } else {
+        ggplot2::geom_col(..., colour = colour)
+    }
+}
+
+contrast_pattern_scale <- function(keys, title = waiver(), labels = waiver()) {
+    if (!figures_monochrome) {
+        return(NULL)
+    }
+    ggpattern::scale_pattern_manual(
+        values = setNames(rep(mono_patterns, length.out = length(keys)), keys),
+        name = title,
+        labels = labels
+    )
+}
+
+base_bar_style <- function(n) {
+    if (figures_monochrome) {
+        list(
+            col = rep(mono_gray, length.out = n),
+            border = "black",
+            density = rep(c(NA, 18, 24, 16, 22), length.out = n),
+            angle = rep(c(0, 45, 0, 135, 90), length.out = n)
+        )
+    } else {
+        list(border = NA, density = NULL, angle = 45)
+    }
+}
+
 knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+if (figures_monochrome) {
+    monochrome_fig_path <- Sys.getenv("FIGURES_MONOCHROME_DIR")
+    if (nzchar(monochrome_fig_path)) {
+        dir.create(monochrome_fig_path, recursive = TRUE, showWarnings = FALSE)
+    }
+    knitr::opts_chunk$set(
+        dev = "ragg_png",
+        dpi = 600,
+        fig.retina = 1,
+        fig.path = if (nzchar(monochrome_fig_path)) monochrome_fig_path else NULL
+    )
+}
 
 # Configuration globale pour kableExtra et knitr
 options(knitr.table.format = function() {
@@ -266,16 +337,22 @@ if (knitr::is_latex_output()) {
 
 # 1. Graphique Carré (Se vs Sp)
 plot_square_performance <- function(diag_df) {
-    ggplot(diag_df, aes(x = 1 - Sp, y = Se, color = Test)) +
-        geom_point(size = 3) +
-        geom_errorbar(aes(ymin = Se_low, ymax = Se_high), width = 0.02) +
-        geom_errorbarh(aes(xmin = 1 - Sp_high, xmax = 1 - Sp_low), height = 0.02) +
+    p <- ggplot(diag_df, aes(x = 1 - Sp, y = Se)) +
+        geom_point(aes(color = Test, shape = Test), size = 3) +
+        geom_errorbar(aes(ymin = Se_low, ymax = Se_high, color = Test), width = 0.02) +
+        geom_errorbarh(aes(xmin = 1 - Sp_high, xmax = 1 - Sp_low, color = Test), height = 0.02) +
         geom_abline(intercept = 0, slope = 1, linetype = "dashed", color = "gray") +
         scale_x_continuous(limits = c(0, 1), name = "1 - Spécificité (Faux Positifs)") +
         scale_y_continuous(limits = c(0, 1), name = "Sensibilité (Vrais Positifs)") +
         theme_minimal() +
         labs(title = "Compromis Sensibilité / Spécificité",
              subtitle = "Le test idéal est en haut à gauche")
+    if (figures_monochrome) {
+        p <- p +
+            scale_color_manual(values = setNames(rep("black", length(unique(diag_df$Test))), unique(diag_df$Test))) +
+            scale_shape_manual(values = setNames(c(16, 17, 15, 18), unique(diag_df$Test)))
+    }
+    p
 }
 
 # 2. Graphique Probabilités Post-test
@@ -308,7 +385,9 @@ plot_post_test_prob <- function(prev, lr_pos, lr_neg, test_name) {
 ```{r}
 #| include: false
 source("_extensions/thomashusson29/auto-dark/auto-dark-setup.R")
-auto_dark_on()
+if (!figures_monochrome) {
+    auto_dark_on()
+}
 ```
 
 \newpage
@@ -1058,6 +1137,8 @@ plot_age_distribution <- function() {
     op <- par(no.readonly = TRUE)
     on.exit(par(op))
     par(mfrow = c(1, 2))
+    hist_fill <- if (figures_monochrome) "gray85" else "lightblue"
+    line_colour <- if (figures_monochrome) "black" else "red"
     hist(
         df$Age,
         breaks = 10,
@@ -1065,21 +1146,26 @@ plot_age_distribution <- function() {
         main = "Distribution de l'âge",
         xlab = "Âge",
         ylab = "Densité",
-        col = "lightblue"
+        col = hist_fill,
+        border = "black"
     )
-    lines(density(df$Age, na.rm = TRUE), col = "red", lwd = 2)
+    lines(density(df$Age, na.rm = TRUE), col = line_colour, lwd = 2, lty = if (figures_monochrome) 2 else 1)
     qqnorm(df$Age, main = "Q-Q plot de l'âge")
-    qqline(df$Age, col = "red", lwd = 2)
+    qqline(df$Age, col = line_colour, lwd = 2, lty = if (figures_monochrome) 2 else 1)
 }
 
 plot_sexe_distribution <- function() {
     op <- par(no.readonly = TRUE)
     on.exit(par(op))
     par(mfrow = c(1, 1))
+    style <- base_bar_style(length(sexe_table))
     bar_pos <- barplot(
         sexe_table,
         main = "Répartition du sexe",
-        col = sexe_colors[sexe_labels],
+        col = if (figures_monochrome) style$col else sexe_colors[sexe_labels],
+        border = style$border,
+        density = style$density,
+        angle = style$angle,
         ylab = "Nombre de patients",
         ylim = c(0, max(sexe_table) * 1.18)
     )
@@ -1095,10 +1181,14 @@ plot_cote_distribution <- function() {
     op <- par(no.readonly = TRUE)
     on.exit(par(op))
     par(mfrow = c(1, 1))
+    style <- base_bar_style(length(cote_table))
     bar_pos <- barplot(
         cote_table,
         main = "Répartition du côté",
-        col = cote_colors[cote_labels],
+        col = if (figures_monochrome) style$col else cote_colors[cote_labels],
+        border = style$border,
+        density = style$density,
+        angle = style$angle,
         ylab = "Nombre de patients",
         ylim = c(0, max(cote_table) * 1.18)
     )
@@ -1114,10 +1204,14 @@ plot_niveau_distribution <- function() {
     op <- par(no.readonly = TRUE)
     on.exit(par(op))
     par(mfrow = c(1, 1))
+    style <- base_bar_style(length(niveau_table))
     bar_pos <- barplot(
         niveau_table,
         main = "Répartition du niveau",
-        col = niveau_colors[niveau_labels],
+        col = if (figures_monochrome) style$col else niveau_colors[niveau_labels],
+        border = style$border,
+        density = style$density,
+        angle = style$angle,
         xlab = "Nombre de patients",
         horiz = TRUE,
         xlim = c(0, max(niveau_table) * 1.18)
@@ -2448,11 +2542,19 @@ contingency_long <- contingency_tab %>%
     mutate(Cellule = factor(Cellule, levels = c("VP", "FN", "FP", "VN")))
 
 contingency_plot <- ggplot(contingency_long, aes(Test, Effectif, fill = Cellule)) +
-    geom_col(position = "stack", width = 0.7, color = "white", linewidth = 0.2) +
+    contrast_geom_col(aes(pattern = Cellule), position = "stack", width = 0.7, colour = "white", linewidth = 0.2) +
     scale_fill_manual(
-        values = c(VP = nord("aurora")[4], FN = nord("aurora")[1], FP = nord("aurora")[2], VN = nord("frost")[4]),
+        values = contrast_values(
+            c("VP", "FN", "FP", "VN"),
+            c(VP = nord("aurora")[4], FN = nord("aurora")[1], FP = nord("aurora")[2], VN = nord("frost")[4])
+        ),
         labels = c(VP = "Vrai positif", FN = "Faux négatif", FP = "Faux positif", VN = "Vrai négatif"),
         name = "Cellule"
+    ) +
+    contrast_pattern_scale(
+        c("VP", "FN", "FP", "VN"),
+        title = "Cellule",
+        labels = c(VP = "Vrai positif", FN = "Faux négatif", FP = "Faux positif", VN = "Vrai négatif")
     ) +
     theme_minimal() +
     labs(
@@ -2527,7 +2629,7 @@ level_status_long <- level_analysis_data %>%
     )
 
 results_by_level_status_plot <- ggplot(level_status_long, aes(x = Niveau, y = Effectif, fill = Statut_NCB)) +
-    geom_col(width = 0.7, color = "white", linewidth = 0.2) +
+    contrast_geom_col(aes(pattern = Statut_NCB), width = 0.7, colour = "white", linewidth = 0.2) +
     geom_text(
         data = level_summary,
         aes(x = Niveau, y = N_analyse, label = sprintf("N = %d", N_analyse)),
@@ -2536,9 +2638,13 @@ results_by_level_status_plot <- ggplot(level_status_long, aes(x = Niveau, y = Ef
         size = 3
     ) +
     scale_fill_manual(
-        values = c("NCB negatif" = nord("frost")[2], "NCB positif" = nord("aurora")[4]),
+        values = contrast_values(
+            c("NCB negatif", "NCB positif"),
+            c("NCB negatif" = nord("frost")[2], "NCB positif" = nord("aurora")[4])
+        ),
         name = "Gold standard"
     ) +
+    contrast_pattern_scale(c("NCB negatif", "NCB positif"), title = "Gold standard") +
     scale_y_continuous(expand = expansion(mult = c(0, 0.08))) +
     theme_minimal() +
     labs(
@@ -2566,7 +2672,7 @@ level_score_ge3 <- level_score_long %>%
     )
 
 results_by_level_score_plot <- ggplot(level_score_long, aes(x = Niveau, y = Effectif, fill = Score_ULNT)) +
-    geom_col(width = 0.7, color = "white", linewidth = 0.2) +
+    contrast_geom_col(aes(pattern = Score_ULNT), width = 0.7, colour = "white", linewidth = 0.2) +
     geom_text(
         data = level_summary,
         aes(x = Niveau, y = N_analyse, label = sprintf("N = %d", N_analyse)),
@@ -2575,15 +2681,19 @@ results_by_level_score_plot <- ggplot(level_score_long, aes(x = Niveau, y = Effe
         size = 3
     ) +
     scale_fill_manual(
-        values = c(
-            `0` = nord("frost")[1],
-            `1` = nord("frost")[2],
-            `2` = nord("frost")[3],
-            `3` = nord("aurora")[3],
-            `4` = nord("aurora")[4]
+        values = contrast_values(
+            as.character(0:4),
+            c(
+                `0` = nord("frost")[1],
+                `1` = nord("frost")[2],
+                `2` = nord("frost")[3],
+                `3` = nord("aurora")[3],
+                `4` = nord("aurora")[4]
+            )
         ),
         name = "Score ULNT"
     ) +
+    contrast_pattern_scale(as.character(0:4), title = "Score ULNT") +
     scale_y_continuous(expand = expansion(mult = c(0, 0.08))) +
     theme_minimal() +
     labs(
@@ -2705,19 +2815,23 @@ level_test_metric_plot_data <- diagnostic_by_level_detail_raw %>%
         Metric = factor(Metric, levels = c("Se", "Sp"), labels = c("Sensibilite", "Specificite"))
     )
 
-results_by_level_test_metric_plot <- ggplot(level_test_metric_plot_data, aes(x = Niveau, y = Estimate, color = Metric, group = Metric)) +
+results_by_level_test_metric_plot <- ggplot(level_test_metric_plot_data, aes(x = Niveau, y = Estimate, color = Metric, linetype = Metric, shape = Metric, group = Metric)) +
     geom_line(linewidth = 0.4, na.rm = TRUE) +
     geom_point(size = 2, na.rm = TRUE) +
     geom_errorbar(aes(ymin = Lower, ymax = Upper), width = 0.12, linewidth = 0.3, na.rm = TRUE) +
     facet_wrap(~Test, ncol = 2) +
-    scale_color_manual(values = c(Sensibilite = nord("aurora")[4], Specificite = nord("frost")[4])) +
+    scale_color_manual(values = if (figures_monochrome) c(Sensibilite = "black", Specificite = "black") else c(Sensibilite = nord("aurora")[4], Specificite = nord("frost")[4])) +
+    scale_linetype_manual(values = c(Sensibilite = "solid", Specificite = "dashed")) +
+    scale_shape_manual(values = c(Sensibilite = 16, Specificite = 17)) +
     scale_y_continuous(limits = c(0, 1), breaks = seq(0, 1, 0.2)) +
     theme_minimal() +
     labs(
         title = "Sensibilite et specificite selon le niveau metamerique pour chaque ULNT",
         x = "Niveau metamerique",
         y = "Estimation",
-        color = NULL
+        color = NULL,
+        linetype = NULL,
+        shape = NULL
     )
 
 make_test_level_round <- function(test_label) {
@@ -2866,8 +2980,12 @@ if (knitr::is_latex_output()) {
 }
 
 kappa_plot <- ggplot(kappa_tab, aes(x = Test, y = Kappa, fill = Test)) +
-    geom_col() +
-    scale_fill_manual(values = c(U1 = nord("frost")[4], U2a = nord("aurora")[1], U2b = nord("aurora")[3], U3 = nord("aurora")[4])) +
+    contrast_geom_col(aes(pattern = Test)) +
+    scale_fill_manual(values = contrast_values(
+        c("U1", "U2a", "U2b", "U3"),
+        c(U1 = nord("frost")[4], U2a = nord("aurora")[1], U2b = nord("aurora")[3], U3 = nord("aurora")[4])
+    )) +
+    contrast_pattern_scale(c("U1", "U2a", "U2b", "U3"), title = "Test") +
     theme_minimal() +
     labs(
         x = "Test",
@@ -3579,6 +3697,8 @@ resume_bmi_table
 #| message: false
 #| warning: false
 par(mfrow = c(1, 2))
+hist_fill <- if (figures_monochrome) "gray85" else "lightblue"
+line_colour <- if (figures_monochrome) "black" else "red"
 hist(
     df$BMI,
     breaks = 10,
@@ -3586,11 +3706,12 @@ hist(
     main = "Distribution du BMI",
     xlab = "BMI",
     ylab = "Densité",
-    col = "lightblue"
+    col = hist_fill,
+    border = "black"
 )
-lines(density(df$BMI, na.rm = TRUE), col = "red", lwd = 2)
+lines(density(df$BMI, na.rm = TRUE), col = line_colour, lwd = 2, lty = if (figures_monochrome) 2 else 1)
 qqnorm(df$BMI, main = "Q-Q plot du BMI")
-qqline(df$BMI, col = "red", lwd = 2)
+qqline(df$BMI, col = line_colour, lwd = 2, lty = if (figures_monochrome) 2 else 1)
 ```
 
 #### Tabac
@@ -3618,11 +3739,15 @@ kable(
 #| message: false
 #| warning: false
 par(mfrow = c(1, 2))
+style <- base_bar_style(2)
 bar_pos <- barplot(
     c(tabac_non_n, tabac_oui_n),
     names.arg = c("Non", "Oui"),
     main = "Répartition du tabac",
-    col = c(nord("frost")[2], nord("aurora")[3]),
+    col = if (figures_monochrome) style$col else c(nord("frost")[2], nord("aurora")[3]),
+    border = style$border,
+    density = style$density,
+    angle = style$angle,
     ylab = "Nombre de patients",
     ylim = c(0, max(c(tabac_non_n, tabac_oui_n)) * 1.18)
 )
@@ -3659,11 +3784,15 @@ kable(
 #| message: false
 #| warning: false
 par(mfrow = c(1, 2))
+style <- base_bar_style(2)
 bar_pos <- barplot(
     c(infiltration_non_n, infiltration_oui_n),
     names.arg = c("Non", "Oui"),
     main = "Statut d'infiltration",
-    col = c(nord("aurora")[4], nord("frost")[1]),
+    col = if (figures_monochrome) style$col else c(nord("aurora")[4], nord("frost")[1]),
+    border = style$border,
+    density = style$density,
+    angle = style$angle,
     ylab = "Nombre de patients",
     ylim = c(0, max(c(infiltration_non_n, infiltration_oui_n)) * 1.18)
 )
@@ -3699,11 +3828,15 @@ kable(
 #| echo: false
 #| message: false
 #| warning: false
+style <- base_bar_style(2)
 bar_pos <- barplot(
     c(resultat_inf_neg_n, resultat_inf_pos_n),
     names.arg = c("Negatif", "Positif"),
     main = "Résultat des infiltrations",
-    col = c(nord("aurora")[1], nord("aurora")[3]),
+    col = if (figures_monochrome) style$col else c(nord("aurora")[1], nord("aurora")[3]),
+    border = style$border,
+    density = style$density,
+    angle = style$angle,
     ylab = "Nombre de patients",
     ylim = c(0, max(c(resultat_inf_neg_n, resultat_inf_pos_n)) * 1.18)
 )
@@ -4056,12 +4189,14 @@ contingency_plot
 #| fig-height: 8
 
 # A. ROC Combiné
-plot(roc_u1, col = nord("aurora")[4], lwd = 2, main = "Courbes ROC comparées")
-plot(roc_u2a, add = TRUE, col = nord("aurora")[1], lwd = 2)
-plot(roc_u2b, add = TRUE, col = nord("frost")[2], lwd = 2)
-plot(roc_u3, add = TRUE, col = nord("aurora")[2], lwd = 2)
+roc_colours <- if (figures_monochrome) rep("black", 4) else c(nord("aurora")[4], nord("aurora")[1], nord("frost")[2], nord("aurora")[2])
+roc_linetypes <- if (figures_monochrome) c(1, 2, 3, 4) else rep(1, 4)
+plot(roc_u1, col = roc_colours[1], lwd = 2, lty = roc_linetypes[1], main = "Courbes ROC comparées")
+plot(roc_u2a, add = TRUE, col = roc_colours[2], lwd = 2, lty = roc_linetypes[2])
+plot(roc_u2b, add = TRUE, col = roc_colours[3], lwd = 2, lty = roc_linetypes[3])
+plot(roc_u3, add = TRUE, col = roc_colours[4], lwd = 2, lty = roc_linetypes[4])
 legend("bottomright", legend = c("U1", "U2a", "U2b", "U3"), 
-       col = c(nord("aurora")[4], nord("aurora")[1], nord("frost")[2], nord("aurora")[2]), lwd = 2)
+       col = roc_colours, lty = roc_linetypes, lwd = 2)
 
 # B. Square Plot (Se vs Sp)
 p_square <- plot_square_performance(diag_primary_numeric)
@@ -4400,11 +4535,15 @@ score_contribution_sensitivity_table %>%
 #| fig-height: 5
 
 ggplot(score_contribution_shapley, aes(x = Seuil, y = Gain_Se, fill = Test)) +
-    geom_col(position = "dodge") +
+    contrast_geom_col(aes(pattern = Test), position = "dodge") +
     geom_text(aes(label = sprintf("+%.2f", Gain_Se)), 
               position = position_dodge(width = 0.9), vjust = -0.5, size = 3) +
-    scale_fill_manual(values = c("ULNT1" = nord("aurora")[4], "ULNT2a" = nord("aurora")[1], 
-                               "ULNT2b" = nord("frost")[2], "ULNT3" = nord("aurora")[2])) +
+    scale_fill_manual(values = contrast_values(
+        c("ULNT1", "ULNT2a", "ULNT2b", "ULNT3"),
+        c("ULNT1" = nord("aurora")[4], "ULNT2a" = nord("aurora")[1],
+          "ULNT2b" = nord("frost")[2], "ULNT3" = nord("aurora")[2])
+    )) +
+    contrast_pattern_scale(c("ULNT1", "ULNT2a", "ULNT2b", "ULNT3"), title = "Test") +
     theme_minimal() +
     labs(x = "Seuil du score", y = "Gain de Sensibilité",
          title = "Quel test contribue le plus au dépistage (Sensibilité) ?")
@@ -4446,11 +4585,15 @@ score_contribution_specificity_table %>%
 
 # On utilise la valeur absolue pour montrer l'"apport" positif à l'exclusion des patients sains
 ggplot(score_contribution_shapley, aes(x = Seuil, y = abs(Perte_Sp), fill = Test)) +
-    geom_col(position = "dodge") +
+    contrast_geom_col(aes(pattern = Test), position = "dodge") +
     geom_text(aes(label = sprintf("+%.2f", abs(Perte_Sp))), 
               position = position_dodge(width = 0.9), vjust = -0.5, size = 3) +
-    scale_fill_manual(values = c("ULNT1" = nord("aurora")[4], "ULNT2a" = nord("aurora")[1], 
-                               "ULNT2b" = nord("frost")[2], "ULNT3" = nord("aurora")[2])) +
+    scale_fill_manual(values = contrast_values(
+        c("ULNT1", "ULNT2a", "ULNT2b", "ULNT3"),
+        c("ULNT1" = nord("aurora")[4], "ULNT2a" = nord("aurora")[1],
+          "ULNT2b" = nord("frost")[2], "ULNT3" = nord("aurora")[2])
+    )) +
+    contrast_pattern_scale(c("ULNT1", "ULNT2a", "ULNT2b", "ULNT3"), title = "Test") +
     theme_minimal() +
     labs(x = "Seuil du score", y = "Apport à la Spécificité (Exclusion)",
          title = "Quel test contribue le plus à confirmer le diagnostic (Spécificité) ?")
@@ -4478,13 +4621,15 @@ threshold_data <- score_summary %>%
     ) %>%
     pivot_longer(cols = -Seuil, names_to = "Metric", values_to = "Val")
 
-ggplot(threshold_data, aes(x = Seuil, y = Val, color = Metric, group = Metric)) +
+ggplot(threshold_data, aes(x = Seuil, y = Val, color = Metric, linetype = Metric, shape = Metric, group = Metric)) +
     geom_line(linewidth = 1) +
     geom_point(size = 3) +
     scale_y_continuous(labels = scales::percent, limits = c(0, 1)) +
-    scale_color_manual(values = c("Sensibilité" = nord("aurora")[4], "Spécificité" = nord("frost")[4])) +
+    scale_color_manual(values = if (figures_monochrome) c("Sensibilité" = "black", "Spécificité" = "black") else c("Sensibilité" = nord("aurora")[4], "Spécificité" = nord("frost")[4])) +
+    scale_linetype_manual(values = c("Sensibilité" = "solid", "Spécificité" = "dashed")) +
+    scale_shape_manual(values = c("Sensibilité" = 16, "Spécificité" = 17)) +
     theme_minimal() +
-    labs(x = "Nombre de tests positifs requis (Seuil)", y = "Performance", color = "",
+    labs(x = "Nombre de tests positifs requis (Seuil)", y = "Performance", color = "", linetype = "", shape = "",
          title = "Évolution de la performance selon le seuil")
 ```
 
@@ -4506,13 +4651,13 @@ roc_score <- roc(
 
 # On force le tracé en escalier (type = "s") pour respecter la nature discrète du score
 plot(roc_score, main = "Performance globale du score (Tracé en escalier)", 
-     col = nord("aurora")[4], lwd = 3, 
+     col = if (figures_monochrome) "black" else nord("aurora")[4], lwd = 3,
      print.auc = TRUE, print.auc.y = 0.4, 
-     auc.polygon = TRUE, auc.polygon.col = "#E5E9F0",
+     auc.polygon = TRUE, auc.polygon.col = if (figures_monochrome) "gray90" else "#E5E9F0",
      identity = TRUE, grid = TRUE,
      print.thres = c(1, 2, 3, 4), 
      print.thres.pattern = "Score >= %d",
-     print.thres.col = "red",
+     print.thres.col = if (figures_monochrome) "black" else "red",
      print.thres.cex = 0.8)
 ```
 
@@ -4588,9 +4733,11 @@ names(df_plot_pos) <- c("Niveau", "Effectif")
 df_plot_pos$Pourcentage <- level_pct_pos
 
 ggplot(df_plot_pos, aes(x = Niveau, y = Effectif, fill = Niveau)) +
-    geom_col(width = 0.7, color = "white", linewidth = 0.2) +
+    contrast_geom_col(aes(pattern = Niveau), width = 0.7, colour = "white", linewidth = 0.2) +
     geom_text(aes(label = paste0(Effectif, " (", Pourcentage, "%)")), vjust = -0.5, size = 3) +
-    scale_fill_manual(values = niveau_colors, guide = "none") +
+    scale_fill_manual(values = contrast_values(level_levels, niveau_colors), guide = "none") +
+    contrast_pattern_scale(level_levels, title = "Niveau") +
+    guides(pattern = "none") +
     theme_minimal() +
     labs(title = "Distribution des niveaux chez les patients G+",
          y = "Nombre de patients", x = "Niveau métamérique") +
@@ -4613,17 +4760,21 @@ level_score_pos <- level_analysis_data %>%
     )
 
 ggplot(level_score_pos, aes(x = Niveau, y = Effectif, fill = Score_ULNT)) +
-    geom_col(width = 0.7, color = "white", linewidth = 0.2) +
+    contrast_geom_col(aes(pattern = Score_ULNT), width = 0.7, colour = "white", linewidth = 0.2) +
     scale_fill_manual(
-        values = c(
-            `0` = nord("frost")[1],
-            `1` = nord("frost")[2],
-            `2` = nord("frost")[3],
-            `3` = nord("aurora")[3],
-            `4` = nord("aurora")[4]
+        values = contrast_values(
+            as.character(0:4),
+            c(
+                `0` = nord("frost")[1],
+                `1` = nord("frost")[2],
+                `2` = nord("frost")[3],
+                `3` = nord("aurora")[3],
+                `4` = nord("aurora")[4]
+            )
         ),
         name = "Score ULNT"
     ) +
+    contrast_pattern_scale(as.character(0:4), title = "Score ULNT") +
     theme_minimal() +
     labs(title = "Score ULNT (0-4) par niveau chez les patients G+",
          x = "Niveau métamérique", y = "Effectif")
@@ -4683,12 +4834,20 @@ max_y_perf <- level_test_perf %>%
 plot_list <- list()
 for (lvl in level_levels) {
     p <- ggplot(filter(level_test_perf, Niveau == lvl), aes(x = Test, y = Effectif, fill = Cellule)) +
-        geom_col(position = "stack", width = 0.7, color = "white", linewidth = 0.2) +
+        contrast_geom_col(aes(pattern = Cellule), position = "stack", width = 0.7, colour = "white", linewidth = 0.2) +
         scale_fill_manual(
-            values = c(VP = nord("aurora")[4], FN = nord("aurora")[1], FP = nord("aurora")[2], VN = nord("frost")[4]),
+            values = contrast_values(
+                c("VP", "FN", "FP", "VN"),
+                c(VP = nord("aurora")[4], FN = nord("aurora")[1], FP = nord("aurora")[2], VN = nord("frost")[4])
+            ),
             labels = c(VP = "Vrai positif (VP)", FN = "Faux négatif (FN)", 
                       FP = "Faux positif (FP)", VN = "Vrai négatif (VN)"),
             name = "Résultat"
+        ) +
+        contrast_pattern_scale(
+            c("VP", "FN", "FP", "VN"),
+            title = "Résultat",
+            labels = c(VP = "Vrai positif (VP)", FN = "Faux négatif (FN)", FP = "Faux positif (FP)", VN = "Vrai négatif (VN)")
         ) +
         scale_y_continuous(limits = c(0, max_y_perf * 1.05)) +
         theme_minimal() +
@@ -4826,12 +4985,13 @@ level_grouped_long <- level_grouped_summary %>%
     pivot_longer(cols = c(Se_U1, Sp_U1), names_to = "Metric", values_to = "Val")
 
 ggplot(level_grouped_long, aes(x = Niveau_groupe, y = Val, fill = Metric)) +
-    geom_col(position = position_dodge(width = 0.7), width = 0.6) +
+    contrast_geom_col(aes(pattern = Metric), position = position_dodge(width = 0.7), width = 0.6) +
     geom_text(aes(label = paste0(round(Val*100, 0), "%")), 
               position = position_dodge(width = 0.7), vjust = -0.5, size = 3) +
     scale_y_continuous(labels = scales::percent, limits = c(0, 1.1)) +
-    scale_fill_manual(values = c(nord("aurora")[4], nord("frost")[2]), 
+    scale_fill_manual(values = contrast_values(c("Se_U1", "Sp_U1"), c("Se_U1" = nord("aurora")[4], "Sp_U1" = nord("frost")[2])),
                       labels = c("Sensibilité", "Spécificité")) +
+    contrast_pattern_scale(c("Se_U1", "Sp_U1"), title = "", labels = c("Sensibilité", "Spécificité")) +
     theme_minimal() +
     labs(x = "Étage métamérique", y = "Performance", fill = "")
 ```
