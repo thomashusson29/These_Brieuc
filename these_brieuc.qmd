@@ -5149,7 +5149,6 @@ kable(comp_score_a2, booktabs = TRUE, align = "c", row.names = FALSE) %>%
 # 2e partie : avec le nouveau fichier du 09-08-2926
 
 ```{r}
-#read /Users/thomashusson/Documents/Projets/These_Brieuc/recueil_dernier_avec_sexe.csv dans df_2
-df_2 <- read.csv("/Users/thomashusson/Documents/Projets/These_Brieuc/recueil_dernier_avec_sexe.csv", header = TRUE, sep = ",")
+# Le fichier patient reste local et n'est jamais versionné.
+df_2 <- read.csv("recueil_dernier_avec_sexe.csv", header = TRUE, sep = ",")
 ```
-
