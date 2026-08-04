@@ -15,6 +15,17 @@ cp "${QMD_FILE}" "${DOCS_DIR}/"
 cp "${DOCX_FILE}" "${DOCS_DIR}/"
 cp "${PDF_FILE}" "${DOCS_DIR}/"
 
+for file in \
+  these_brieuc_last_recueil.html \
+  these_brieuc_last_recueil.qmd \
+  these_brieuc_last_recueil.docx \
+  these_brieuc_last_recueil.pdf
+do
+  if [ -f "${file}" ]; then
+    cp "${file}" "${DOCS_DIR}/"
+  fi
+done
+
 if [ -d "${HTML_ASSETS_DIR}" ]; then
   rm -rf "${DOCS_DIR}/${HTML_ASSETS_DIR}"
   cp -R "${HTML_ASSETS_DIR}" "${DOCS_DIR}/"
@@ -65,6 +76,16 @@ cat > "${DOCS_DIR}/index.html" <<'EOF'
       color: var(--muted);
       line-height: 1.5;
     }
+    section + section {
+      margin-top: 24px;
+      padding-top: 24px;
+      border-top: 1px solid var(--line);
+    }
+    h2 {
+      margin: 0 0 12px;
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
     nav {
       display: grid;
       gap: 12px;
@@ -92,12 +113,31 @@ cat > "${DOCS_DIR}/index.html" <<'EOF'
   <main>
     <h1>Stats Thèse Brieuc</h1>
     <p>Choisissez le format à consulter ou à télécharger.</p>
-    <nav aria-label="Formats du rapport">
-      <a href="these_brieuc.html">Affichage web (HTML)</a>
-      <a href="these_brieuc.pdf" download="these_brieuc.pdf">Fichier PDF</a>
-      <a href="these_brieuc.docx" download="these_brieuc.docx">Fichier DOCX</a>
-      <a href="these_brieuc.qmd" download="these_brieuc.qmd">Code R source</a>
-    </nav>
+    <section>
+      <h2>Version principale</h2>
+      <nav aria-label="Formats du rapport principal">
+        <a href="these_brieuc.html">Affichage web (HTML)</a>
+        <a href="these_brieuc.pdf" download="these_brieuc.pdf">Fichier PDF</a>
+        <a href="these_brieuc.docx" download="these_brieuc.docx">Fichier DOCX</a>
+        <a href="these_brieuc.qmd" download="these_brieuc.qmd">Code R source</a>
+      </nav>
+    </section>
+    <section>
+      <h2>Version dernier recueil</h2>
+      <nav aria-label="Formats du rapport avec dernier recueil">
+        <a href="these_brieuc_last_recueil.html">Affichage web (HTML)</a>
+        <a href="these_brieuc_last_recueil.pdf" download="these_brieuc_last_recueil.pdf">Fichier PDF</a>
+        <a href="these_brieuc_last_recueil.docx" download="these_brieuc_last_recueil.docx">Fichier DOCX</a>
+        <a href="these_brieuc_last_recueil.qmd" download="these_brieuc_last_recueil.qmd">Code R source</a>
+      </nav>
+    </section>
+    <section>
+      <h2>Figures pour l’impression</h2>
+      <nav aria-label="Galerie des figures noir et blanc">
+        <a href="figures-noir-blanc/">Galerie noir et blanc · 23 PNG à 600 dpi</a>
+        <a href="figures-noir-blanc/manifest.csv" download="manifest-figures-noir-blanc.csv">Contrôle technique des exports</a>
+      </nav>
+    </section>
   </main>
 </body>
 </html>
