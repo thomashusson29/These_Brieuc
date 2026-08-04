@@ -4485,7 +4485,7 @@ plot(roc_score, main = "Performance globale du score (Tracé en escalier)",
      print.thres.cex = 0.8)
 ```
 
-::: {. callout-important title="ATTENTION BRIEUC"}
+::: {.callout-important title="ATTENTION BRIEUC"}
 -   Les courbes ROC c'est vraiment pas terrible pour un score discret (c'est à dire uniquement des nombres entiers)
 
 -   Donc pas très joli : je le mettrais pas

@@ -1,6 +1,12 @@
 /.quarto/
 **/*.quarto_ipynb
 
+# Fichiers système et artefacts temporaires
+.DS_Store
+**/.DS_Store
+.sync-conflict-*
+.figures_png_*
+
 # Donnees patients - conserver uniquement hors de Git
 .Rhistory
 recueil*.csv
