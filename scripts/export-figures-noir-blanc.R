@@ -1,13 +1,19 @@
 #!/usr/bin/env Rscript
 
-# Régénère les 23 figures finales en noir et blanc à 600 dpi.
+# Régénère les 23 figures finales en français et en anglais,
+# en noir et blanc à 600 dpi.
 # Les données patients restent locales et ne sont jamais copiées dans docs/.
 
 project_dir <- normalizePath(getwd(), mustWork = TRUE)
 source_qmd <- file.path(project_dir, "these_brieuc_last_recueil.qmd")
-build_dir <- file.path(project_dir, ".figures_png_bw_export")
-public_dir <- file.path(project_dir, "docs", "figures-noir-blanc")
-temporary_html <- ".figures_png_bw.html"
+build_root <- file.path(project_dir, ".figures_png_bw_export")
+public_root <- file.path(project_dir, "docs", "figures-noir-blanc")
+requested_languages <- tolower(commandArgs(trailingOnly = TRUE))
+languages <- if (length(requested_languages)) requested_languages else c("fr", "en")
+
+if (any(!languages %in% c("fr", "en"))) {
+    stop("Langue inconnue. Utiliser 'fr', 'en', ou aucun argument pour les deux.", call. = FALSE)
+}
 
 if (!file.exists(source_qmd)) {
     stop("Lancer ce script depuis la racine du dépôt.", call. = FALSE)
@@ -47,13 +53,13 @@ source_files <- c(
 
 public_files <- sub("côté", "cote", source_files, fixed = TRUE)
 
-if (dir.exists(build_dir)) {
-    unlink(build_dir, recursive = TRUE)
+if (dir.exists(build_root)) {
+    unlink(build_root, recursive = TRUE)
 }
-dir.create(build_dir, recursive = TRUE, showWarnings = FALSE)
-dir.create(public_dir, recursive = TRUE, showWarnings = FALSE)
+dir.create(build_root, recursive = TRUE, showWarnings = FALSE)
+dir.create(public_root, recursive = TRUE, showWarnings = FALSE)
 
-old_env <- Sys.getenv(c("FIGURES_MONOCHROME", "FIGURES_MONOCHROME_DIR"), unset = NA)
+old_env <- Sys.getenv(c("FIGURES_MONOCHROME", "FIGURES_MONOCHROME_DIR", "FIGURES_LANGUAGE"), unset = NA)
 on.exit({
     for (name in names(old_env)) {
         if (is.na(old_env[[name]])) {
@@ -63,38 +69,6 @@ on.exit({
         }
     }
 }, add = TRUE)
-
-Sys.setenv(
-    FIGURES_MONOCHROME = "1",
-    FIGURES_MONOCHROME_DIR = paste0(build_dir, .Platform$file.sep)
-)
-
-status <- system2(
-    "quarto",
-    c(
-        "render",
-        shQuote(source_qmd),
-        "--to", "auto-dark-html",
-        "--output", temporary_html
-    )
-)
-if (!identical(status, 0L)) {
-    stop("Le rendu Quarto noir et blanc a échoué.", call. = FALSE)
-}
-
-missing <- source_files[!file.exists(file.path(build_dir, source_files))]
-if (length(missing)) {
-    stop("Figures manquantes : ", paste(missing, collapse = ", "), call. = FALSE)
-}
-
-copied <- file.copy(
-    from = file.path(build_dir, source_files),
-    to = file.path(public_dir, public_files),
-    overwrite = TRUE
-)
-if (!all(copied)) {
-    stop("Impossible de copier toutes les figures dans docs/.", call. = FALSE)
-}
 
 inspect_png <- function(path) {
     image <- magick::image_read(path)
@@ -122,23 +96,57 @@ inspect_png <- function(path) {
     )
 }
 
-manifest <- do.call(rbind, lapply(file.path(public_dir, public_files), inspect_png))
-if (any(manifest$dpi != 600)) {
-    stop("Au moins une figure n'est pas exportée à 600 dpi.", call. = FALSE)
-}
-if (!all(manifest$noir_et_blanc)) {
-    stop("Au moins une figure contient encore des pixels colorés.", call. = FALSE)
+render_language <- function(language) {
+    build_dir <- file.path(build_root, language)
+    public_dir <- file.path(public_root, language)
+    temporary_html <- paste0(".figures_png_bw_", language, ".html")
+
+    dir.create(build_dir, recursive = TRUE, showWarnings = FALSE)
+    dir.create(public_dir, recursive = TRUE, showWarnings = FALSE)
+
+    Sys.setenv(
+        FIGURES_MONOCHROME = "1",
+        FIGURES_MONOCHROME_DIR = paste0(build_dir, .Platform$file.sep),
+        FIGURES_LANGUAGE = language
+    )
+
+    status <- system2(
+        "quarto",
+        c(
+            "render",
+            shQuote(source_qmd),
+            "--to", "auto-dark-html",
+            "--output", temporary_html
+        )
+    )
+    if (!identical(status, 0L)) {
+        stop("Le rendu Quarto a échoué pour la langue : ", language, call. = FALSE)
+    }
+
+    missing <- source_files[!file.exists(file.path(build_dir, source_files))]
+    if (length(missing)) {
+        stop("Figures manquantes (", language, ") : ", paste(missing, collapse = ", "), call. = FALSE)
+    }
+
+    copied <- file.copy(
+        from = file.path(build_dir, source_files),
+        to = file.path(public_dir, public_files),
+        overwrite = TRUE
+    )
+    if (!all(copied)) {
+        stop("Impossible de copier toutes les figures dans docs/ pour : ", language, call. = FALSE)
+    }
+
+    checks <- do.call(rbind, lapply(file.path(public_dir, public_files), inspect_png))
+    if (any(checks$dpi != 600)) {
+        stop("Au moins une figure n'est pas exportée à 600 dpi (", language, ").", call. = FALSE)
+    }
+    if (!all(checks$noir_et_blanc)) {
+        stop("Au moins une figure contient encore des pixels colorés (", language, ").", call. = FALSE)
+    }
+
+    message(nrow(checks), " figures exportées en ", language, " dans ", public_dir)
+    invisible(checks)
 }
 
-utils::write.csv(
-    manifest,
-    file.path(public_dir, "manifest.csv"),
-    row.names = FALSE,
-    fileEncoding = "UTF-8"
-)
-
-message(
-    nrow(manifest),
-    " figures noir et blanc exportées à 600 dpi dans ",
-    public_dir
-)
+invisible(lapply(unique(languages), render_language))

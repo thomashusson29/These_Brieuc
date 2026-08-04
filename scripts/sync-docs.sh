@@ -132,10 +132,9 @@ cat > "${DOCS_DIR}/index.html" <<'EOF'
       </nav>
     </section>
     <section>
-      <h2>Figures pour l’impression</h2>
-      <nav aria-label="Galerie des figures noir et blanc">
-        <a href="figures-noir-blanc/">Galerie noir et blanc · 23 PNG à 600 dpi</a>
-        <a href="figures-noir-blanc/manifest.csv" download="manifest-figures-noir-blanc.csv">Contrôle technique des exports</a>
+      <h2>Figures</h2>
+      <nav aria-label="Figures">
+        <a href="figures-noir-blanc/">English / Français</a>
       </nav>
     </section>
   </main>

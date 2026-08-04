@@ -1,0 +1,143 @@
+:root {
+  color-scheme: light;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: #1d1d1f;
+  background: #f5f5f7;
+}
+
+* { box-sizing: border-box; }
+
+body { margin: 0; }
+
+a { color: inherit; }
+
+.language-page {
+  display: grid;
+  min-height: 100vh;
+  place-items: center;
+  padding: 24px;
+}
+
+.language-picker {
+  width: min(420px, 100%);
+  padding: 32px;
+  border: 1px solid #d2d2d7;
+  border-radius: 12px;
+  background: #fff;
+}
+
+.language-picker h1 {
+  margin: 0 0 24px;
+  font-size: 28px;
+  letter-spacing: -.02em;
+}
+
+.language-picker nav {
+  display: grid;
+  gap: 10px;
+}
+
+.language-picker a,
+.download {
+  display: block;
+  padding: 11px 14px;
+  border: 1px solid #c7c7cc;
+  border-radius: 7px;
+  background: #fff;
+  text-align: center;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.language-picker a:hover,
+.download:hover { background: #f2f2f2; }
+
+.gallery-page {
+  width: min(1280px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 28px 0 56px;
+}
+
+.gallery-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+.gallery-header h1 {
+  margin: 0;
+  font-size: 28px;
+  letter-spacing: -.02em;
+}
+
+.gallery-header nav {
+  display: flex;
+  gap: 14px;
+  font-size: 14px;
+}
+
+.gallery-header [aria-current="page"] {
+  font-weight: 650;
+  text-decoration: none;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+  gap: 16px;
+}
+
+.card {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid #d2d2d7;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.preview {
+  display: grid;
+  min-height: 245px;
+  padding: 12px;
+  place-items: center;
+  border-bottom: 1px solid #e5e5ea;
+  background: #fff;
+}
+
+.preview img {
+  display: block;
+  width: 100%;
+  height: 280px;
+  object-fit: contain;
+}
+
+.card-body {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px;
+}
+
+.card h2 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.download {
+  flex: 0 0 auto;
+  padding: 8px 12px;
+  font-size: 14px;
+}
+
+@media (max-width: 560px) {
+  .gallery-header { align-items: flex-start; flex-direction: column; }
+  .preview img { height: 230px; }
+}
