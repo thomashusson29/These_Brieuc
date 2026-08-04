@@ -1,145 +1,18 @@
-<!DOCTYPE html>
-<html lang="fr">
+<!doctype html>
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Galerie des 23 figures de la thèse Brieuc en noir et blanc, PNG 600 dpi.">
-  <title>Figures noir et blanc · Thèse Brieuc</title>
-  <style>
-    :root {
-      color-scheme: light;
-      --bg: #f4f4f2;
-      --card: #fff;
-      --text: #171717;
-      --muted: #5c5c5c;
-      --line: #d2d2ce;
-      --accent: #202020;
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      color: var(--text);
-      background: var(--bg);
-    }
-    header, main, footer {
-      width: min(1240px, calc(100% - 32px));
-      margin-inline: auto;
-    }
-    header { padding: 42px 0 24px; }
-    h1 { margin: 14px 0 10px; font-size: clamp(2rem, 5vw, 3.4rem); line-height: 1.05; }
-    h2 { margin: 36px 0 16px; font-size: 1.45rem; }
-    p { max-width: 760px; color: var(--muted); line-height: 1.6; }
-    a { color: var(--accent); }
-    .back, .download {
-      display: inline-flex;
-      align-items: center;
-      min-height: 42px;
-      padding: 10px 14px;
-      border: 1px solid var(--line);
-      border-radius: 9px;
-      background: var(--card);
-      font-weight: 650;
-      text-decoration: none;
-    }
-    .summary { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
-    .summary span {
-      padding: 7px 10px;
-      border: 1px solid var(--line);
-      border-radius: 999px;
-      background: #fff;
-      color: #3a3a3a;
-      font-size: .92rem;
-    }
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(min(100%, 330px), 1fr));
-      gap: 20px;
-    }
-    article {
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      background: var(--card);
-    }
-    article > a:first-child {
-      display: grid;
-      place-items: center;
-      min-height: 250px;
-      padding: 12px;
-      border-bottom: 1px solid var(--line);
-      background: #fff;
-    }
-    img {
-      display: block;
-      width: 100%;
-      max-height: 310px;
-      object-fit: contain;
-      background: #fff;
-    }
-    .body { display: flex; flex: 1; flex-direction: column; gap: 12px; padding: 16px; }
-    h3 { margin: 0; font-size: 1.05rem; line-height: 1.35; }
-    .body .download { align-self: flex-start; margin-top: auto; font-size: .92rem; }
-    footer { padding: 40px 0 56px; color: var(--muted); }
-    .wide img { max-height: 430px; }
-  </style>
+  <title>Figures</title>
+  <link rel="stylesheet" href="gallery.css">
 </head>
-<body>
-  <header>
-    <a class="back" href="../">← Retour aux rapports</a>
-    <h1>Figures noir et blanc</h1>
-    <p>Les 23 figures finales ont été régénérées depuis le code R pour l’impression : PNG à 600 dpi, fond blanc, contours noirs et contrastes renforcés par des hachures, des points, des types de lignes et des marqueurs distincts.</p>
-    <div class="summary" aria-label="Caractéristiques des exports">
-      <span>23 figures</span>
-      <span>PNG</span>
-      <span>600 dpi</span>
-      <span>noir et blanc vérifié</span>
-    </div>
-  </header>
-  <main>
-    <h2>Population analysée</h2>
-    <div class="grid">
-      <article><a href="age-distribution-1.png"><img src="age-distribution-1.png" loading="lazy" alt="Distribution et Q-Q plot de l’âge"></a><div class="body"><h3>Distribution de l’âge</h3><a class="download" href="age-distribution-1.png" download>Télécharger le PNG · 600 dpi</a></div></article>
-      <article><a href="sexe-distribution-1.png"><img src="sexe-distribution-1.png" loading="lazy" alt="Répartition du sexe"></a><div class="body"><h3>Répartition du sexe</h3><a class="download" href="sexe-distribution-1.png" download>Télécharger le PNG · 600 dpi</a></div></article>
-      <article><a href="cote-distribution-1.png"><img src="cote-distribution-1.png" loading="lazy" alt="Répartition du côté"></a><div class="body"><h3>Répartition du côté</h3><a class="download" href="cote-distribution-1.png" download>Télécharger le PNG · 600 dpi</a></div></article>
-      <article><a href="niveau-distribution-1.png"><img src="niveau-distribution-1.png" loading="lazy" alt="Répartition du niveau métamérique"></a><div class="body"><h3>Répartition du niveau</h3><a class="download" href="niveau-distribution-1.png" download>Télécharger le PNG · 600 dpi</a></div></article>
-      <article><a href="bmi-distribution-1.png"><img src="bmi-distribution-1.png" loading="lazy" alt="Distribution et Q-Q plot du BMI"></a><div class="body"><h3>Distribution du BMI</h3><a class="download" href="bmi-distribution-1.png" download>Télécharger le PNG · 600 dpi</a></div></article>
-      <article><a href="tabac-distribution-1.png"><img src="tabac-distribution-1.png" loading="lazy" alt="Répartition du statut tabagique"></a><div class="body"><h3>Répartition du tabac</h3><a class="download" href="tabac-distribution-1.png" download>Télécharger le PNG · 600 dpi</a></div></article>
-      <article><a href="infiltrations-distribution-1.png"><img src="infiltrations-distribution-1.png" loading="lazy" alt="Répartition du statut d’infiltration"></a><div class="body"><h3>Statut d’infiltration</h3><a class="download" href="infiltrations-distribution-1.png" download>Télécharger le PNG · 600 dpi</a></div></article>
-      <article><a href="resultat-infiltrations-distribution-1.png"><img src="resultat-infiltrations-distribution-1.png" loading="lazy" alt="Résultat des infiltrations"></a><div class="body"><h3>Résultat des infiltrations</h3><a class="download" href="resultat-infiltrations-distribution-1.png" download>Télécharger le PNG · 600 dpi</a></div></article>
-    </div>
-
-    <h2>Performances diagnostiques</h2>
-    <div class="grid">
-      <article><a href="global-contingency-plot-1.png"><img src="global-contingency-plot-1.png" loading="lazy" alt="Composition des tableaux de contingence par test"></a><div class="body"><h3>Tableaux de contingence par test</h3><a class="download" href="global-contingency-plot-1.png" download>Télécharger le PNG · 600 dpi</a></div></article>
-      <article><a href="global-performance-plots-1.png"><img src="global-performance-plots-1.png" loading="lazy" alt="Courbes ROC comparées"></a><div class="body"><h3>Courbes ROC comparées</h3><a class="download" href="global-performance-plots-1.png" download>Télécharger le PNG · 600 dpi</a></div></article>
-      <article><a href="global-performance-combined-plot-1.png"><img src="global-performance-combined-plot-1.png" loading="lazy" alt="Compromis sensibilité spécificité"></a><div class="body"><h3>Compromis sensibilité / spécificité</h3><a class="download" href="global-performance-combined-plot-1.png" download>Télécharger le PNG · 600 dpi</a></div></article>
-      <article><a href="fig-kappa-interobserver-1.png"><img src="fig-kappa-interobserver-1.png" loading="lazy" alt="Kappa inter-observateur par test"></a><div class="body"><h3>Accord inter-observateur</h3><a class="download" href="fig-kappa-interobserver-1.png" download>Télécharger le PNG · 600 dpi</a></div></article>
-    </div>
-
-    <h2>Score de positivité</h2>
-    <div class="grid">
-      <article><a href="score-contribution-se-plot-1.png"><img src="score-contribution-se-plot-1.png" loading="lazy" alt="Contribution au gain de sensibilité"></a><div class="body"><h3>Contribution au gain de sensibilité</h3><a class="download" href="score-contribution-se-plot-1.png" download>Télécharger le PNG · 600 dpi</a></div></article>
-      <article><a href="score-contribution-sp-plot-1.png"><img src="score-contribution-sp-plot-1.png" loading="lazy" alt="Contribution au gain de spécificité"></a><div class="body"><h3>Contribution au gain de spécificité</h3><a class="download" href="score-contribution-sp-plot-1.png" download>Télécharger le PNG · 600 dpi</a></div></article>
-      <article><a href="score-thresholds-plot-1.png"><img src="score-thresholds-plot-1.png" loading="lazy" alt="Sensibilité et spécificité selon le seuil"></a><div class="body"><h3>Performance selon le seuil</h3><a class="download" href="score-thresholds-plot-1.png" download>Télécharger le PNG · 600 dpi</a></div></article>
-      <article><a href="score-roc-curve-1.png"><img src="score-roc-curve-1.png" loading="lazy" alt="Courbe ROC du score global"></a><div class="body"><h3>Courbe ROC du score global</h3><a class="download" href="score-roc-curve-1.png" download>Télécharger le PNG · 600 dpi</a></div></article>
-    </div>
-
-    <h2>Analyses par niveau métamérique</h2>
-    <div class="grid">
-      <article><a href="results-by-level-rate-1.png"><img src="results-by-level-rate-1.png" loading="lazy" alt="Effectifs de NCB selon le niveau"></a><div class="body"><h3>Effectifs de NCB par niveau</h3><a class="download" href="results-by-level-rate-1.png" download>Télécharger le PNG · 600 dpi</a></div></article>
-      <article><a href="results-by-level-count-1.png"><img src="results-by-level-count-1.png" loading="lazy" alt="Distribution du score ULNT selon le niveau"></a><div class="body"><h3>Score ULNT par niveau</h3><a class="download" href="results-by-level-count-1.png" download>Télécharger le PNG · 600 dpi</a></div></article>
-      <article><a href="fig-gs-positive-level-1.png"><img src="fig-gs-positive-level-1.png" loading="lazy" alt="Niveaux métamériques chez les cas confirmés"></a><div class="body"><h3>Niveaux chez les cas confirmés</h3><a class="download" href="fig-gs-positive-level-1.png" download>Télécharger le PNG · 600 dpi</a></div></article>
-      <article><a href="fig-gs-positive-score-1.png"><img src="fig-gs-positive-score-1.png" loading="lazy" alt="Score ULNT par niveau chez les cas confirmés"></a><div class="body"><h3>Score par niveau chez les cas confirmés</h3><a class="download" href="fig-gs-positive-score-1.png" download>Télécharger le PNG · 600 dpi</a></div></article>
-      <article class="wide"><a href="fig-level-performance-individual-1.png"><img src="fig-level-performance-individual-1.png" loading="lazy" alt="Performances individuelles des tests par niveau"></a><div class="body"><h3>VP, FN, FP et VN par test et par niveau</h3><a class="download" href="fig-level-performance-individual-1.png" download>Télécharger le PNG · 600 dpi</a></div></article>
-      <article><a href="results-by-level-test-metric-plot-1.png"><img src="results-by-level-test-metric-plot-1.png" loading="lazy" alt="Sensibilité et spécificité par niveau et par test"></a><div class="body"><h3>Sensibilité et spécificité par niveau</h3><a class="download" href="results-by-level-test-metric-plot-1.png" download>Télécharger le PNG · 600 dpi</a></div></article>
-      <article><a href="level-grouped-plot-1.png"><img src="level-grouped-plot-1.png" loading="lazy" alt="Performance selon l’étage métamérique regroupé"></a><div class="body"><h3>Performance par étage regroupé</h3><a class="download" href="level-grouped-plot-1.png" download>Télécharger le PNG · 600 dpi</a></div></article>
-    </div>
+<body class="language-page">
+  <main class="language-picker">
+    <h1>Figures</h1>
+    <nav aria-label="Language">
+      <a href="en/" lang="en">English</a>
+      <a href="fr/" lang="fr">Français</a>
+    </nav>
   </main>
-  <footer>
-    <p><a href="manifest.csv">Contrôle technique des 23 fichiers (CSV)</a> · Les figures ne contiennent que des résultats agrégés.</p>
-  </footer>
 </body>
 </html>
