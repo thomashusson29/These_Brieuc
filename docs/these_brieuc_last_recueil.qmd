@@ -3008,6 +3008,8 @@ score_summary <- data.frame(
 )
 score_summary$Se <- score_summary$TP / (score_summary$TP + score_summary$FN)
 score_summary$Sp <- score_summary$TN / (score_summary$TN + score_summary$FP)
+score_summary$VPP <- score_summary$TP / (score_summary$TP + score_summary$FP)
+score_summary$VPN <- score_summary$TN / (score_summary$TN + score_summary$FN)
 score_summary$LRp <- score_summary$Se / (1 - score_summary$Sp)
 score_summary$LRn <- (1 - score_summary$Se) / score_summary$Sp
 score_summary$DOR <- (score_summary$TP * score_summary$TN) / (score_summary$FP * score_summary$FN)
@@ -3070,6 +3072,8 @@ score_summary_table <- score_summary %>%
         Seuil,
         `Se [IC95%]` = paste0(round(Se, 3), " [", round(Se_low, 3), " ; ", round(Se_high, 3), "]"),
         `Sp [IC95%]` = paste0(round(Sp, 3), " [", round(Sp_low, 3), " ; ", round(Sp_high, 3), "]"),
+        VPP = round(VPP, 3),
+        VPN = round(VPN, 3),
         `LR+` = round(LRp, 3),
         `LR-` = round(LRn, 3),
         Youden = round(Youden, 3),
@@ -4300,7 +4304,7 @@ combination_all_round %>%
 \newpage
 ### "Score de positivité" : performances selon le nombre de tests positifs
 
-L'objectif ici est de calculer les performances diagnostiques (sensibilité, spécificité, LR+, LR-, Youden, DOR) pour différents seuils de score (`≥1`, `≥2`, `≥3`, `≥4` tests positifs). 
+L'objectif ici est de calculer les performances diagnostiques (sensibilité, spécificité, VPP, VPN, LR+, LR-, Youden, DOR) pour différents seuils de score (`≥1`, `≥2`, `≥3`, `≥4` tests positifs).
 
 Cela revient à demander si un seuil du type "au moins 2 tests positifs" est plus utile qu'un test isolé. Cette logique reste différente de celle des combinaisons conjonctives : `≥3 positifs` ne précise pas quels tests sont positifs, alors que `U2b + U3` impose une paire fixe de tests positifs.
 
@@ -4309,30 +4313,57 @@ Le score correspond simplement au **nombre de tests ULNT positifs** chez un mêm
 ```{r}
 #| label: score-probability
 #| echo: false
-score_summary_table %>%
-  kable(
-    format = if (knitr::is_latex_output()) {
-      "latex"
-    } else if (knitr::is_html_output()) {
-      "html"
-    } else {
-      "pipe"
-    },
-    booktabs = TRUE,
-    align = "c",
-    digits = 3,
-    caption = "Performances diagnostiques selon le seuil du score"
-  ) %>%
-  kable_styling(
-    latex_options = c("hold_position", "scale_down"),
-    full_width = FALSE,
-    font_size = 7
+#| results: "asis"
+if (knitr::pandoc_to("docx")) {
+  print(
+    score_summary_table %>%
+      select(Seuil, `Se [IC95%]`, `Sp [IC95%]`, VPP, VPN) %>%
+      kable(
+        format = "pipe",
+        align = "c",
+        digits = 3,
+        caption = "Performances diagnostiques selon le seuil du score : mesures de classification"
+      )
   )
+  cat("\n\n")
+  print(
+    score_summary_table %>%
+      select(Seuil, `LR+`, `LR-`, Youden, `DOR [IC95%]`) %>%
+      kable(
+        format = "pipe",
+        align = "c",
+        digits = 3,
+        caption = "Performances diagnostiques selon le seuil du score : rapports et indices"
+      )
+  )
+} else {
+  score_summary_table %>%
+    kable(
+      format = if (knitr::is_latex_output()) {
+        "latex"
+      } else if (knitr::is_html_output()) {
+        "html"
+      } else {
+        "pipe"
+      },
+      booktabs = TRUE,
+      align = "c",
+      digits = 3,
+      caption = "Performances diagnostiques selon le seuil du score"
+    ) %>%
+    kable_styling(
+      latex_options = c("hold_position", "scale_down"),
+      full_width = FALSE,
+      font_size = 7
+    )
+}
 ```
 
 \FloatBarrier
 
 NB : *Le **DOR** (diagnostic odds ratio) résume en un seul chiffre la capacité globale du score à distinguer les patients `G+` des `G-` (se calcule en faisant le rapport entre le LR+ et le LR-), mais il reste ici secondaire car moins intuitif cliniquement que la sensibilité, la spécificité et les rapports de vraisemblance. En plus, les IC du DOR sont ici très larges et se chevauchent largement, donc ils ne sont pas vraiment interprétables.*
+
+Les **VPP** et **VPN** correspondent ici aux probabilités observées d'être respectivement `G+` après un score positif et `G-` après un score négatif. Contrairement à la sensibilité et à la spécificité, elles dépendent de la prévalence de `G+` dans cet échantillon et ne sont donc pas directement transposables à une population ayant une prévalence différente.
 
 Pour interpréter ces résultats, on peut raisonner **par addition** (approche de type Shapley value par permutation de l'ordre d'inclusion des tests et estimation de leur contribution) : on calcule la **contribution moyenne** de chaque test au gain de performance du score global.
 
