@@ -6,7 +6,7 @@ HTML_FILE="these_brieuc.html"
 QMD_FILE="these_brieuc.qmd"
 DOCX_FILE="these_brieuc.docx"
 PDF_FILE="these_brieuc.pdf"
-HTML_ASSETS_DIR="these_brieuc_files"
+HTML_ASSETS_DIRS="these_brieuc_files these_brieuc_last_recueil_files"
 
 mkdir -p "${DOCS_DIR}"
 rm -f "${DOCS_DIR}/styles.css"
@@ -26,10 +26,13 @@ do
   fi
 done
 
-if [ -d "${HTML_ASSETS_DIR}" ]; then
-  rm -rf "${DOCS_DIR}/${HTML_ASSETS_DIR}"
-  cp -R "${HTML_ASSETS_DIR}" "${DOCS_DIR}/"
-fi
+for html_assets_dir in ${HTML_ASSETS_DIRS}
+do
+  if [ -d "${html_assets_dir}" ]; then
+    rm -rf "${DOCS_DIR}/${html_assets_dir}"
+    cp -R "${html_assets_dir}" "${DOCS_DIR}/"
+  fi
+done
 
 cat > "${DOCS_DIR}/index.html" <<'EOF'
 <!DOCTYPE html>

@@ -5481,3 +5481,202 @@ comp_score_a2 <- data.frame(
 kable(comp_score_a2, booktabs = TRUE, align = "c", row.names = FALSE) %>%
   kable_styling(latex_options = c("hold_position", "scale_down"), font_size = 8)
 ```
+
+\newpage
+## Performances diagnostiques de l'évaluateur 2
+
+```{r}
+#| label: objets-performances-evaluateur-2
+#| include: false
+
+e2_test_columns <- c(
+  U1 = "U1_E2",
+  U2a = "U2a_E2",
+  U2b = "U2b_E2",
+  U3 = "U3_E2"
+)
+
+compute_e2_metrics <- function(test_positive, gold_standard) {
+  gold_positive <- gold_standard == "Positif"
+  gold_negative <- gold_standard == "Negatif"
+
+  vp <- sum(test_positive & gold_positive)
+  fn <- sum(!test_positive & gold_positive)
+  fp <- sum(test_positive & gold_negative)
+  vn <- sum(!test_positive & gold_negative)
+
+  if (vp + fn == 0 || vn + fp == 0) {
+    stop("Impossible de calculer les performances E2 : une classe du gold standard est absente.")
+  }
+
+  sensitivity_ci <- stats::binom.test(vp, vp + fn)$conf.int
+  specificity_ci <- stats::binom.test(vn, vn + fp)$conf.int
+
+  data.frame(
+    Sensibilite = vp / (vp + fn),
+    Sensibilite_basse = sensitivity_ci[1],
+    Sensibilite_haute = sensitivity_ci[2],
+    Specificite = vn / (vn + fp),
+    Specificite_basse = specificity_ci[1],
+    Specificite_haute = specificity_ci[2]
+  )
+}
+
+format_e2_percentage <- function(value) {
+  chartr(".", ",", sprintf("%.1f %%", 100 * value))
+}
+
+format_e2_percentage_ci <- function(value, lower, upper) {
+  chartr(
+    ".", ",",
+    sprintf("%.1f %% [%.1f–%.1f]", 100 * value, 100 * lower, 100 * upper)
+  )
+}
+
+e2_individual_results <- dplyr::bind_rows(lapply(names(e2_test_columns), function(test_name) {
+  test_column <- unname(e2_test_columns[test_name])
+  valid_rows <- df$Gold_Standard_main %in% c("Positif", "Negatif") &
+    df[[test_column]] %in% c("Positif", "Negatif")
+  analysis_data <- df[valid_rows, , drop = FALSE]
+
+  cbind(
+    data.frame(Test = test_name),
+    compute_e2_metrics(
+      analysis_data[[test_column]] == "Positif",
+      analysis_data$Gold_Standard_main
+    )
+  )
+}))
+
+e2_individual_table <- data.frame(
+  `Test E2` = e2_individual_results$Test,
+  `Sensibilité [IC95 %]` = format_e2_percentage_ci(
+    e2_individual_results$Sensibilite,
+    e2_individual_results$Sensibilite_basse,
+    e2_individual_results$Sensibilite_haute
+  ),
+  `Spécificité [IC95 %]` = format_e2_percentage_ci(
+    e2_individual_results$Specificite,
+    e2_individual_results$Specificite_basse,
+    e2_individual_results$Specificite_haute
+  ),
+  check.names = FALSE
+)
+
+e2_combinations <- unlist(
+  lapply(2:4, function(size) combn(names(e2_test_columns), size, simplify = FALSE)),
+  recursive = FALSE
+)
+
+e2_combination_results <- dplyr::bind_rows(lapply(e2_combinations, function(test_names) {
+  test_columns <- unname(e2_test_columns[test_names])
+  valid_test_matrix <- vapply(
+    test_columns,
+    function(column) df[[column]] %in% c("Positif", "Negatif"),
+    logical(nrow(df))
+  )
+  valid_rows <- df$Gold_Standard_main %in% c("Positif", "Negatif") &
+    rowSums(valid_test_matrix) == length(test_columns)
+  analysis_data <- df[valid_rows, , drop = FALSE]
+  combination_positive <- rowSums(
+    analysis_data[, test_columns, drop = FALSE] == "Positif"
+  ) == length(test_columns)
+
+  cbind(
+    data.frame(Combinaison = paste(test_names, collapse = " + ")),
+    compute_e2_metrics(combination_positive, analysis_data$Gold_Standard_main)
+  )
+}))
+
+e2_combination_table <- data.frame(
+  `Combinaison E2` = e2_combination_results$Combinaison,
+  Sensibilité = format_e2_percentage(e2_combination_results$Sensibilite),
+  Spécificité = format_e2_percentage(e2_combination_results$Specificite),
+  check.names = FALSE
+)
+
+e2_all_columns <- unname(e2_test_columns)
+e2_valid_test_matrix <- vapply(
+  e2_all_columns,
+  function(column) df[[column]] %in% c("Positif", "Negatif"),
+  logical(nrow(df))
+)
+e2_score_rows <- df$Gold_Standard_main %in% c("Positif", "Negatif") &
+  rowSums(e2_valid_test_matrix) == length(e2_all_columns)
+e2_score_data <- df[e2_score_rows, , drop = FALSE]
+e2_score <- rowSums(e2_score_data[, e2_all_columns, drop = FALSE] == "Positif")
+
+e2_score_results <- dplyr::bind_rows(lapply(1:4, function(threshold) {
+  cbind(
+    data.frame(Seuil = threshold),
+    compute_e2_metrics(
+      e2_score >= threshold,
+      e2_score_data$Gold_Standard_main
+    )
+  )
+}))
+
+e2_score_labels <- c(
+  "≥1 test positif",
+  "≥2 tests positifs",
+  "≥3 tests positifs",
+  "4 tests positifs"
+)
+
+e2_score_table <- data.frame(
+  `Seuil E2` = e2_score_labels,
+  Sensibilité = format_e2_percentage(e2_score_results$Sensibilite),
+  Spécificité = format_e2_percentage(e2_score_results$Specificite),
+  check.names = FALSE
+)
+```
+
+### Tests individuels
+
+```{r}
+#| label: tbl-e2-tests-individuels
+#| echo: false
+knitr::kable(
+  e2_individual_table,
+  booktabs = TRUE,
+  align = c("l", "c", "c"),
+  row.names = FALSE
+) %>%
+  kableExtra::kable_styling(full_width = FALSE, position = "center")
+```
+
+### Combinaisons conjonctives
+
+```{r}
+#| label: tbl-e2-combinaisons
+#| echo: false
+knitr::kable(
+  e2_combination_table,
+  booktabs = TRUE,
+  align = c("l", "c", "c"),
+  row.names = FALSE
+) %>%
+  kableExtra::kable_styling(full_width = FALSE, position = "center") %>%
+  kableExtra::row_spec(
+    which(e2_combination_table$`Combinaison E2` == "U2a + U3"),
+    bold = TRUE
+  )
+```
+
+### Score global
+
+```{r}
+#| label: tbl-e2-score-global
+#| echo: false
+knitr::kable(
+  e2_score_table,
+  booktabs = TRUE,
+  align = c("l", "c", "c"),
+  row.names = FALSE
+) %>%
+  kableExtra::kable_styling(full_width = FALSE, position = "center") %>%
+  kableExtra::row_spec(
+    which(e2_score_table$`Seuil E2` == "≥2 tests positifs"),
+    bold = TRUE
+  )
+```
